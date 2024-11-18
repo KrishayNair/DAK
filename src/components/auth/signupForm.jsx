@@ -42,7 +42,7 @@ export default function SignupForm() {
       }
 
       // Redirect to dashboard on success
-      router.push("/dashboard");
+      router.push("/");
       router.refresh();
     } catch (err) {
       if (err instanceof SyntaxError) {
