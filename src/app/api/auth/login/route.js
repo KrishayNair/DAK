@@ -76,8 +76,6 @@ export async function POST(req) {
             maxAge: 60 * 60 * 24 * 7 // 7 days
         });
 
-
-
         return response;
     } catch (error) {
         console.error('Login error:', error);
@@ -85,38 +83,5 @@ export async function POST(req) {
             { error: 'Internal server error' },
             { status: 500 }
         );
-    }
-}
-
-export async function GET() {
-    try {
-        await connectDB();
-        
-        const cookieStore = cookies();
-        const token = cookieStore.get('auth_token');
-
-        if (!token) {
-            return NextResponse.json({ authenticated: false }, { status: 401 });
-        }
-
-        const decoded = jwt.verify(token.value, process.env.JWT_SECRET);
-        const user = await User.findById(decoded.userId);
-
-        if (!user) {
-            return NextResponse.json({ authenticated: false }, { status: 401 });
-        }
-
-        return NextResponse.json({
-            authenticated: true,
-            user: {
-                id: user._id,
-                fullName: user.fullName,
-                email: user.email,
-                username: user.username
-            }
-        });
-    } catch (error) {
-        console.error('Auth check error:', error);
-        return NextResponse.json({ authenticated: false }, { status: 401 });
     }
 }

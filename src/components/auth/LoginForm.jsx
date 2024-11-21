@@ -27,7 +27,7 @@ export default function LoginForm() {
       const data = await res.json();
       if (res.ok) {
         // Handle successful login, e.g., redirect
-        window.location.href = "/";
+        window.location.href = "/dashboard";
       } else {
         setError(data.error || "Login failed");
       }

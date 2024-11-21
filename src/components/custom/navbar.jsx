@@ -3,51 +3,37 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
+//import { auth } from "@/app/firebase/config";
+import { signOut } from "firebase/auth";
+import Cookies from "js-cookie";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkUser = async () => {
       try {
-        const response = await fetch('/api/auth/check', {
-          credentials: 'include'
-        });
-        const data = await response.json();
-        
-        if (data.authenticated && data.user) {
-          setUser(data.user);
-        } else {
-          setUser(null);
-        }
+        const user = auth.currentUser;
+        setIsSignedIn(!!user);
       } catch (error) {
-        console.error("Error checking auth status:", error);
-        setUser(null);
-      } finally {
-        setLoading(false);
+        console.error("Error checking user status:", error);
+        setIsSignedIn(false);
       }
     };
 
-    checkAuth();
+    checkUser();
   }, []);
 
   const handleSignOut = async () => {
     try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include'
-      });
-
-      if (response.ok) {
-        setUser(null);
-        setIsDropdownOpen(false);
-        router.push("/login");
-      }
+      await signOut(auth);
+      Cookies.remove("token"); // Remove Firebase auth token from cookies
+      setIsSignedIn(false);
+      router.push("/login"); // Redirect to login after logout
     } catch (error) {
       console.error("Sign out error:", error);
     }
@@ -92,47 +78,39 @@ export default function Navbar() {
                 className="px-3 py-2 rounded-full bg-[#B08D57] text-white hover:bg-opacity-90"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                {user ? `Welcome, ${user.username} ▼` : 'Register ▼'}
+                Register ▼
               </button>
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                  {user ? (
-                    <>
-                      <button
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => {
-                          handleSignOut();
-                          setIsDropdownOpen(false);
-                        }}
-                      >
-                        Logout
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => {
-                          router.push("/signup");
-                          setIsDropdownOpen(false);
-                        }}
-                      >
-                        Sign Up
-                      </button>
-                      <button
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => {
-                          router.push("/login");
-                          setIsDropdownOpen(false);
-                        }}
-                      >
-                        Sign In
-                      </button>
-                    </>
-                  )}
+                  <button
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => {
+                      router.push("/signup");
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    Sign Up
+                  </button>
+                  <button
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => {
+                      router.push("/login");
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    Sign In
+                  </button>
                 </div>
               )}
             </div>
+            {isSignedIn && (
+              <button
+                className="px-3 py-2 rounded-full bg-secondary text-primary hover:bg-opacity-90"
+                onClick={handleSignOut}
+              >
+                Logout
+              </button>
+            )}
           </div>
           <div className="md:hidden flex items-center">
             <button
@@ -167,7 +145,25 @@ export default function Navbar() {
               </Link>
             ))}
             <div className="mt-4 space-y-2">
-              {user ? (
+              <button
+                className="w-full px-3 py-2 rounded-md text-base font-medium text-white bg-[#B08D57] hover:bg-opacity-90"
+                onClick={() => {
+                  router.push("/signup");
+                  toggleMenu();
+                }}
+              >
+                Sign Up
+              </button>
+              <button
+                className="w-full px-3 py-2 rounded-md text-base font-medium text-white bg-[#B08D57] hover:bg-opacity-90"
+                onClick={() => {
+                  router.push("/login");
+                  toggleMenu();
+                }}
+              >
+                Sign In
+              </button>
+              {isSignedIn && (
                 <button
                   className="w-full px-3 py-2 rounded-md text-base font-medium text-primary bg-secondary hover:bg-opacity-90"
                   onClick={() => {
@@ -177,27 +173,6 @@ export default function Navbar() {
                 >
                   Logout
                 </button>
-              ) : (
-                <>
-                  <button
-                    className="w-full px-3 py-2 rounded-md text-base font-medium text-white bg-[#B08D57] hover:bg-opacity-90"
-                    onClick={() => {
-                      router.push("/signup");
-                      toggleMenu();
-                    }}
-                  >
-                    Sign Up
-                  </button>
-                  <button
-                    className="w-full px-3 py-2 rounded-md text-base font-medium text-white bg-[#B08D57] hover:bg-opacity-90"
-                    onClick={() => {
-                      router.push("/login");
-                      toggleMenu();
-                    }}
-                  >
-                    Sign In
-                  </button>
-                </>
               )}
             </div>
           </div>
