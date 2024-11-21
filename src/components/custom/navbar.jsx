@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-//import { auth } from "@/app/firebase/config";
+import { auth } from "@/app/firebase/config";
 import { signOut } from "firebase/auth";
 import Cookies from "js-cookie";
+
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,24 +50,19 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
             <Link href="/" className="text-primary hover:text-gray-900">
-              <img src="/images/dAk.png" alt="DAK" className="w-20 h-8" />
+            <img
+              src="/images/dAk.png"
+              alt="DAK"
+              className="w-20 h-8"
+            />
             </Link>
           </div>
           <div className="hidden md:flex flex-grow justify-center items-center space-x-8">
-            {[
-              { href: "/", label: "HOME" },
-              { href: "/pda", label: "PHILATELY DEPOSIT ACCOUNT" },
-              { href: "/shop", label: "SHOP" },
-              { href: "/catalog", label: "CATALOG" },
-              { href: "/workshop", label: "WORKSHOP" },
-              { href: "/forum", label: "FORUM" },
-            ].map((link) => (
+            {[{ href: "/", label: "HOME" },{ href: "/pda", label: "PHILATELY DEPOSIT ACCOUNT" }, { href: "/shop", label: "SHOP" }, { href: "/catalog", label: "CATALOG" }, { href: "/workshop", label: "WORKSHOP" }, { href: "/forum", label: "FORUM" }].map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-primary text-sm hover:text-gray-900 ${
-                  pathname === link.href ? "border-b-2 border-primary" : ""
-                }`}
+                className={`text-primary text-sm hover:text-gray-900 ${pathname === link.href ? "border-b-2 border-primary" : ""}`}
               >
                 {link.label}
               </Link>
@@ -131,7 +127,7 @@ export default function Navbar() {
               { href: "/shop", label: "SHOP" },
               { href: "/catalog", label: "CATALOG" },
               { href: "/workshop", label: "WORKSHOP" },
-              { href: "/forum", label: "FORUM" },
+              { href: "/forum", label: "FORUM" }
             ].map((link) => (
               <Link
                 key={link.href}
