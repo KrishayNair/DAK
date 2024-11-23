@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { auth } from "@/app/firebase/config";
-import { signOut } from "firebase/auth";
+
 import Cookies from "js-cookie";
 
 
