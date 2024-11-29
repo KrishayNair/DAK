@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
+import { BsBell, BsCart3 } from "react-icons/bs";
 
 import Cookies from "js-cookie";
-
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,30 +44,43 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-[#3C5141] font-primary shadow-lg sticky top-0 z-50 md:top-2 md:mx-4 md:my-2 md:rounded-full">
+    <nav className="bg-[#FFF7E5]/80 backdrop-blur-sm font-primary shadow-lg sticky top-0 z-50 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
             <Link href="/" className="text-primary hover:text-gray-900">
-            <img
-              src="/images/dAk.png"
-              alt="DAK"
-              className="w-20 h-8"
-            />
+              <img src="/images/dAk.png" alt="DAK" className="w-20 h-8" />
             </Link>
           </div>
           <div className="hidden md:flex flex-grow justify-center items-center space-x-8">
-            {[{ href: "/", label: "HOME" },{ href: "/pda", label: "PHILATELY DEPOSIT ACCOUNT" }, { href: "/shop", label: "SHOP" }, { href: "/catalog", label: "CATALOG" }, { href: "/workshop", label: "WORKSHOP" }, { href: "/forum", label: "FORUM" }].map((link) => (
+            {[
+              { href: "/", label: "HOME" },
+              { href: "/pda", label: "PHILATELY DEPOSIT ACCOUNT" },
+              { href: "/shop", label: "SHOP" },
+              { href: "/catalog", label: "CATALOG" },
+              { href: "/workshop", label: "WORKSHOP" },
+              { href: "/forum", label: "FORUM" },
+            ].map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-primary text-sm hover:text-gray-900 ${pathname === link.href ? "border-b-2 border-primary" : ""}`}
+                className={`text-[#604234] text-sm hover:text-gray-900 ${
+                  pathname === link.href
+                    ? "font-bold border-b-2 border-[#604234]"
+                    : ""
+                }`}
               >
                 {link.label}
               </Link>
             ))}
           </div>
-          <div className="hidden md:flex items-center space-x-2 pr-4">
+          <div className="hidden md:flex items-center space-x-4 pr-4">
+            <button className="text-[#604234] hover:text-gray-900">
+              <BsBell className="w-6 h-6" />
+            </button>
+            <button className="text-[#604234] hover:text-gray-900">
+              <BsCart3 className="w-6 h-6" />
+            </button>
             <div className="relative">
               <button
                 className="px-3 py-2 rounded-full bg-[#B08D57] text-white hover:bg-opacity-90"
@@ -107,10 +120,16 @@ export default function Navbar() {
               </button>
             )}
           </div>
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center space-x-4">
+            <button className="text-[#604234] hover:text-gray-900">
+              <BsBell className="w-6 h-6" />
+            </button>
+            <button className="text-[#604234] hover:text-gray-900">
+              <BsCart3 className="w-6 h-6" />
+            </button>
             <button
               onClick={toggleMenu}
-              className="text-primary hover:text-gray-900 pr-4"
+              className="text-[#604234] hover:text-gray-900"
             >
               ☰
             </button>
@@ -118,7 +137,7 @@ export default function Navbar() {
         </div>
       </div>
       {isOpen && (
-        <div className="md:hidden bg-[#3C5141] w-full">
+        <div className="md:hidden bg-[#FFF7E5]/80 backdrop-blur-sm w-full">
           <div className="px-2 pt-2 pb-3 space-y-1">
             {[
               { href: "/", label: "HOME" },
@@ -126,13 +145,13 @@ export default function Navbar() {
               { href: "/shop", label: "SHOP" },
               { href: "/catalog", label: "CATALOG" },
               { href: "/workshop", label: "WORKSHOP" },
-              { href: "/forum", label: "FORUM" }
+              { href: "/forum", label: "FORUM" },
             ].map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-[#4C6151] ${
-                  pathname === link.href ? "bg-[#4C6151]" : ""
+                className={`block px-3 py-2 rounded-md text-base text-[#604234] hover:bg-[#4C6151]/10 ${
+                  pathname === link.href ? "font-bold bg-[#4C6151]/10" : ""
                 }`}
                 onClick={toggleMenu}
               >

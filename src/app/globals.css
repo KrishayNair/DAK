@@ -1,68 +1,74 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap");
 @layer base {
-        @font-face {
-          font-family: 'Elsie';
-          font-style: normal;
-          font-weight: 400;
-          font-display: swap;
-          src: url(/fonts/ElsieSwashCaps-Regular.ttf) format('ttf'),
-          url(/fonts/ElsieSwashCaps-Black.ttf) format('ttf');
-        }
-    :root {
-        --primary: 0 0% 9%;
-        --secondary: 0 0% 96.1%;
-        --navbar-outline: rgba(255 255 255 / 10%);
+  @font-face {
+    font-family: "Elsie";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/ElsieSwashCaps-Regular.ttf) format("ttf"),
+      url(/fonts/ElsieSwashCaps-Black.ttf) format("ttf");
+  }
+  :root {
+    --primary: 0 0% 9%;
+    --secondary: 0 0% 96.1%;
+    --navbar-outline: rgba(255 255 255 / 10%);
 
-        --muted: 0 0% 96.1%;
-        --border: 0 0% 89.8%;
+    --muted: 0 0% 96.1%;
+    --border: 0 0% 89.8%;
 
-        --text-color: #111315;
-        --foreground: 0 0% 3.9%;
-        --background: 0 0% 100%;
-        --card: 0 0% 100%;
-        --card-foreground: 0 0% 3.9%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 0 0% 3.9%;
-        --primary-foreground: 0 0% 98%;
-        --secondary-foreground: 0 0% 9%;
-        --muted-foreground: 0 0% 45.1%;
-        --accent: 0 0% 96.1%;
-        --accent-foreground: 0 0% 9%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
-        --input: 0 0% 89.8%;
-        --ring: 0 0% 3.9%;
-        --chart-1: 12 76% 61%;
-        --chart-2: 173 58% 39%;
-        --chart-3: 197 37% 24%;
-        --chart-4: 43 74% 66%;
-        --chart-5: 27 87% 67%;
-        --radius: 0.5rem;   
-    }
- 
+    --text-color: #111315;
+    --foreground: 0 0% 3.9%;
+    --background: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary-foreground: 0 0% 9%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
 }
 
 body {
-    color: var(--text-color);
+  color: var(--text-color);
 }
 
 ::-webkit-scrollbar {
-    display: none !important;
+  display: none !important;
 }
 
 ::selection {
-    color: white;
-    background: #674636;
+  color: white;
+  background: #674636;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-    display: none !important;
+  display: none !important;
 }
 
-.custom_no_display_table>div {
-    display: block !important;
+.custom_no_display_table > div {
+  display: block !important;
 }
 
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
