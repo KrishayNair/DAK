@@ -69,7 +69,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-primary">
       <Navbar />
-      <div className="bg-[#E7D4B5] text-white py-4 text-center">
+      {/* <div className="bg-[#E7D4B5] text-white py-4 text-center">
         <p className="mb-2 text-secondary"> <span className="text-xl font-bold mb-2 text-secondary">Note : </span>This website is still under development. you can visit the government site or user profile to know more about the project.</p>
         <div className="space-x-4">
           <button 
@@ -85,7 +85,7 @@ export default function Home() {
             User Profile
           </button>
         </div>
-      </div>
+      </div> */}
       <div className="relative">
         {isMobile ? (
           <MobileHome />

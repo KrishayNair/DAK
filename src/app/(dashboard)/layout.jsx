@@ -2,8 +2,9 @@
 import { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
 import Navbar from "@/components/custom/navbar";
+import Footer from "../../components/custom/Footer";
+import { cn } from "@/lib/utils";
 import Header from "../../components/custom/Header";
-import Govnavbar from "@/components/custom/govnavbar";
 
 export default function DashboardLayout({ children }) {
   useEffect(() => {
@@ -32,14 +33,15 @@ export default function DashboardLayout({ children }) {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FFF8E8]">
-      <Govnavbar className="sticky top-0 z-50" />
-      <div className="flex-1">
+    <main className="flex flex-col min-h-screen bg-[#FFF8E8]">
+      <Navbar className="sticky top-2 z-50" />
+      <div className={cn("relative w-full flex-1 pt-8 px-10")}>
         <Header />
-        <main className="p-8 mt-4">
+        <div className="w-full min-h-screen">
           {children}
-        </main>
+        </div>
       </div>
-    </div>
+      <Footer />
+    </main>
   );
 }
