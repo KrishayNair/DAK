@@ -49,7 +49,7 @@ Timeline.Item = ({ children, active }) => {
       className="relative flex gap-10" // Increased gap
       initial={{ opacity: 0, x: -20 }}
       whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: "-250px" }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
       {children}

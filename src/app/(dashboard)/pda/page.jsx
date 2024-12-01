@@ -208,7 +208,7 @@ export default function PDAPage() {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl bg-[#FDF7F1] min-h-screen">
+    <div className="container mx-auto px-4 py-8  bg-primary min-h-screen">
       <div className="rounded-lg overflow-hidden">
         <div className="p-6 sm:p-8 lg:p-12">
           <h1 className="text-4xl font-bold mb-2">
@@ -237,9 +237,9 @@ export default function PDAPage() {
                     </Timeline.Point>
                     <Timeline.Content>
                       <div className="bg-white rounded-lg p-8 shadow-lg">
-                        <h2 className="text-2xl font-bold mb-6">
+                        {/* <h2 className="text-2xl font-bold mb-6">
                           {step.title}
-                        </h2>
+                        </h2> */}
                         <div className="mb-4 text-sm text-gray-600">
                           Step {currentStep + 1} of {steps.length}
                           {isStepComplete(currentStep) && (
