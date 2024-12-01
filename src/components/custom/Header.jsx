@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Moon, Search, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -8,14 +8,13 @@ import { useMemo } from "react";
 export default function Header() {
   const { setTheme, theme } = useTheme();
 
-
   function toggleTheme() {
-    setTheme(theme === "dark" ? "light" : "dark")
+    setTheme(theme === "dark" ? "light" : "dark");
   }
 
   const ThemeIcon = useMemo(() => {
-    return theme === "dark" ? Sun : Moon
-  }, [theme]) 
+    return theme === "dark" ? Sun : Moon;
+  }, [theme]);
 
   return (
     <>
@@ -25,7 +24,7 @@ export default function Header() {
           "px-4 select-none mb-6"
         )}
       >
-        <ThemeIcon 
+        {/* <ThemeIcon 
           className="md:w-[1.2rem] md:h-[1.2rem] md:mr-6 ml-auto mr-2 w-5 h-5 cursor-pointer hidden md:block"
           onClick={toggleTheme}
         />
@@ -40,7 +39,7 @@ export default function Header() {
               "focus-visible:ring-2 focus-visible:ring-transparent"
             )}
           />
-        </div>
+        </div> */}
       </nav>
     </>
   );

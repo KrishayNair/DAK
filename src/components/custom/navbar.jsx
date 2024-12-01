@@ -75,12 +75,15 @@ export default function Navbar() {
             ))}
           </div>
           <div className="hidden md:flex items-center space-x-4 pr-4">
-            <button className="text-[#604234] hover:text-gray-900">
+            <Link
+              href="/notifications"
+              className="text-[#604234] hover:text-gray-900"
+            >
               <BsBell className="w-6 h-6" />
-            </button>
-            <button className="text-[#604234] hover:text-gray-900">
+            </Link>
+            <Link href="/cart" className="text-[#604234] hover:text-gray-900">
               <BsCart3 className="w-6 h-6" />
-            </button>
+            </Link>
             <div className="relative">
               <button
                 className="px-3 py-2 rounded-full bg-[#B08D57] text-white hover:bg-opacity-90"
@@ -121,12 +124,15 @@ export default function Navbar() {
             )}
           </div>
           <div className="md:hidden flex items-center space-x-4">
-            <button className="text-[#604234] hover:text-gray-900">
+            <Link
+              href="/notifications"
+              className="text-[#604234] hover:text-gray-900"
+            >
               <BsBell className="w-6 h-6" />
-            </button>
-            <button className="text-[#604234] hover:text-gray-900">
+            </Link>
+            <Link href="/cart" className="text-[#604234] hover:text-gray-900">
               <BsCart3 className="w-6 h-6" />
-            </button>
+            </Link>
             <button
               onClick={toggleMenu}
               className="text-[#604234] hover:text-gray-900"
