@@ -261,35 +261,39 @@ export default function ForgotPassword() {
     setLoading(false);
   }
 
-  async function onOTPSubmit(values) {
+  async function onOTPSubmit(e) {
+    e.preventDefault(); // Prevent form submission
     setLoading(true);
+    
+    try {
+        // Get all OTP input values
+        const otpInputs = document.querySelectorAll('input[type="text"]');
+        const otpArray = Array.from(otpInputs).map(input => input.value);
+        const otpString = otpArray.join('');
+        
+        console.log('OTP Inputs:', otpArray);
+        console.log('Combined OTP:', otpString);
 
-    // Combine OTP array into a single string
-    const otpString = values.otp.join("");
-
-    console.log("Submitted OTP:", otpString);  // Debug log to check OTP value
-
-    if (otpString.length === 5) {
-      try {
-        // Replace this with your OTP verification logic
-        // For example, sending the OTP to the server
-        const response = await verifyOTP(uid, otpString);
-
-        if (response.success) {
-          // chalo aage bc
-          alert("done")
-        } else {
-          alert("Invalid OTP, please try again.");
+        if (otpString.length !== 5) {
+            alert('Please enter all 5 digits');
+            return;
         }
-      } catch (error) {
-        alert(error.message);
-      }
-    } else {
-      alert("Please enter a 5-digit OTP.");
-    }
 
-    setLoading(false);
-  }
+        // Call verify OTP
+        const response = await verifyOTP(uid, otpString);
+        console.log('Verification Response:', response);
+
+        if (response) {
+            alert('OTP Verified!');
+            // Handle successful verification
+        }
+    } catch (error) {
+        console.error('OTP Verification Error:', error);
+        alert(error.message || 'Verification failed');
+    } finally {
+        setLoading(false);
+    }
+}
 
 
 
@@ -343,70 +347,52 @@ export default function ForgotPassword() {
     </Form>
   );
 
-  const OTPForm = (
-    <Form {...otpForm}>
-      <form onSubmit={otpForm.handleSubmit(onOTPSubmit)} className="space-y-6">
-        <p className="text-gray-600">We sent the code to {email}</p>
+// Update the OTP form to use this handler
+const OTPForm = (
+  <form onSubmit={onOTPSubmit} className="space-y-6">
+      <p className="text-gray-600">We sent the code to {email}</p>
 
-        <div className="flex gap-4 justify-center my-8">
+      <div className="flex gap-4 justify-center my-8">
           {[0, 1, 2, 3, 4].map((index) => (
-            <input
-              key={index}
-              type="text"
-              maxLength="1"
-              className="w-16 h-16 text-center text-2xl border rounded-xl focus:border-black focus:ring-0 outline-none"
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value.match(/^[0-9]$/)) {
-                  const nextInput = e.target.nextElementSibling;
-                  if (nextInput) {
-                    nextInput.focus();
-                  }
-                  const newOTP = [...otpForm.getValues().otp];
-                  newOTP[index] = value;
-                  otpForm.setValue("otp", newOTP);
-                }
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Backspace" && !e.target.value) {
-                  const prevInput = e.target.previousElementSibling;
-                  if (prevInput) {
-                    prevInput.focus();
-                  }
-                }
-              }}
-            />
+              <input
+                  key={index}
+                  type="text"
+                  maxLength="1"
+                  className="w-16 h-16 text-center text-2xl border rounded-xl focus:border-black focus:ring-0 outline-none"
+                  onChange={(e) => {
+                      const value = e.target.value;
+                      if (value.match(/^[0-9]$/)) {
+                          console.log(`Input ${index}:`, value);
+                          const nextInput = e.target.nextElementSibling;
+                          if (nextInput) nextInput.focus();
+                      }
+                  }}
+                  onKeyDown={(e) => {
+                      if (e.key === 'Backspace' && !e.target.value) {
+                          const prevInput = e.target.previousElementSibling;
+                          if (prevInput) prevInput.focus();
+                      }
+                  }}
+              />
           ))}
-        </div>
+      </div>
 
-        <Button
+      <Button
           type="submit"
           className="w-full rounded-full py-6 h-auto text-lg"
-        // disabled={loading}
-        >
+          disabled={loading}
+      >
           {loading ? (
-            <>
-              <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-              Verifying...
-            </>
+              <>
+                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  Verifying...
+              </>
           ) : (
-            "Continue"
+              "Continue"
           )}
-        </Button>
-
-        <p className="text-sm text-center text-gray-600">
-          Didn't receive the email?{" "}
-          <button
-            type="button"
-            onClick={handleResendOTP}
-            className="text-black underline"
-          >
-            click to resend
-          </button>
-        </p>
-      </form>
-    </Form>
-  );
+      </Button>
+  </form>
+);
 
   return (
     <div className="flex min-h-screen bg-white">
