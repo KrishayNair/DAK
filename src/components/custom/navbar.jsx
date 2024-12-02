@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { BsBell, BsCart3 } from "react-icons/bs";
@@ -13,6 +13,7 @@ export default function Navbar() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const bellIconRef = useRef(null); // Ref to track the bell icon
   const router = useRouter();
   const pathname = usePathname();
   const { unreadCount } = useNotifications();
@@ -86,7 +87,8 @@ export default function Navbar() {
             {/* Desktop Right Menu */}
             <div className="hidden md:flex items-center space-x-8 pr-8">
               <div
-                onClick={() => setIsNotificationOpen(true)}
+                ref={bellIconRef} // Reference the bell icon
+                onClick={() => setIsNotificationOpen(!isNotificationOpen)}
                 className="text-[#604234] hover:text-gray-900 cursor-pointer relative"
               >
                 <BsBell className="w-6 h-6" />
@@ -108,6 +110,7 @@ export default function Navbar() {
       <NotificationModal
         isOpen={isNotificationOpen}
         onClose={() => setIsNotificationOpen(false)}
+        anchorRef={bellIconRef} // Pass the bell icon reference
       />
     </div>
   );
