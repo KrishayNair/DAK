@@ -45,15 +45,16 @@ export default function Login() {
     async function onSubmit(values) {
         setLoading(true)
 
-        const res = await login(values)
+        const res = await login(values);
+        console.log(res)
         
-        if (res) {
+        if (res?.success) {
+            // show otp pop up
             push('/')
         } else {
-            // toast("Login Error", {
-            //     description: "Invalid Credentials. Please try again.",
-            // })
+            alert(res?.message)
         }
+
         setLoading(false)
     }
 
