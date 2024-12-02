@@ -1,35 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import Lenis from "@studio-freight/lenis";
-import { motion, useScroll, useTransform } from "framer-motion";
-import {
-  Search,
-  ChevronLeft,
-  ChevronRight,
-  Heart,
-  ShoppingCart,
-  Filter,
-  Star,
-} from "lucide-react";
+import React from "react";
+import { Search, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Footer from "@/components/custom/Footer";
-import Link from "next/link";
-
-const carouselItems = [
-  { id: 1, image: "/shop.png" },
-  { id: 2, image: "/shop.png" },
-  { id: 3, image: "/shop.png" },
-];
+import { CardTitle, CardDescription } from "@/components/ui/card";
+import { Elsie_Swash_Caps } from 'next/font/google';
+// Data
+const elsieSwashCaps = Elsie_Swash_Caps({
+  subsets: ['latin'],
+  weight: ['400'],
+});
 
 const products = [
   {
@@ -97,268 +78,210 @@ const categories = [
   },
 ];
 
-export default function Page() {
-  const [scrollY, setScrollY] = useState(0);
-  const lenisRef = useRef();
-  const shopRef = useRef(null);
-  const bestSellersRef = useRef(null);
-  const categoriesContainerRef = useRef(null);
+// Components
+const SearchSection = () => (
+  <section className="w-full bg-[#FDF6EC] py-12">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="space-y-8">
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Input
+            placeholder="Search"
+            className="w-full bg-[#FFF5E7] pl-12 h-14 rounded-full text-lg border-none"
+          />
+        </div>
 
-  const { scrollYProgress } = useScroll({
-    target: shopRef,
-    offset: ["start start", "center start"],
-  });
-
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
-
-  useEffect(() => {
-    lenisRef.current = new Lenis({
-      duration: 2.5,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      direction: "vertical",
-      gestureDirection: "vertical",
-      smooth: true,
-      mouseMultiplier: 0.8,
-      smoothTouch: false,
-      touchMultiplier: 1.5,
-      infinite: false,
-    });
-
-    function raf(time) {
-      lenisRef.current.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
-
-    const handleScroll = (e) => {
-      setScrollY(e.scroll);
-    };
-
-    lenisRef.current.on("scroll", handleScroll);
-
-    return () => {
-      lenisRef.current.destroy();
-    };
-  }, []);
-
-  const scrollCategories = (direction) => {
-    const container = categoriesContainerRef.current;
-    if (container) {
-      const scrollAmount =
-        direction === "left" ? -container.offsetWidth : container.offsetWidth;
-      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-primary">
-      <div className="relative">
-        {/* First Animation Group: Search + Categories */}
-        <motion.div ref={shopRef} className="relative z-0" style={{ opacity }}>
-          {/* Search Section */}
-          <div className="max-w-7xl mx-auto px-4 py-12">
-            <div className="bg-[#FDF6EC] rounded-[32px] p-8">
-              <div className="max-w-2xl mx-auto space-y-8">
-                {/* Search Bar */}
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <Input
-                    placeholder="Search"
-                    className="w-full bg-white/90 pl-12 h-14 rounded-full text-lg"
-                  />
-                </div>
-
-                {/* Filter Options */}
-                <div className="flex items-center gap-4">
-                  <Button
-                    variant="outline"
-                    className="rounded-full bg-white hover:bg-white/90"
-                  >
-                    Recents
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="rounded-full bg-white hover:bg-white/90 flex items-center gap-2"
-                  >
-                    Popular Items
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="rounded-full bg-white hover:bg-white/90 flex items-center gap-2"
-                  >
-                    Special Offers for you
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    className="rounded-full ml-auto flex items-center gap-2"
-                  >
-                    Show All
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Categories Section */}
-          <div className="relative mb-[-6rem]">
-            <div className=" mx-auto px-4">
-              <Card className="border border-gray-200">
-                <CardHeader>
-                  <CardTitle>Popular Categories</CardTitle>
-                  <CardDescription>
-                    Explore the Philatelic Splendor | Category | Rating Stars
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="relative">
-                    <button
-                      onClick={() => scrollCategories("left")}
-                      className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow-lg"
-                    >
-                      <ChevronLeft className="w-6 h-6" />
-                    </button>
-
-                    <div
-                      ref={categoriesContainerRef}
-                      className="flex space-x-4 overflow-x-auto pb-4 hide-scrollbar"
-                    >
-                      {categories.map((category) => (
-                        <div
-                          key={category.id}
-                          className="flex-shrink-0 w-[280px] h-[320px] relative rounded-2xl overflow-hidden cursor-pointer group"
-                        >
-                          <div
-                            className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-110"
-                            style={{
-                              backgroundImage: `url(${category.image})`,
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-                          <div className="absolute bottom-8 left-6 text-white">
-                            <h3 className="text-xl font-semibold mb-2">
-                              {category.title}
-                            </h3>
-                            <p className="text-sm text-gray-200 line-clamp-2">
-                              {category.description}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <button
-                      onClick={() => scrollCategories("right")}
-                      className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow-lg"
-                    >
-                      <ChevronRight className="w-6 h-6" />
-                    </button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Second Animation Group: Best Sellers + Footer */}
-        <div className="relative z-10">
-          <motion.div
-            className="parallax-section"
-            style={{
-              y: useTransform(scrollYProgress, [0, 1], ["100vh", "0vh"]),
-            }}
+        {/* Filter Options */}
+        <div className="flex items-center gap-6 overflow-x-auto pb-2">
+          <Button
+            variant="outline"
+            className="bg-white/80 hover:bg-white/90 whitespace-nowrap px-4 py-2 h-auto rounded-2xl text-sm border border-gray-100"
           >
-            {/* Best Sellers Section */}
-            <div
-              ref={bestSellersRef}
-              className="bg-[#E7D4B5] py-24 w-full mt-12 rounded-t-[10rem]"
-            >
-              <div className=" mx-auto px-6 lg:px-8">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-16">
-                  <div>
-                    <h2 className="text-4xl lg:text-5xl font-bold mb-3">
-                      Best Sellers
-                    </h2>
-                    <p className="text-gray-700 text-lg">
-                      Our most popular stamps and collections
-                    </p>
-                  </div>
-                  <Button
-                    variant="secondary"
-                    size="lg"
-                    className="px-8 mt-4 sm:mt-0"
-                  >
-                    View All
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 lg:gap-8">
-                  {products.map((product) => (
-                    <Link
-                      href={`/shop/${product.id}`}
-                      key={product.id}
-                      className="block group"
-                    >
-                      <Card className="h-full hover:shadow-2xl transition-all duration-300 border-none bg-white/90 backdrop-blur-sm">
-                        <div className="relative overflow-hidden">
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-full h-64 object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
-                          />
-                          <Button
-                            variant="secondary"
-                            size="icon"
-                            className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 hover:bg-white"
-                            onClick={(e) => {
-                              e.preventDefault(); // Prevent navigation when clicking the heart
-                              // Add wishlist functionality here
-                            }}
-                          >
-                            <Heart className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <CardContent className="p-6">
-                          <div className="flex items-center gap-1 mb-3">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                              />
-                            ))}
-                          </div>
-                          <h3 className="text-xl font-semibold mb-3 line-clamp-2">
-                            {product.name}
-                          </h3>
-                          <p className="text-2xl font-bold text-primary-foreground">
-                            {product.price}
-                          </p>
-                        </CardContent>
-                        <CardFooter className="p-6 pt-0">
-                          <Button
-                            className="w-full h-12 text-lg flex items-center gap-2"
-                            onClick={(e) => {
-                              e.preventDefault(); // Prevent navigation when clicking add to cart
-                              // Add to cart functionality here
-                            }}
-                          >
-                            <ShoppingCart className="w-5 h-5" />
-                            Add to Cart
-                          </Button>
-                        </CardFooter>
-                      </Card>
-                    </Link>
-                  ))}
-                </div>
-              </div>
+            Recents
+          </Button>
+          <div className="flex items-center gap-2 whitespace-nowrap px-6 py-4 text-gray-600 bg-white rounded-xl hover:bg-white/90 cursor-pointer">
+            Popular Items
+            <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center border border-gray-100">
+              <ChevronRight className="w-4 h-4" />
             </div>
-
-            {/* Footer */}
-          </motion.div>
+          </div>
+          <div className="flex items-center gap-2 whitespace-nowrap px-6 py-4 text-gray-600 bg-white rounded-xl hover:bg-white/90 cursor-pointer">
+            Special Offers for you
+            <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center border border-gray-100">
+              <ChevronRight className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="ml-auto flex items-center gap-2 bg-[#8B6E5B] hover:bg-[#7D6352] text-white px-4 py-3 rounded-2xl cursor-pointer">
+            Show All
+            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+              <ChevronRight className="w-4 h-4" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
+  </section>
+);
+
+const BentoCard = ({ item, className = "" }) => (
+  <div className={`relative overflow-hidden cursor-pointer group rounded-3xl ${className}`}>
+    <div
+      className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-110"
+      style={{
+        backgroundImage: `url(${item.image})`,
+      }}
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+    <div className="absolute bottom-8 left-6 text-white">
+      <h3 className="text-xl font-semibold mb-2">
+        {item.title || item.name}
+      </h3>
+      <p className="text-sm text-gray-200 line-clamp-2">
+        {item.description || item.price}
+      </p>
+    </div>
+  </div>
+);
+
+const CategoryGrid = () => (
+  <section className="w-full bg-white py-8 px-4 sm:px-6 rounded-none sm:rounded-[12rem] sm:rounded-b-none ">
+    <div className="max-w-7xl mx-auto px-4">
+      <div className="mb-10">
+        <CardTitle className="text-3xl mb-2">Explore by Products</CardTitle>
+        <CardDescription className="text-lg">
+          Explore our Philatelic Treasures | Rare Stamps | Special Editions
+        </CardDescription>
+      </div>
+      
+      <div className="grid grid-cols-4 auto-rows-[240px] gap-4">
+        {/* First row */}
+        <BentoCard 
+          item={categories[0]} 
+          className="col-span-2 h-full bg-[#FFE4E1]"
+        />
+        <BentoCard 
+          item={products[0]} 
+          className="col-span-1 h-full bg-[#E6E6FA]"
+        />
+        <BentoCard 
+          item={categories[1]} 
+          className="col-span-1 h-full bg-[#FFFFE0]"
+        />
+
+        {/* Second row */}
+        <BentoCard 
+          item={products[1]} 
+          className="col-span-1 row-span-2 h-full bg-[#E6E6FA]"
+        />
+        <BentoCard 
+          item={categories[2]} 
+          className="col-span-2 row-span-2 h-full bg-[#F0F8FF]"
+        />
+        <BentoCard 
+          item={products[2]} 
+          className="col-span-1 row-span-1 h-full bg-[#87CEEB]"
+        />
+
+        {/* Third row */}
+        <BentoCard 
+          item={products[3]} 
+          className="col-span-1 h-full bg-[#98FB98]"
+        />
+        <BentoCard 
+          item={categories[3]} 
+          className="col-span-1 h-full bg-[#4169E1]"
+        />
+        <BentoCard 
+          item={products[4]} 
+          className="col-span-1 h-full bg-[#FFA500]"
+        />
+        <BentoCard 
+          item={categories[4]} 
+          className="col-span-1 h-full bg-[#90EE90]"
+        />
+        <BentoCard 
+          item={categories[4]} 
+          className="col-span-1 h-full bg-[#90EE90]"
+        />
+      </div>
+    </div>
+  </section>
+);
+
+const MasonryGrid = () => (
+  <section className="w-full bg-white py-16">
+    <div className="max-w-7xl mx-auto px-4">
+      <div className="mb-10">
+        <CardTitle className="text-3xl mb-2">Explore by Theme</CardTitle>
+        <CardDescription className="text-lg">
+          Explore our Philatelic Treasures | Rare Stamps | Special Editions
+        </CardDescription>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Column 1 */}
+        <div className="flex flex-col gap-4">
+          <BentoCard 
+            item={products[0]} 
+            className="h-[400px] bg-[#FFE4E1]"
+          />
+          <BentoCard 
+            item={categories[1]} 
+            className="h-[280px] bg-[#E6E6FA]"
+          />
+          <BentoCard 
+            item={products[2]} 
+            className="h-[320px] bg-[#F0F8FF]"
+          />
+        </div>
+
+        {/* Column 2 */}
+        <div className="flex flex-col gap-4">
+          <BentoCard 
+            item={categories[2]} 
+            className="h-[280px] bg-[#87CEEB]"
+          />
+          <BentoCard 
+            item={products[3]} 
+            className="h-[400px] bg-[#98FB98]"
+          />
+          <BentoCard 
+            item={categories[3]} 
+            className="h-[320px] bg-[#4169E1]"
+          />
+        </div>
+
+        {/* Column 3 */}
+        <div className="flex flex-col gap-4">
+          <BentoCard 
+            item={products[4]} 
+            className="h-[320px] bg-[#FFA500]"
+          />
+          <BentoCard 
+            item={categories[4]} 
+            className="h-[400px] bg-[#90EE90]"
+          />
+          <BentoCard 
+            item={products[1]} 
+            className="h-[280px] bg-[#FFB6C1]"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+// Main Page Component
+export default function Page() {
+  return (
+    <main className="min-h-screen w-full bg-white">
+      <div className="w-full">
+        <h1 className={`text-black text-4xl sm:text-6xl font-bold text-center px-4 py-2 rounded ${elsieSwashCaps.className}`}>SHOP</h1>
+        <SearchSection />
+        <CategoryGrid />
+        <MasonryGrid />
+      </div>
+    </main>
   );
 }
