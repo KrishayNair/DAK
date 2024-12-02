@@ -11,7 +11,7 @@ axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL
 export async function getOTP(uid) {
     const res = await axios.post('philatelist/getOTPOnEmail/', { uid });
 
-    return res.data.data; 
+    return res.data; 
 }
 
 export async function verifyOTP(uid, otp) {
@@ -29,11 +29,12 @@ export async function verifyOTP(uid, otp) {
 
         cookies().set('dak_session', accessToken, { expires, httpOnly: true });
     }
+
+    return true;
 }
 
 export async function login(formData) {
     const res = await axios.post("philatelist/signUpSignIn/", formData)
-    console.log(res.data)
 
     return res.data;
 }

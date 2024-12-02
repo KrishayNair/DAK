@@ -204,6 +204,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Carousel from "@/components/custom/onboardingcarousel";
+import { getOTP, login, verifyOTP } from "@/lib/auth";
 
 const emailFormSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -217,6 +218,8 @@ export default function ForgotPassword() {
   const [loading, setLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [email, setEmail] = useState("");
+
+  const [uid, setUID] = useState(null);
 
   const emailForm = useForm({
     resolver: zodResolver(emailFormSchema),
@@ -234,19 +237,61 @@ export default function ForgotPassword() {
 
   async function onEmailSubmit(values) {
     setLoading(true);
-    // Handle sending OTP logic here
-    console.log(values);
-    setEmail(values.email);
-    setShowOTP(true);
+
+    const res = await login(values);
+
+    if (res.success) {
+      setUID(res.data?.id);
+      setEmail(values.email);
+
+      const emailSent = await getOTP(res.data?.id);
+      console.log(emailSent)
+
+      if (emailSent.success) {
+        setShowOTP(true);
+        setLoading(false);
+      } else {
+        alert("error in sending otp")
+      }
+
+    } else {
+      alert("something went wrong")
+    }
+
     setLoading(false);
   }
 
   async function onOTPSubmit(values) {
     setLoading(true);
-    // Handle OTP verification logic here
-    console.log(values);
+
+    // Combine OTP array into a single string
+    const otpString = values.otp.join("");
+
+    console.log("Submitted OTP:", otpString);  // Debug log to check OTP value
+
+    if (otpString.length === 5) {
+      try {
+        // Replace this with your OTP verification logic
+        // For example, sending the OTP to the server
+        const response = await verifyOTP(uid, otpString);
+
+        if (response.success) {
+          // chalo aage bc
+          alert("done")
+        } else {
+          alert("Invalid OTP, please try again.");
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    } else {
+      alert("Please enter a 5-digit OTP.");
+    }
+
     setLoading(false);
   }
+
+
 
   async function handleResendOTP() {
     // Handle resend OTP logic here
@@ -267,7 +312,6 @@ export default function ForgotPassword() {
               <FormControl>
                 <div className="relative">
                   <Input
-                    placeholder="Enter your email"
                     className="rounded-full py-6 peer placeholder-gray-400 placeholder-shown:text-sm focus:placeholder-transparent"
                     {...field}
                   />
@@ -338,7 +382,7 @@ export default function ForgotPassword() {
         <Button
           type="submit"
           className="w-full rounded-full py-6 h-auto text-lg"
-          disabled={loading}
+        // disabled={loading}
         >
           {loading ? (
             <>

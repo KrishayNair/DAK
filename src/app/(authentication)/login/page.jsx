@@ -49,8 +49,8 @@ export default function Login() {
 
     const res = await login(values);
 
-    if (res) {
-      push("/");
+    if (res.success) {
+      // push("/");
     } else {
       // toast("Login Error", {
       //     description: "Invalid Credentials. Please try again.",
@@ -80,7 +80,6 @@ export default function Login() {
                     <FormControl>
                       <div className="relative">
                         <Input
-                          placeholder="              should be entered here"
                           className="rounded-full py-6 peer placeholder-gray-400 placeholder-shown:text-sm focus:placeholder-transparent"
                           {...field}
                         />
@@ -95,7 +94,7 @@ export default function Login() {
               />
 
               {/* Add Password Field */}
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="password"
                 render={({ field }) => (
@@ -127,7 +126,7 @@ export default function Login() {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               <div className="text-right">
                 <Link href="/forgot-password" className="text-sm text-gray-600">
