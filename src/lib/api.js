@@ -7,6 +7,8 @@ axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL
 
 axios.defaults.headers.common["Content-Type"] = 'application/json'
 
+// to fetch from api
+
 export async function fetchFromAPI(url) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("dak_session").value}`
     try {
