@@ -4,15 +4,18 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { BsBell, BsCart3 } from "react-icons/bs";
-
+import NotificationModal from "@/components/custom/NotificationModal";
+import { useNotifications } from "@/context/NotificationContext";
 import Cookies from "js-cookie";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const { unreadCount } = useNotifications();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -31,9 +34,9 @@ export default function Navbar() {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      Cookies.remove("token"); // Remove Firebase auth token from cookies
+      Cookies.remove("token");
       setIsSignedIn(false);
-      router.push("/login"); // Redirect to login after logout
+      router.push("/login");
     } catch (error) {
       console.error("Sign out error:", error);
     }
@@ -47,11 +50,14 @@ export default function Navbar() {
     <nav className="bg-[#FFF7E5]/80 backdrop-blur-sm font-primary shadow-lg sticky top-0 z-50 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+          {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="text-primary hover:text-gray-900">
               <img src="/images/dAk.png" alt="DAK" className="w-20 h-8" />
             </Link>
           </div>
+
+          {/* Desktop Navigation */}
           <div className="hidden md:flex flex-grow justify-center items-center space-x-8">
             {[
               { href: "/", label: "HOME" },
@@ -74,13 +80,20 @@ export default function Navbar() {
               </Link>
             ))}
           </div>
-          <div className="hidden md:flex items-center space-x-4 pr-4">
-            <Link
-              href="/notifications"
-              className="text-[#604234] hover:text-gray-900"
+
+          {/* Desktop Right Menu */}
+          <div className="hidden md:flex items-center space-x-8 pr-8">
+            <div
+              onClick={() => setIsNotificationOpen(true)}
+              className="text-[#604234] hover:text-gray-900 cursor-pointer relative"
             >
               <BsBell className="w-6 h-6" />
-            </Link>
+              {unreadCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
+            </div>
             <Link href="/cart" className="text-[#604234] hover:text-gray-900">
               <BsCart3 className="w-6 h-6" />
             </Link>
@@ -123,13 +136,20 @@ export default function Navbar() {
               </button>
             )}
           </div>
+
+          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center space-x-4">
-            <Link
-              href="/notifications"
-              className="text-[#604234] hover:text-gray-900"
+            <div
+              onClick={() => setIsNotificationOpen(true)}
+              className="text-[#604234] hover:text-gray-900 cursor-pointer relative"
             >
               <BsBell className="w-6 h-6" />
-            </Link>
+              {unreadCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
+            </div>
             <Link href="/cart" className="text-[#604234] hover:text-gray-900">
               <BsCart3 className="w-6 h-6" />
             </Link>
@@ -142,6 +162,8 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-[#FFF7E5]/80 backdrop-blur-sm w-full">
           <div className="px-2 pt-2 pb-3 space-y-1">
@@ -198,6 +220,12 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {/* Notification Modal */}
+      <NotificationModal
+        isOpen={isNotificationOpen}
+        onClose={() => setIsNotificationOpen(false)}
+      />
     </nav>
   );
 }
