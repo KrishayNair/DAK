@@ -33,7 +33,7 @@ export default function DashboardLayout({ children }) {
   }, []);
 
   return (
-    <main className="flex flex-col min-h-screen bg-[#FFF8E8]">
+    <main className="flex flex-col min-h-screen bg-primary">
       <Navbar className="sticky top-2 z-50" />
       <div className={cn("relative w-full flex-1 pt-8 px-10")}>
         <Header />

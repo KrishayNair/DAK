@@ -3,6 +3,7 @@ import SmoothScroll from '../components/custom/smoothscroll'
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/context/theme-provider";
+import { NotificationProvider } from '@/context/NotificationContext';
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -25,7 +26,9 @@ export default function RootLayout({ children }) {
         )}
       >
         <SmoothScroll>
-          {children}
+          <NotificationProvider>
+            {children}
+          </NotificationProvider>
         </SmoothScroll>
       </body>
     </html>
