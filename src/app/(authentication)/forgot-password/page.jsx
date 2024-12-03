@@ -205,6 +205,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Carousel from "@/components/custom/onboardingcarousel";
 import { getOTP, login, verifyOTP } from "@/lib/auth";
+import { useRouter } from "next/router";
 
 const emailFormSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -215,6 +216,9 @@ const otpFormSchema = z.object({
 });
 
 export default function ForgotPassword() {
+
+  const router = useRouter()
+
   const [loading, setLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [email, setEmail] = useState("");
@@ -245,7 +249,6 @@ export default function ForgotPassword() {
       setEmail(values.email);
 
       const emailSent = await getOTP(res.data?.id);
-      console.log(emailSent)
 
       if (emailSent.success) {
         setShowOTP(true);
@@ -284,7 +287,7 @@ export default function ForgotPassword() {
         console.log('Verification Response:', response);
 
         if (response) {
-            alert('OTP Verified!');
+            router.replace('/')
             // Handle successful verification
         }
     } catch (error) {
