@@ -34,7 +34,7 @@ export async function verifyOTP(uid, otp) {
 }
 
 export async function login(formData) {
-  const res = await axios.post("philatelist/signUpSignIn/", formData);
+  const res = await axios.post("/philatelist/signUpSignIn/", formData);
 
   return res.data;
 }

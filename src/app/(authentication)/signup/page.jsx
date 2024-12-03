@@ -139,7 +139,7 @@ export default function Signup() {
               />
 
               {/* Password Field */}
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="password"
                 render={({ field }) => (
@@ -171,7 +171,7 @@ export default function Signup() {
                     <FormMessage className="text-xs" />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               {/* Terms Checkbox */}
               <div className="flex items-start gap-2">

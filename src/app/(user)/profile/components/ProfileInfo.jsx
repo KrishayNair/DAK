@@ -1,6 +1,28 @@
+'use client';
 import Image from 'next/image';
 import pfp from "../../../../../public/images/pfpWhite.jpg"
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 export default function ProfileInfo() {
+  const params = useParams();
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}philatelist/getProfile`);
+        console.log('User Data:', response.data);
+        setUserData(response.data);
+      } catch (error) {
+        console.error('Error fetching user data:', error.response || error);
+      }
+    };
+
+    fetchUserData();
+  }, [params.uid]);
+
   return (
     <div className="bg-white rounded-3xl overflow-hidden">
       {/* Cover Image Section */}
@@ -36,9 +58,11 @@ export default function ProfileInfo() {
         <div className="flex justify-between items-start">
           {/* Left Side - Profile Info */}
           <div className="max-w-xl">
-            <h1 className="text-2xl font-semibold mb-4">John Doe</h1>
+            <h1 className="text-2xl font-semibold mb-4">
+              {userData ? userData.name : 'Loading...'}
+            </h1>
             <p className="text-gray-600 mb-6">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque quis nibh et nibh ornare rhoncus. Nulla a mattis sapien. Donec rutrum congue aliquam.
+              {userData ? userData.bio || 'No bio available' : 'Loading...'}
             </p>
             
             <div className="space-y-2">
@@ -46,13 +70,13 @@ export default function ProfileInfo() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <span>johndoe@gmail.com</span>
+                <span>{userData ? userData.email : 'Loading...'}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-600">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <span>+91 9283982912</span>
+                <span>{userData ? userData.phone || 'No phone number' : 'Loading...'}</span>
               </div>
             </div>
           </div>

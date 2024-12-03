@@ -1,6 +1,6 @@
 export default function Sidebar() {
     return (
-      <div className="w-80 bg-white p-8 shadow-lg rounded-3xl">
+      <div className="w-80 bg-white p-8 shadow-xl rounded-3xl">
         <div className="flex items-center gap-3 mb-8 p-4 shadow-md rounded-2xl bg-white">
           <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
           <div>
