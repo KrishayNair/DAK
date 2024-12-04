@@ -1,27 +1,25 @@
 'use client';
 import Image from 'next/image';
 import pfp from "../../../../../public/images/pfpWhite.jpg"
-import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { fetchFromAPI } from '@/lib/api';
 
 export default function ProfileInfo() {
-  const params = useParams();
   const [userData, setUserData] = useState(null);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}philatelist/getProfile`);
-        console.log('User Data:', response.data);
-        setUserData(response.data);
-      } catch (error) {
-        console.error('Error fetching user data:', error.response || error);
-      }
-    };
+  async function fetchProfile() {
+    const res = await fetchFromAPI("philatelist/getProfile/");
 
-    fetchUserData();
-  }, [params.uid]);
+    if (res.success) {
+      setUserData(res.data)
+    } else {
+      alert(res.message)
+    }
+  }
+
+  useEffect(() => {
+    fetchProfile()
+  }, []);
 
   return (
     <div className="bg-white rounded-3xl overflow-hidden">
