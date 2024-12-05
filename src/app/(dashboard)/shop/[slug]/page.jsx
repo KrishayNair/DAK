@@ -1,274 +1,309 @@
 "use client";
-
-import React, { useState } from "react";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+// main slug
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import { Elsie_Swash_Caps } from "next/font/google";
+import { categories, products } from "../data";
 import { Button } from "@/components/ui/button";
-import { IndianRupee, ShoppingCart } from "lucide-react";
-import { Carousel, CarouselContent } from "@/components/ui/carousel";
-import Link from "next/link";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
+import { Star, Minus, Plus, ShoppingCart } from "lucide-react";
+import { useCart } from "@/context/CartContext";
+import { useRouter } from "next/navigation";
+const elsieSwashCaps = Elsie_Swash_Caps({
+  subsets: ["latin"],
+  weight: ["400"],
+});
 
-const filterArray = ["Product Details", "About Artisan"];
-
-// Sample product data
-const product = {
-  title: "India 1953 Telegraph Centenary MNH Miniature Sheet",
-  description:
-    "A beautiful and rare miniature sheet from 1953 commemorating the Telegraph Centenary. This piece features intricate designs and historical significance, making it a valuable addition to any stamp collection.",
-  price: 2200,
-  originalPrice: 2500,
-  rating: 4.5,
-  ratingCount: "15 Ratings",
-  artisan: {
-    name: "Maharashtra Postal Circle",
-    profileImage: "/postaloffice.png",
-    about:
-      "Maharashtra Postal Circle is one of the largest postal circles in India, known for its extensive collection of rare and historical stamps.",
-    otherArtisans: [
-      "/postaloffice.png",
-      "/postaloffice.png",
-      "/postaloffice.png",
-    ],
-  },
-  details: [
-    { label: "Year", value: "1953" },
-    { label: "Condition", value: "MNH (Mint Never Hinged)" },
-    { label: "Type", value: "Miniature Sheet" },
-    { label: "Theme", value: "Telegraph Centenary" },
-    { label: "Rarity", value: "Rare" },
-    { label: "Care", value: "Store in protective sleeve" },
-  ],
-  imageUrl: "/images/stamps/1.jpg",
-};
-
-// Helper function to truncate description
-const truncateDescription = (description, maxLength = 300) => {
-  if (description.length <= maxLength) return description;
-  return description.slice(0, maxLength) + "...";
-};
-
-// ProductCarousel component
-function ProductCarousel({ images }) {
-  const [current, setCurrent] = useState(0);
+const MasonryGrid = ({ onProductClick }) => {
+  const featuredProducts = [
+    {
+      id: "f1",
+      name: "Rare Collection",
+      description: "Limited Edition Series",
+      image: "/images/stamps/1.jpg",
+      price: "₹2,500",
+      backstory:
+        "Released in 1953, this rare stamp commemorates the centenary of Indian Railways. Only 100 pieces were ever printed, making it one of the most sought-after stamps in Indian philately.",
+      rating: 4.8,
+      ratingCount: 24,
+    },
+    {
+      id: "f2",
+      name: "Vintage Collection",
+      description: "Historical Series",
+      image: "/images/stamps/2.jpg",
+      price: "₹1,800",
+      backstory:
+        "This vintage collection features stamps from the early 20th century, showcasing the golden era of philately.",
+      rating: 4.5,
+      ratingCount: 30,
+    },
+    {
+      id: "f3",
+      name: "Premium Selection",
+      description: "Exclusive Series",
+      image: "/images/stamps/3.jpg",
+      price: "₹3,000",
+      backstory:
+        "A premium selection of limited edition stamps, perfect for seasoned collectors.",
+      rating: 4.9,
+      ratingCount: 15,
+    },
+    {
+      id: "f4",
+      name: "Classic Collection",
+      description: "Heritage Series",
+      image: "/images/stamps/4.jpg",
+      price: "₹2,000",
+      backstory:
+        "A classic collection that features stamps from the 19th century, revered for their historical significance.",
+      rating: 4.7,
+      ratingCount: 20,
+    },
+    {
+      id: "f5",
+      name: "Artistic Collection",
+      description: "Art Inspired Stamps",
+      image: "/images/stamps/5.jpg",
+      price: "₹2,200",
+      backstory:
+        "This collection features stamps inspired by famous artworks, perfect for art lovers.",
+      rating: 4.6,
+      ratingCount: 18,
+    },
+    {
+      id: "f6",
+      name: "Nature's Wonders",
+      description: "Stamps Celebrating Nature",
+      image: "/images/stamps/6.jpg",
+      price: "₹1,500",
+      backstory:
+        "A beautiful collection showcasing the wonders of nature through stamps.",
+      rating: 4.4,
+      ratingCount: 22,
+    },
+    {
+      id: "f7",
+      name: "Historical Events",
+      description: "Stamps from Significant Events",
+      image: "/images/stamps/7.jpg",
+      price: "₹2,800",
+      backstory:
+        "This collection features stamps that commemorate significant historical events.",
+      rating: 4.8,
+      ratingCount: 25,
+    },
+    {
+      id: "f8",
+      name: "Cultural Heritage",
+      description: "Stamps Reflecting Culture",
+      image: "/images/stamps/8.jpg",
+      price: "₹2,400",
+      backstory:
+        "A collection that reflects the rich cultural heritage through stamps.",
+      rating: 4.5,
+      ratingCount: 19,
+    },
+  ];
 
   return (
-    <Carousel className="w-full lg:w-[48vw] lg:h-[50vh]">
-      <CarouselContent className="space-x-4 py-4 px-5">
-        {[images].map((image, index) => (
-          <Card
-            key={index}
-            className="h-[35vh] lg:h-[50vh] w-[75vw] lg:w-[47vw] shrink-0 border-none shadow-none relative"
-          >
-            <Image
-              src={image}
-              alt={`Product image ${index + 1}`}
-              fill={true}
-              className="object-contain rounded-xl"
-            />
-          </Card>
-        ))}
-      </CarouselContent>
-    </Carousel>
+    <section className="w-full bg-white py-16">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="mb-10">
+          <h2 className="text-xl font-semibold mb-2">Featured Items</h2>
+          <p className="text-gray-600">
+            Explore our handpicked selection of rare and unique stamps
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {featuredProducts.map((product) => (
+            <div
+              key={product.id}
+              onClick={() => onProductClick(product)}
+              className="cursor-pointer h-[400px] bg-[#FFE4E1] rounded-lg relative overflow-hidden"
+            >
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+              <div className="absolute bottom-8 left-6 text-white">
+                <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
+                <p className="text-sm text-gray-200">{product.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
-}
+};
 
-// Main Page component
-export default function Page() {
-  const [activeIndex, setActiveIndex] = useState(0);
+const ProductModal = ({ product, onClose, onAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
+  const router = useRouter();
 
-  const handleClick = (index) => {
-    setActiveIndex(index);
+  const handleQuantityChange = (change) => {
+    const newQuantity = quantity + change;
+    if (newQuantity >= 1 && newQuantity <= 10) {
+      setQuantity(newQuantity);
+    }
   };
-
-  const increaseQuantity = () => {
-    setQuantity((prev) => prev + 1);
-  };
-
-  const decreaseQuantity = () => {
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const handleAddToCart = () => {
+    addToCart(product, quantity);
+    router.push("/cart");
   };
 
   return (
-    <main>
-      <center className="h-fit w-full text-gray-900">
-        <section className="flex flex-col lg:flex-row w-full lg:pb-16 space-y-4 lg:space-x-4 items-start lg:items-start justify-center lg:justify-start">
-          <ProductCarousel images={product.imageUrl} />
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex flex-col md:flex-row">
+          {/* Left: Image */}
+          <div className="w-full md:w-1/2 p-6">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-[400px] object-cover rounded-lg"
+            />
+          </div>
 
-          <div className="flex justify-center flex-col space-y-4 w-full lg:w-1/2 px-4">
-            <h2 className="scroll-m-20 text-3xl lg:text-4xl font-semibold tracking-tight text-left w-full text-[#604234]">
-              {product.title}
-            </h2>
+          {/* Right: Details */}
+          <div className="w-full md:w-1/2 p-6 space-y-6">
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              ✖
+            </button>
 
-            <p className="text-sm text-gray-600 text-left h-20 overflow-hidden">
-              {truncateDescription(product.description)}
-            </p>
+            <h2 className="text-2xl font-bold">{product.name}</h2>
 
-            <div className="flex items-center">
-              <span className="text-yellow-400 text-2xl mr-2">★</span>
-              <span className="font-bold">{product.rating}</span>
-              <span className="text-gray-500 ml-2">{product.ratingCount}</span>
-            </div>
-
-            <div className="flex items-center">
-              <span className="text-base font-bold text-gray-500">
-                Sold By:
-              </span>
-              <span className="ml-2 text-sm font-semibold">
-                {product.artisan.name}
-              </span>
-              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#604234]/10 text-[#604234]">
-                ✓
-              </span>
-            </div>
-
-            <div className="flex flex-col space-y-1">
-              <div className="flex justify-start items-center space-x-2">
-                <span className="text-3xl font-bold">₹ {product.price}</span>
-                <span className="text-xl text-gray-500 line-through">
-                  ₹ {product.originalPrice}
-                </span>
-              </div>
-              <p className="text-sm text-left text-green-600">
-                Inclusive of all taxes
-              </p>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <span>Quantity:</span>
+            {/* Rating */}
+            <div className="flex items-center gap-2">
               <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-5 h-5 ${
+                      i < Math.floor(product.rating)
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-sm text-gray-600">
+                ({product.ratingCount} reviews)
+              </span>
+            </div>
+
+            {/* Price */}
+            <div className="text-2xl font-bold text-gray-900">
+              {product.price}
+            </div>
+
+            {/* Backstory */}
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Stamp History</h3>
+              <p className="text-gray-600">{product.backstory}</p>
+            </div>
+
+            {/* Quantity Selector */}
+            <div className="flex items-center gap-4">
+              <span className="text-gray-700">Quantity:</span>
+              <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={decreaseQuantity}
+                  onClick={() => handleQuantityChange(-1)}
                 >
-                  -
+                  <Minus className="h-4 w-4" />
                 </Button>
-                <span className="font-semibold w-8 text-center">
-                  {quantity}
-                </span>
+                <span className="w-8 text-center">{quantity}</span>
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={increaseQuantity}
+                  onClick={() => handleQuantityChange(1)}
                 >
-                  +
+                  <Plus className="h-4 w-4" />
                 </Button>
               </div>
             </div>
 
-            <div className="flex space-x-4">
-              <Button className="flex-1 text-white bg-[#604234] hover:bg-[#604234]/90">
-                Buy Now
-              </Button>
-              <Button variant="outline" className="flex-1">
-                Add to cart
-              </Button>
-            </div>
+            {/* Add to Cart Button */}
+            <Button
+              className="w-full bg-[#8B6E5B] hover:bg-[#7D6352] text-white"
+              onClick={() => handleAddToCart(product, quantity)}
+            >
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              Add to Cart
+            </Button>
           </div>
-        </section>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-        <section className="flex flex-col w-full space-y-4 mb-20">
-          <h1 className="text-start text-lg lg:text-2xl text-[#604234] lg:font-semibold font-medium tracking-tight">
-            User Reviews
+export default function CategoryPage() {
+  const params = useParams();
+  const { slug } = params;
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const category = categories.find((cat) => cat.slug === slug) || {
+    title: slug
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" "),
+    description: "Browse our collection",
+  };
+
+  // Filter products by category
+  const categoryProducts = products.filter(
+    (product) => product.category === slug
+  );
+
+  const handleProductClick = (product) => {
+    setSelectedProduct(product);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedProduct(null);
+  };
+
+  const handleAddToCart = () => {
+    if (!product.price || isNaN(parseFloat(product.price))) {
+      console.error("Invalid product price:", product.price);
+      return;
+    }
+
+    addToCart({ ...product, price: parseFloat(product.price) }, quantity);
+    router.push("/cart");
+  };
+  return (
+    <div className="flex flex-col min-h-screen">
+      <div className="w-full bg-[#F8F4F0] py-6">
+        <div className="max-w-7xl mx-auto px-4">
+          <h1 className="text-4xl font-semibold text-[#8B6E5B]">
+            {category.title}
           </h1>
-          <Carousel opts={{ dragFree: true }}>
-            <CarouselContent className="w-full flex space-x-4 p-2 justify-start items-center">
-              {[...Array(4)].map((_, index) => (
-                <div
-                  className="flex flex-col w-[80vw] lg:w-[32vw] h-fit rounded-xl bg-white p-6 border-2 space-y-4 border-gray-300 shrink-0"
-                  key={index}
-                >
-                  <div className="w-full h-fit flex justify-start items-center space-x-4">
-                    <Avatar className="h-14 w-14">
-                      <AvatarImage src={product.artisan.profileImage} />
-                    </Avatar>
-                    <div>
-                      <h2 className="text-xl font-semibold text-gray-700">
-                        {product.artisan.name}
-                      </h2>
-                      <div className="flex items-center gap-2">
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <span key={i} className="text-yellow-400">
-                              ★
-                            </span>
-                          ))}
-                        </div>
-                        <span className="text-sm text-gray-500">
-                          3 days ago
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-sm lg:text-base md:text-sm w-full text-justify text-gray-500">
-                    The quality and authenticity of this stamp is exceptional.
-                    The historical significance and preservation make it a
-                    valuable addition to any collection.
-                  </p>
-                  <div className="flex gap-4 text-sm text-gray-500">
-                    <button className="flex items-center gap-1">
-                      <span>Helpful</span>
-                      <span>(10)</span>
-                    </button>
-                    <button>Reply</button>
-                  </div>
-                </div>
-              ))}
-            </CarouselContent>
-          </Carousel>
+          <p className="text-xl text-gray-600">{category.description}</p>
+        </div>
+      </div>
 
-          <div className="flex flex-col w-full space-y-4 mt-8">
-            <h1 className="text-start text-lg lg:text-2xl text-[#604234] lg:font-semibold font-medium tracking-tight">
-              Similar Products
-            </h1>
-            <Carousel opts={{ dragFree: true }}>
-              <CarouselContent className="w-full flex space-x-6 p-2 justify-start items-center">
-                {[...Array(6)].map((_, index) => (
-                  <div
-                    key={index}
-                    className="flex flex-col w-[250px] h-fit rounded-xl bg-white p-4 border border-gray-300 shrink-0"
-                  >
-                    <div className="w-full h-[250px] mb-2 overflow-hidden rounded-lg group cursor-pointer">
-                      <Image
-                        src={`/images/stamps/${(index % 5) + 1}.jpg`}
-                        alt={`Similar product ${index + 1}`}
-                        width={250}
-                        height={250}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
-                    </div>
-                    <h3 className="text-base text-left font-semibold">
-                      Vintage Stamp Collection
-                    </h3>
-                    <p className="text-sm text-left text-gray-500">
-                      Maharashtra Postal Circle
-                    </p>
-                    <p className="text-lg text-left font-bold mt-1">₹2,000</p>
-                  </div>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          </div>
-        </section>
-      </center>
+      <div className="py-8">
+        <MasonryGrid onProductClick={handleProductClick} />
+      </div>
 
-      {/* Mobile Footer */}
-      <footer className="lg:hidden fixed bottom-0 w-full h-fit flex justify-between left-0 items-center bg-[#604234] p-5 text-white rounded-t-3xl">
-        <span className="flex text-2xl font-bold items-center w-fit">
-          <IndianRupee />
-          {product.price}
-        </span>
-        <span className="flex text-2xl font-bold items-center space-x-2">
-          <Button className="bg-white rounded-3xl p-2">
-            <ShoppingCart color="#604234" />
-          </Button>
-          <Button className="bg-white rounded-3xl px-6 text-blue-950 text-sm font-bold">
-            Buy Now
-          </Button>
-        </span>
-      </footer>
-    </main>
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          onClose={handleCloseModal}
+          onAddToCart={handleAddToCart}
+        />
+      )}
+    </div>
   );
 }
