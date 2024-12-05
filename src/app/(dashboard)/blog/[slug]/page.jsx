@@ -1,6 +1,8 @@
 "use client";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { fetchFromAPI } from "@/lib/api";
 
 // Add this new component for the comment section
 const CommentSection = () => {
@@ -91,6 +93,33 @@ const CommentSection = () => {
 // Update the main BlogPost component to include the comment section
 export default function BlogPost() {
   const { slug } = useParams();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const data = await fetchFromAPI(`services/blogs/${slug}/`);
+        if (data.success) {
+          setPost(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching post:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [slug]);
+
+  if (loading) {
+    return <div className="max-w-4xl mx-auto px-4 py-8">Loading...</div>;
+  }
+
+  if (!post) {
+    return <div className="max-w-4xl mx-auto px-4 py-8">Post not found</div>;
+  }
 
   return (
     <>
@@ -98,66 +127,35 @@ export default function BlogPost() {
         <article className="prose lg:prose-xl">
           {/* Author info */}
           <div className="flex items-center mb-8">
-            <img
-              src="/postaloffice.png"
-              alt="Author"
-              className="w-12 h-12 rounded-full mr-4"
-            />
             <div>
-              <h3 className="font-medium">Author Name</h3>
+              <h3 className="font-medium">Author #{post.user}</h3>
               <div className="text-gray-600">
-                <span>May 20th · 5 min read</span>
+                <span>
+                  {new Date(post.published_date).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}{" "}
+                  · {post.read_time} min read
+                </span>
               </div>
             </div>
           </div>
 
           {/* Article content */}
-          <h1 className="text-4xl font-bold mb-4">Long Established {slug}</h1>
-
           <div className="mb-8">
             <img
-              src="/collage.png"
-              alt="Article hero image"
+              src={post.image || "/collage.png"}
+              alt={post.title}
               className="w-full h-[400px] object-cover rounded-lg"
             />
           </div>
 
           <div className="text-gray-800">
-            <p className="mb-4">
-              It is a long established fact that a reader will be distracted by
-              the readable content of a page when looking at its layout. The
-              point of using Lorem Ipsum is that it has a more-or-less normal
-              distribution of letters.
-            </p>
-
-            <p className="mb-4">
-              Many desktop publishing packages and web page editors now use
-              Lorem Ipsum as their default model text, and a search for 'lorem
-              ipsum' will uncover many web sites still in their infancy.
-            </p>
-
-            <h2 className="text-2xl font-bold my-4">
-              The standard Lorem Ipsum passage
-            </h2>
-
-            <p className="mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
-            <p className="mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
-            <p className="mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
+            <div
+              dangerouslySetInnerHTML={{ __html: post.content }}
+              className="prose max-w-none"
+            />
           </div>
 
           {/* Interaction buttons */}
