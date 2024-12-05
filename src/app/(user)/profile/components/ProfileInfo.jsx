@@ -3,6 +3,7 @@ import Image from 'next/image';
 import pfp from "../../../../../public/images/pfpWhite.jpg"
 import { useEffect, useState } from 'react';
 import { fetchFromAPI } from '@/lib/api';
+import { buildImageUrl } from "@/lib/utils"
 
 export default function ProfileInfo() {
   const [userData, setUserData] = useState(null);
@@ -31,13 +32,7 @@ export default function ProfileInfo() {
           <div className="w-32 h-32 bg-gray-200 rounded-full p-2">
             <div className="w-full h-full bg-white rounded-full p-1">
               <div className="relative w-full h-full">
-                <Image 
-                  src={pfp} 
-                  alt="Profile"
-                  fill
-                  className="object-contain rounded-full"
-                  priority
-                />
+                <img src={buildImageUrl(userData?.profile_img || "") || pfp}  alt="" className="object-contain rounded-full" />
               </div>
             </div>
           </div>
@@ -74,7 +69,7 @@ export default function ProfileInfo() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <span>{userData ? userData.phone || 'No phone number' : 'Loading...'}</span>
+                <span>{userData ? userData.phone_number || 'No phone number' : 'Loading...'}</span>
               </div>
             </div>
           </div>
