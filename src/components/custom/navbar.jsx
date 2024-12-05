@@ -67,7 +67,7 @@ export default function Navbar() {
                 { href: "/pda", label: "PHILATELY DEPOSIT ACCOUNT" },
                 { href: "/shop", label: "SHOP" },
                 { href: "/catalog", label: "CATALOG" },
-                { href: "/workshop", label: "WORKSHOP" },
+                { href: "/blog", label: "BLOG" },
                 { href: "/forum", label: "FORUM" },
               ].map((link) => (
                 <Link
