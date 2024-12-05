@@ -359,3 +359,357 @@ export default function ExchangePage() {
     </div>
   );
 }
+
+// Backend integration
+
+// "use client";
+
+// import React, { useState, useEffect } from "react";
+
+// // Placeholder URL for the backend API
+// const API_URL = "https://your-backend-api.com"; // Change this to your backend API URL
+
+// export default function ExchangePage() {
+//   const [philatelicItems, setPhilatelicItems] = useState([]);
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [selectedTheme, setSelectedTheme] = useState("");
+//   const [selectedCondition, setSelectedCondition] = useState("");
+//   const [selectedItem, setSelectedItem] = useState(null);
+//   const [uploadFormVisible, setUploadFormVisible] = useState(false);
+//   const [newItem, setNewItem] = useState({
+//     name: "",
+//     image: null,
+//     description: "",
+//     price: "",
+//     condition: "",
+//     year: "",
+//     theme: "",
+//     owner: "",
+//   });
+//   const [imagePreview, setImagePreview] = useState(null);
+
+//   useEffect(() => {
+//     // Fetch items from the backend when the component mounts
+//     const fetchPhilatelicItems = async () => {
+//       try {
+//         const response = await fetch(`${API_URL}/items`);
+//         const data = await response.json();
+//         setPhilatelicItems(data);
+//       } catch (error) {
+//         console.error("Error fetching philatelic items:", error);
+//       }
+//     };
+//     fetchPhilatelicItems();
+//   }, []);
+
+//   const filteredItems = philatelicItems.filter((item) => {
+//     return (
+//       item.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+//       (selectedTheme ? item.theme === selectedTheme : true) &&
+//       (selectedCondition ? item.condition === selectedCondition : true)
+//     );
+//   });
+
+//   const handleItemClick = (item) => {
+//     setSelectedItem(item);
+//   };
+
+//   const closeModal = () => {
+//     setSelectedItem(null);
+//   };
+
+//   const placeOrder = (item) => {
+//     alert(`Order placed successfully for: ${item.name}`);
+//   };
+
+//   const toggleUploadForm = () => {
+//     setUploadFormVisible((prev) => !prev);
+//   };
+
+//   const handleImageUpload = (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//       const reader = new FileReader();
+//       reader.onloadend = () => {
+//         setImagePreview(reader.result);
+//         setNewItem((prevState) => ({
+//           ...prevState,
+//           image: reader.result, // Store the base64 image temporarily
+//         }));
+//       };
+//       reader.readAsDataURL(file);
+//     }
+//   };
+
+//   const handleUpload = async (e) => {
+//     e.preventDefault();
+
+//     // Create FormData to send the data including the image
+//     const formData = new FormData();
+//     formData.append("name", newItem.name);
+//     formData.append("description", newItem.description);
+//     formData.append("price", newItem.price);
+//     formData.append("condition", newItem.condition);
+//     formData.append("year", newItem.year);
+//     formData.append("theme", newItem.theme);
+//     formData.append("owner", newItem.owner);
+
+//     // Append the image if it's selected
+//     if (newItem.image) {
+//       const imageFile = dataURItoBlob(newItem.image);
+//       formData.append("image", imageFile, newItem.name + ".jpg");
+//     }
+
+//     try {
+//       // Send the request to the backend to upload the new item
+//       const response = await fetch(`${API_URL}/items/upload`, {
+//         method: "POST",
+//         body: formData,
+//       });
+//       if (response.ok) {
+//         alert("Philatelic material uploaded successfully!");
+//         // Optionally, refetch the items after upload
+//         const updatedItems = await response.json();
+//         setPhilatelicItems(updatedItems);
+//       } else {
+//         alert("Failed to upload philatelic material.");
+//       }
+//     } catch (error) {
+//       console.error("Error uploading item:", error);
+//     }
+
+//     setNewItem({
+//       name: "",
+//       image: null,
+//       description: "",
+//       price: "",
+//       condition: "",
+//       year: "",
+//       theme: "",
+//       owner: "",
+//     });
+//     setImagePreview(null);
+//     setUploadFormVisible(false);
+//   };
+
+//   // Convert base64 image string to Blob
+//   const dataURItoBlob = (dataURI) => {
+//     const byteString = atob(dataURI.split(",")[1]);
+//     const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+//     const arrayBuffer = new ArrayBuffer(byteString.length);
+//     const uintArray = new Uint8Array(arrayBuffer);
+//     for (let i = 0; i < byteString.length; i++) {
+//       uintArray[i] = byteString.charCodeAt(i);
+//     }
+//     return new Blob([uintArray], { type: mimeString });
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gray-100 p-8">
+//       <h1 className="text-3xl font-bold mb-6">Philatelic Exchange</h1>
+
+//       {/* Upload Button */}
+//       <button
+//         className="bg-black text-white px-4 py-2 rounded-md mb-6 hover:bg-gray-800"
+//         onClick={toggleUploadForm}
+//       >
+//         {uploadFormVisible ? "Close Upload Form" : "Upload Your Material"}
+//       </button>
+
+//       {/* Upload Form */}
+//       {uploadFormVisible && (
+//         <form
+//           className="bg-white p-6 rounded-md shadow-md mb-6"
+//           onSubmit={handleUpload}
+//         >
+//           <div className="grid gap-4">
+//             <input
+//               type="text"
+//               placeholder="Name"
+//               className="p-2 border border-gray-300 rounded-md"
+//               value={newItem.name}
+//               onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+//               required
+//             />
+//             {/* Image Upload Input */}
+//             <input
+//               type="file"
+//               className="p-2 border border-gray-300 rounded-md"
+//               onChange={handleImageUpload}
+//               accept="image/*"
+//               required
+//             />
+//             {/* Image Preview */}
+//             {imagePreview && (
+//               <div className="mt-2">
+//                 <img
+//                   src={imagePreview}
+//                   alt="Preview"
+//                   className="w-32 h-32 object-cover rounded-md"
+//                 />
+//               </div>
+//             )}
+//             <textarea
+//               placeholder="Description"
+//               className="p-2 border border-gray-300 rounded-md"
+//               value={newItem.description}
+//               onChange={(e) =>
+//                 setNewItem({ ...newItem, description: e.target.value })
+//               }
+//               required
+//             ></textarea>
+//             <input
+//               type="number"
+//               placeholder="Price"
+//               className="p-2 border border-gray-300 rounded-md"
+//               value={newItem.price}
+//               onChange={(e) =>
+//                 setNewItem({ ...newItem, price: e.target.value })
+//               }
+//               required
+//             />
+//             <input
+//               type="text"
+//               placeholder="Condition (e.g., Mint, Used)"
+//               className="p-2 border border-gray-300 rounded-md"
+//               value={newItem.condition}
+//               onChange={(e) =>
+//                 setNewItem({ ...newItem, condition: e.target.value })
+//               }
+//               required
+//             />
+//             <input
+//               type="number"
+//               placeholder="Year"
+//               className="p-2 border border-gray-300 rounded-md"
+//               value={newItem.year}
+//               onChange={(e) => setNewItem({ ...newItem, year: e.target.value })}
+//               required
+//             />
+//             <input
+//               type="text"
+//               placeholder="Theme"
+//               className="p-2 border border-gray-300 rounded-md"
+//               value={newItem.theme}
+//               onChange={(e) =>
+//                 setNewItem({ ...newItem, theme: e.target.value })
+//               }
+//               required
+//             />
+//             <input
+//               type="text"
+//               placeholder="Owner"
+//               className="p-2 border border-gray-300 rounded-md"
+//               value={newItem.owner}
+//               onChange={(e) =>
+//                 setNewItem({ ...newItem, owner: e.target.value })
+//               }
+//               required
+//             />
+//           </div>
+//           <button
+//             type="submit"
+//             className="bg-green-500 text-white px-4 py-2 rounded-md mt-4"
+//           >
+//             Upload
+//           </button>
+//         </form>
+//       )}
+
+//       {/* Filters Section */}
+//       <div className="mb-8 flex flex-wrap gap-4">
+//         <input
+//           type="text"
+//           placeholder="Search by name..."
+//           className="flex-grow p-2 border border-gray-300 rounded-md"
+//           value={searchQuery}
+//           onChange={(e) => setSearchQuery(e.target.value)}
+//         />
+//         <select
+//           className="p-2 border border-gray-300 rounded-md"
+//           value={selectedTheme}
+//           onChange={(e) => setSelectedTheme(e.target.value)}
+//         >
+//           <option value="">Select Theme</option>
+//           <option value="Historical Events">Historical Events</option>
+//           <option value="Exhibition">Exhibition</option>
+//           <option value="Famous Personalities">Famous Personalities</option>
+//         </select>
+//         <select
+//           className="p-2 border border-gray-300 rounded-md"
+//           value={selectedCondition}
+//           onChange={(e) => setSelectedCondition(e.target.value)}
+//         >
+//           <option value="">Select Condition</option>
+//           <option value="Mint">Mint</option>
+//           <option value="Used">Used</option>
+//         </select>
+//       </div>
+
+//       {/* Display Philatelic Items */}
+//       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+//         {filteredItems.map((item) => (
+//           <div
+//             key={item.id}
+//             className="bg-white p-4 rounded-md shadow-lg"
+//             onClick={() => handleItemClick(item)}
+//           >
+//             <img
+//               src={item.image}
+//               alt={item.name}
+//               className="h-48 w-full object-cover rounded-md"
+//             />
+//             <h2 className="text-lg font-semibold mt-4">{item.name}</h2>
+//             <p className="text-sm text-gray-500">₹{item.price}</p>
+//           </div>
+//         ))}
+//       </div>
+
+//       {/* No Results */}
+//       {filteredItems.length === 0 && (
+//         <p className="text-gray-500 mt-6 text-center">
+//           No items found. Try adjusting your filters.
+//         </p>
+//       )}
+
+//       {/* Modal for Item Details */}
+//       {selectedItem && (
+//         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+//           <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+//             <img
+//               src={selectedItem.image}
+//               alt={selectedItem.name}
+//               className="w-full h-48 object-cover rounded mb-4"
+//             />
+//             <h2 className="text-2xl font-bold mb-2">{selectedItem.name}</h2>
+//             <p className="text-gray-700 mb-2">{selectedItem.description}</p>
+//             <p className="text-sm text-gray-500 mb-2">
+//               <strong>Theme:</strong> {selectedItem.theme}
+//             </p>
+//             <p className="text-sm text-gray-500 mb-2">
+//               <strong>Condition:</strong> {selectedItem.condition}
+//             </p>
+//             <p className="text-sm text-gray-500 mb-2">
+//               <strong>Year:</strong> {selectedItem.year}
+//             </p>
+//             <p className="text-sm text-gray-500 mb-4">
+//               <strong>Owner:</strong> {selectedItem.owner}
+//             </p>
+//             <button
+//               className="bg-green-500 text-white px-4 py-2 rounded-md mr-2"
+//               onClick={() => placeOrder(selectedItem)}
+//             >
+//               Place Order
+//             </button>
+//             <button
+//               className="bg-red-500 text-white px-4 py-2 rounded-md"
+//               onClick={closeModal}
+//             >
+//               Close
+//             </button>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
