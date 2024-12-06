@@ -22,5 +22,8 @@ module.exports = withMT({
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+    // other plugins...
+  ],
 });

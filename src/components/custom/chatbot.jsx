@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import { Button } from "@components/ui/button";
-import { Input } from "@components/ui/input";
+import React, { useState, useEffect, useRef } from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +11,8 @@ const Chatbot = () => {
     { text: "Hi! Ask me anything about philatelic material.", sender: "bot" },
   ]);
   const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef(null); // Reference for scrolling to bottom
+  const messagesContainerRef = useRef(null); // Reference for scrollable container
 
   const toggleChatbox = () => {
     setIsOpen(!isOpen);
@@ -29,7 +31,6 @@ const Chatbot = () => {
     setLoading(true);
 
     try {
-      // Call backend API
       const response = await fetch("/api/chatbot", {
         method: "POST",
         headers: {
@@ -60,6 +61,13 @@ const Chatbot = () => {
     }
   };
 
+  // Scroll to the bottom every time the messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   return (
     <>
       {/* Floating Button */}
@@ -73,7 +81,8 @@ const Chatbot = () => {
       {/* Chatbox */}
       {isOpen && (
         <div className="fixed bottom-20 right-5 bg-white w-80 h-96 shadow-lg rounded-lg z-50 flex flex-col">
-          <div className="flex items-center justify-between bg-gray-800 text-white p-3 rounded-t-lg">
+          {/* Header */}
+          <div className="flex items-center justify-between bg-brown text-beige p-3 rounded-t-lg">
             <h2 className="text-lg font-semibold">Philatelic Chatbot</h2>
             <Button
               variant="ghost"
@@ -83,27 +92,44 @@ const Chatbot = () => {
               ✕
             </Button>
           </div>
-          <div className="flex-grow p-3 overflow-y-auto space-y-3">
+
+          {/* Messages */}
+          <div
+            ref={messagesContainerRef}
+            className="flex-grow p-3 overflow-y-auto space-y-3 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
+            style={{ maxHeight: "calc(100% - 80px)" }}
+          >
             {messages.map((msg, index) => (
               <div
                 key={index}
                 className={`${
                   msg.sender === "bot"
-                    ? "bg-gray-100 text-left"
-                    : "bg-blue-500 text-white text-right"
-                } p-2 rounded-md`}
+                    ? "bg-beige text-brown"
+                    : "bg-brown text-beige"
+                } px-3 py-2 rounded-md`}
+                style={{
+                  maxWidth: "calc(100% - 60px)", // Limit message width
+                  alignSelf: msg.sender === "bot" ? "flex-start" : "flex-end",
+                  whiteSpace: "pre-wrap", // Preserve formatting and wrap text
+                  wordWrap: "break-word", // Handle word breaks
+                  overflowWrap: "break-word",
+                }}
               >
                 {msg.text}
               </div>
             ))}
             {loading && (
-              <div className="text-gray-500 text-center">Loading...</div>
+              <div className="text-brown text-center">Loading...</div>
             )}
+            {/* Ref for scrolling */}
+            <div ref={messagesEndRef} />
           </div>
-          <div className="p-3 border-t border-gray-200 flex items-center">
+
+          {/* Input */}
+          <div className="p-3 border-t border-gray-200 flex items-center bg-beige">
             <Input
               type="text"
-              className="flex-grow mr-2"
+              className="flex-grow mr-2 bg-white text-brown border border-brown rounded-md"
               value={input}
               onChange={handleInput}
               placeholder="Type your message..."
@@ -111,7 +137,7 @@ const Chatbot = () => {
             />
             <Button
               onClick={sendMessage}
-              className="bg-black text-white"
+              className="bg-brown text-beige"
               disabled={loading}
             >
               Send
