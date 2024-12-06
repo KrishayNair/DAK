@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/context/theme-provider";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { CartProvider } from "../context/CartContext";
-
+import Chatbot from "../components/custom/Chatbot";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -28,7 +28,10 @@ export default function RootLayout({ children }) {
       >
         <SmoothScroll>
           <CartProvider>
-            <NotificationProvider>{children}</NotificationProvider>
+            <NotificationProvider>
+              {children}
+              <Chatbot />
+            </NotificationProvider>
           </CartProvider>
         </SmoothScroll>
       </body>
