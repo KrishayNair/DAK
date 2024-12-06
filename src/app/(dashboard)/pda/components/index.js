@@ -9,3 +9,5 @@ export { Header } from './Header';
 export { StepNavigation } from './StepNavigation';
 export { StepContent } from './StepContent';
 export { FormContainer } from './FormContainer';
+export { GeneratePDF } from './GeneratePDF';
+export { AadharUpload } from './AadharUpload';
