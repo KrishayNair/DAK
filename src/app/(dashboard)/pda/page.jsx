@@ -13,8 +13,8 @@ import {
   StepNavigation,
   StepContent,
   FormContainer,
-  GeneratePDF,
   AadharUpload,
+  GeneratePDF,
 } from "./components";
 import { Elsie_Swash_Caps } from "next/font/google";
 import { Timeline } from "./components/Timeline";
@@ -29,8 +29,7 @@ const steps = [
   { number: "02", title: "Personal Details" },
   { number: "03", title: "Order Details" },
   { number: "04", title: "Review" },
-  { number: "05", title: "Aadhar and Generate PDF" },
-  { number: "06", title: "Confirmation" },
+  { number: "05", title: "Confirmation" },
 ];
 
 export default function PDAPage() {
@@ -56,10 +55,6 @@ export default function PDAPage() {
           orderDetails: {
             orderType: "",
             quantity: "",
-          },
-          aadharDetails: {
-            aadharNumber: "",
-            aadharImage: null,
           },
         };
   });
@@ -173,13 +168,6 @@ export default function PDAPage() {
           />
         );
       case 4:
-        return (
-          <div>
-            <AadharUpload formData={formData} updateFormData={updateFormData} />
-            <GeneratePDF formData={formData} />
-          </div>
-        );
-      case 5:
         return <PaymentGateway amount={formData.depositAmount} />;
       default:
         return null;
@@ -251,6 +239,9 @@ export default function PDAPage() {
                     </Timeline.Point>
                     <Timeline.Content>
                       <div className="bg-white rounded-lg p-8 shadow-lg">
+                        {/* <h2 className="text-2xl font-bold mb-6">
+                          {step.title}
+                        </h2> */}
                         <div className="mb-4 text-sm text-gray-600">
                           Step {currentStep + 1} of {steps.length}
                           {isStepComplete(currentStep) && (
