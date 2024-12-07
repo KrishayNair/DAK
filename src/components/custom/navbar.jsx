@@ -69,6 +69,7 @@ export default function Navbar() {
                 { href: "/catalog", label: "CATALOG" },
                 { href: "/blog", label: "BLOG" },
                 { href: "/forum", label: "FORUM" },
+                { href: "/auctions", label: "AUCTIONS" },
               ].map((link) => (
                 <Link
                   key={link.href}

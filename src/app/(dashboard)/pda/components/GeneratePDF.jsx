@@ -1,6 +1,6 @@
 // src/app/(dashboard)/pda/components/GeneratePDF.jsx
 import React from "react";
-import { jsPDF } from "jspdf";
+// import { jsPDF } from "jspdf";
 
 export function GeneratePDF({ formData }) {
   const generatePdf = () => {

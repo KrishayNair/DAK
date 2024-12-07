@@ -1,150 +1,159 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { motion, AnimatePresence } from "framer-motion";
+
+const ChatMessage = ({ message, isBot }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className={`flex ${isBot ? "justify-start" : "justify-end"} mb-4`}
+  >
+    <div
+      className={`px-4 py-2 rounded-xl max-w-[70%] ${
+        isBot
+          ? "bg-[#ffe8e8] text-gray-800"
+          : "bg-[#8B4513] text-white"
+      }`}
+    >
+      {message}
+    </div>
+  </motion.div>
+);
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [input, setInput] = useState("");
   const [messages, setMessages] = useState([
-    { text: "Hi! Ask me anything about philatelic material.", sender: "bot" },
+    { text: "Hello! I'm your Philatelic Assistant. How can I help you today?", isBot: true },
   ]);
-  const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef(null); // Reference for scrolling to bottom
-  const messagesContainerRef = useRef(null); // Reference for scrollable container
+  const [inputMessage, setInputMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef(null);
 
-  const toggleChatbox = () => {
-    setIsOpen(!isOpen);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleInput = (e) => {
-    setInput(e.target.value);
-  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim() || isLoading) return;
 
-    const userMessage = { text: input, sender: "user" };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-    setLoading(true);
+    // Add user message
+    setMessages(prev => [...prev, { text: inputMessage, isBot: false }]);
+    setInputMessage("");
+    setIsLoading(true);
 
     try {
       const response = await fetch("/api/chatbot", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: input }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: inputMessage }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch chatbot response");
-      }
-
       const data = await response.json();
-      const botMessage = {
-        text: data.response || "Sorry, I couldn't understand that.",
-        sender: "bot",
-      };
-
-      setMessages((prev) => [...prev, botMessage]);
+      setMessages(prev => [...prev, { text: data.response, isBot: true }]);
     } catch (error) {
-      const errorMessage = {
-        text: "There was an error connecting to the chatbot. Please try again later.",
-        sender: "bot",
-      };
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages(prev => [
+        ...prev,
+        { text: "Sorry, I'm having trouble connecting. Please try again.", isBot: true },
+      ]);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  // Scroll to the bottom every time the messages change
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
-
   return (
     <>
-      {/* Floating Button */}
-      <Button
-        className="fixed bottom-5 right-5 bg-black text-white shadow-lg z-50"
-        onClick={toggleChatbox}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-5 right-5 w-16 h-16 bg-[#ffe8e8] rounded-full shadow-lg z-50 flex items-center justify-center text-[#8B4513] hover:bg-[#ffe8e8]/90 transition-colors"
       >
-        {isOpen ? "Close Chat" : "Chat"}
-      </Button>
+        {isOpen ? (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+          </svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15z"/>
+          </svg>
+        )}
+      </motion.button>
 
-      {/* Chatbox */}
-      {isOpen && (
-        <div className="fixed bottom-20 right-5 bg-white w-80 h-96 shadow-lg rounded-lg z-50 flex flex-col">
-          {/* Header */}
-          <div className="flex items-center justify-between bg-brown text-beige p-3 rounded-t-lg">
-            <h2 className="text-lg font-semibold">Philatelic Chatbot</h2>
-            <Button
-              variant="ghost"
-              className="text-red-400 hover:text-red-600"
-              onClick={toggleChatbox}
-            >
-              ✕
-            </Button>
-          </div>
-
-          {/* Messages */}
-          <div
-            ref={messagesContainerRef}
-            className="flex-grow p-3 overflow-y-auto space-y-3 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
-            style={{ maxHeight: "calc(100% - 80px)" }}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-24 right-5 w-[1200px] h-[85vh] bg-white rounded-2xl shadow-2xl z-40 flex flex-col overflow-hidden border border-gray-200"
           >
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`${
-                  msg.sender === "bot"
-                    ? "bg-beige text-brown"
-                    : "bg-brown text-beige"
-                } px-3 py-2 rounded-md`}
-                style={{
-                  maxWidth: "calc(100% - 60px)", // Limit message width
-                  alignSelf: msg.sender === "bot" ? "flex-start" : "flex-end",
-                  whiteSpace: "pre-wrap", // Preserve formatting and wrap text
-                  wordWrap: "break-word", // Handle word breaks
-                  overflowWrap: "break-word",
-                }}
-              >
-                {msg.text}
+            {/* Header */}
+            <div className="bg-[#ffe8e8] p-8 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-5 h-5 rounded-full bg-green-400 animate-pulse" />
+                <h2 className="text-[#8B4513] text-2xl font-semibold">Philatelic Assistant</h2>
               </div>
-            ))}
-            {loading && (
-              <div className="text-brown text-center">Loading...</div>
-            )}
-            {/* Ref for scrolling */}
-            <div ref={messagesEndRef} />
-          </div>
+              <Button
+                variant="ghost"
+                onClick={() => setIsOpen(false)}
+                className="text-[#8B4513] hover:bg-[#ffe8e8]/50"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                </svg>
+              </Button>
+            </div>
 
-          {/* Input */}
-          <div className="p-3 border-t border-gray-200 flex items-center bg-beige">
-            <Input
-              type="text"
-              className="flex-grow mr-2 bg-white text-brown border border-brown rounded-md"
-              value={input}
-              onChange={handleInput}
-              placeholder="Type your message..."
-              disabled={loading}
-            />
-            <Button
-              onClick={sendMessage}
-              className="bg-brown text-beige"
-              disabled={loading}
-            >
-              Send
-            </Button>
-          </div>
-        </div>
-      )}
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-8 bg-white">
+              {messages.map((message, index) => (
+                <ChatMessage key={index} message={message.text} isBot={message.isBot} />
+              ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-[#ffe8e8] rounded-xl px-6 py-3 text-gray-600 text-lg">
+                    Typing...
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input */}
+            <div className="p-8 bg-white border-t border-gray-100">
+              <div className="flex gap-4 bg-gray-50 p-3 rounded-xl">
+                <Input
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                  placeholder="Type your message..."
+                  className="flex-1 border-0 focus:ring-0 bg-transparent text-lg"
+                  disabled={isLoading}
+                />
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={isLoading}
+                  className="bg-[#8B4513] hover:bg-[#8B4513]/90 text-white px-8 py-6 text-lg"
+                >
+                  {isLoading ? (
+                    <div className="w-7 h-7 border-3 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    "Send"
+                  )}
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
