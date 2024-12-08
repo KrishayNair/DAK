@@ -504,14 +504,7 @@ export default function PDAPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="rounded-lg overflow-hidden">
           <div className="p-4 sm:p-6 lg:p-8">
-            {/* <h1 className={`text-4xl sm:text-5xl font-bold mb-4 text-center ${elsieSwashCaps.className}`}
-                style={{ color: theme.secondary }}>
-              Philatelic Deposit Account
-            </h1>
-            <p className="text-lg sm:text-xl text-gray-700 mb-8 text-center max-w-2xl mx-auto">
-              Fill this easy Form to activate your philately deposit account and
-              receive your favorite material regularly
-            </p> */}
+           
 
             {error && (
               <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-lg shadow-md">
