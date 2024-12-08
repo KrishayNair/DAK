@@ -76,10 +76,10 @@ export default function Signup() {
         if (emailSent.success) {
           setShowOTP(true);
         } else {
-          alert("Error in sending OTP");
+          alert("Error in sending OTP", emailSent?.message);
         }
       } else {
-        alert("Something went wrong");
+        alert("Something went wrong : ", res?.mesage);
       }
     } catch (error) {
       console.error('Login Error:', error);
