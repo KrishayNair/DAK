@@ -7,6 +7,10 @@ import { Input } from "@/components/ui/input";
 import { CardTitle, CardDescription } from "@/components/ui/card";
 import { Elsie_Swash_Caps } from "next/font/google";
 import { useRouter } from "next/navigation";
+
+import ProductsGrid from "./components/ProductGrid";
+import CollectionGrid from "./components/CollectionGrid";
+
 // import { useCart } from "@/contexts/CartContext";
 // Data
 const elsieSwashCaps = Elsie_Swash_Caps({
@@ -382,8 +386,12 @@ export default function Page() {
           SHOP
         </h1>
         <SearchSection />
-        <CategoryGrid />
-        <MasonryGrid />
+
+        {/* TODO: Add the products grid here */}
+        <ProductsGrid />
+
+        {/* TODO: Add the collection grid here */}
+        <CollectionGrid />
       </div>
     </main>
   );

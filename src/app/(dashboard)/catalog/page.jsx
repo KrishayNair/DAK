@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/carousel";
 import { Search } from "lucide-react";
 import { Elsie_Swash_Caps } from "next/font/google";
+import { Button } from "@/components/ui/button";
+import { postDataToAPI } from "@/lib/api";
 
 const elsieSwashCaps = Elsie_Swash_Caps({
   subsets: ["latin"],
@@ -87,6 +89,27 @@ export default function StampCollection() {
     setSelectedImage(null);
   };
 
+  async function exploreStampVision(formData) {
+    const res = await postDataToAPI("philatelist/stampVision/", formData, true);
+    
+    if (res.success) {
+      alert(res.data);
+    } else {
+      alert(res.error);
+    }
+  }
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    
+    if (file) {
+      console.log(file)
+      const formData = new FormData();
+      formData.append('image', file);
+      await exploreStampVision(formData);
+    }
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#FFFFF" }}>
       <div className="container mx-auto p-4 space-y-8">
@@ -118,16 +141,29 @@ export default function StampCollection() {
         </Carousel>
 
         {/* Search Bar */}
-        <div className="relative">
-          <Input type="text" placeholder="Search stamps..." className="pl-10" />
-          <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            size={20}
+        <div className="w-full flex justify-center items-center gap-4">
+          <div className="w-full relative">
+            <Input type="text" placeholder="Search stamps..." className="pl-10" />
+            <Search
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={20}
+            />
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileUpload}
+            className="hidden"
+            name="image"
+            id="file-upload"
           />
+          <Button onClick={() => document.getElementById('file-upload').click()}>
+            Explore Stamp Vision
+          </Button>
         </div>
 
         {/* Section Header */}
-        <h2 className="text-xl font-semibold mb-2">Trending this year !!</h2>
+        <h2 className="text-xl font-semibold">Trending this year</h2>
         <p className="text-gray-600 mb-8">
           Explore facts about popular stamps this year and stay updated.
         </p>
