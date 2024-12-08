@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 
-// Initial Dummy Data for Philatelic Materials
-const initialPhilatelicItems = [
+// Move initialPhilatelicItems outside of the component and export it
+export const initialPhilatelicItems = [
   {
     id: 1,
     name: "Rare 1953 Telegraph Centenary Stamp",
@@ -99,7 +99,8 @@ export default function ExchangePage() {
   });
 
   const handleItemClick = (item) => {
-    setSelectedItem(item);
+    const slug = item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    window.location.href = `/dak-exchange/${slug}?id=${item.id}`;
   };
 
   const closeModal = () => {
