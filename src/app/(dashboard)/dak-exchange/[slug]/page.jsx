@@ -5,28 +5,155 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft, Share, Heart, Shield, Truck, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 
+// API service functions (to be implemented)
+const api = {
+  getProduct: async (id) => {
+    // Temporary: using import for demo
+    const { initialPhilatelicItems } = await import('../page');
+    return initialPhilatelicItems.find(item => item.id === id);
+    
+    // TODO: Replace with actual API call
+    // return await fetch(`/api/products/${id}`).then(res => res.json());
+  },
+  addToCart: async (productId) => {
+    // TODO: Implement cart API
+    // return await fetch('/api/cart', {
+    //   method: 'POST',
+    //   body: JSON.stringify({ productId }),
+    // }).then(res => res.json());
+  },
+  makeOffer: async (productId, amount) => {
+    // TODO: Implement offer API
+    // return await fetch('/api/offers', {
+    //   method: 'POST',
+    //   body: JSON.stringify({ productId, amount }),
+    // }).then(res => res.json());
+  },
+  toggleWishlist: async (productId) => {
+    // TODO: Implement wishlist API
+    // return await fetch('/api/wishlist', {
+    //   method: 'POST',
+    //   body: JSON.stringify({ productId }),
+    // }).then(res => res.json());
+  }
+};
+
 export default function ProductDetail({ params }) {
   const searchParams = useSearchParams();
+  
+  // States
   const [item, setItem] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
-  
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isMakingOffer, setIsMakingOffer] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [offerAmount, setOfferAmount] = useState('');
+
+  // Fetch product data
   useEffect(() => {
-    const loadItem = async () => {
-      const id = parseInt(searchParams.get('id'));
-      const { initialPhilatelicItems } = await import('../page');
-      const foundItem = initialPhilatelicItems.find(item => item.id === id);
-      setItem(foundItem);
+    const fetchProduct = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const id = parseInt(searchParams.get('id'));
+        const product = await api.getProduct(id);
+        
+        if (!product) {
+          throw new Error('Product not found');
+        }
+        
+        setItem(product);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    loadItem();
+    fetchProduct();
   }, [searchParams]);
 
-  if (!item) {
+  // Handler functions
+  const handleAddToCart = async () => {
+    try {
+      setIsAddingToCart(true);
+      await api.addToCart(item.id);
+      alert('Added to cart successfully!');
+    } catch (err) {
+      alert('Failed to add to cart: ' + err.message);
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
+
+  const handleMakeOffer = async () => {
+    try {
+      setIsMakingOffer(true);
+      await api.makeOffer(item.id, offerAmount);
+      alert('Offer sent successfully!');
+    } catch (err) {
+      alert('Failed to make offer: ' + err.message);
+    } finally {
+      setIsMakingOffer(false);
+    }
+  };
+
+  const handleWishlist = async () => {
+    try {
+      await api.toggleWishlist(item.id);
+      setIsWishlisted(!isWishlisted);
+    } catch (err) {
+      alert('Failed to update wishlist: ' + err.message);
+    }
+  };
+
+  // Loading state
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-[#fff8e8] p-8 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B4513] mx-auto mb-4"></div>
           <h1 className="text-2xl font-bold text-[#8B4513]">Loading...</h1>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#fff8e8] p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-5xl mb-4">😕</div>
+          <h1 className="text-2xl font-bold text-[#8B4513] mb-2">Oops! Something went wrong</h1>
+          <p className="text-[#8B4513]/70 mb-4">{error}</p>
+          <Link 
+            href="/dak-exchange" 
+            className="text-[#8B4513] hover:underline"
+          >
+            Return to Marketplace
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // No item found state
+  if (!item) {
+    return (
+      <div className="min-h-screen bg-[#fff8e8] p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-5xl mb-4">🔍</div>
+          <h1 className="text-2xl font-bold text-[#8B4513] mb-2">Product Not Found</h1>
+          <p className="text-[#8B4513]/70 mb-4">The product you're looking for doesn't exist.</p>
+          <Link 
+            href="/dak-exchange" 
+            className="text-[#8B4513] hover:underline"
+          >
+            Return to Marketplace
+          </Link>
         </div>
       </div>
     );
@@ -54,8 +181,14 @@ export default function ProductDetail({ params }) {
                 alt={item.name}
                 className="w-full h-full object-contain"
               />
-              <button className="absolute top-6 right-6 p-2 bg-white rounded-full shadow-md hover:scale-110 transition-transform">
-                <Heart className="w-5 h-5 text-[#8B4513]" />
+              <button 
+                onClick={handleWishlist}
+                className="absolute top-6 right-6 p-2 bg-white rounded-full shadow-md 
+                         hover:scale-110 transition-transform"
+              >
+                <Heart 
+                  className={`w-5 h-5 ${isWishlisted ? 'fill-[#8B4513]' : ''} text-[#8B4513]`} 
+                />
               </button>
             </div>
             <div className="grid grid-cols-4 gap-4">
@@ -127,15 +260,20 @@ export default function ProductDetail({ params }) {
             {/* Action Buttons */}
             <div className="space-y-4">
               <button 
-                onClick={() => alert(`Order placed successfully for: ${item.name}`)}
-                className="w-full bg-[#8B4513] text-white px-6 py-4 rounded-lg hover:bg-[#8B4513]/90 transition-all duration-300 font-semibold shadow-sm"
+                onClick={handleAddToCart}
+                disabled={isAddingToCart}
+                className="w-full bg-[#8B4513] text-white px-6 py-4 rounded-lg hover:bg-[#8B4513]/90 
+                         transition-all duration-300 font-semibold shadow-sm disabled:opacity-50"
               >
-                Add to Cart
+                {isAddingToCart ? 'Adding to Cart...' : 'Add to Cart'}
               </button>
               <button 
-                className="w-full bg-white/50 text-[#8B4513] px-6 py-4 rounded-lg hover:bg-white/70 transition-all duration-300 font-semibold shadow-sm"
+                onClick={handleMakeOffer}
+                disabled={isMakingOffer}
+                className="w-full bg-white/50 text-[#8B4513] px-6 py-4 rounded-lg hover:bg-white/70 
+                         transition-all duration-300 font-semibold shadow-sm disabled:opacity-50"
               >
-                Make an Offer
+                {isMakingOffer ? 'Sending Offer...' : 'Make an Offer'}
               </button>
             </div>
 
