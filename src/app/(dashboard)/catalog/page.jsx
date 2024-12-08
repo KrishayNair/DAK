@@ -88,7 +88,7 @@ export default function StampCollection() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#FFF8E8" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#FFFFF" }}>
       <div className="container mx-auto p-4 space-y-8">
         {/* Carousel */}
         <Carousel className="w-full">
@@ -159,37 +159,42 @@ export default function StampCollection() {
 
       {/* Modal for Stamp Details */}
       {selectedStamp && selectedImage && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg flex shadow-lg relative max-w-4xl w-full">
-            {/* Left Side - Image */}
-            <div className="w-1/2 p-4">
-              <img
-                src={selectedImage}
-                alt={selectedStamp.name}
-                className="w-full h-full object-cover rounded-md"
-              />
-            </div>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex flex-col md:flex-row">
+              {/* Left Side - Image */}
+              <div className="w-full md:w-1/2 p-4">
+                <img
+                  src={selectedImage}
+                  alt={selectedStamp.name}
+                  className="w-full h-auto object-cover rounded-md"
+                />
+              </div>
 
-            {/* Right Side - Details */}
-            <div className="w-1/2 p-6 flex flex-col">
-              <button
-                onClick={closeModal}
-                className="self-end text-gray-500 hover:text-gray-700 mb-4"
-              >
-                ✖
-              </button>
-              <h2 className="text-2xl font-semibold mb-2">
-                {selectedStamp.name}
-              </h2>
-              <p className="text-gray-700 mb-4">{selectedStamp.caption}</p>
-              <p className="text-gray-500 text-sm mb-4">{selectedStamp.time}</p>
-              <div className="space-y-2">
-                <h3 className="text-lg font-medium">Comments</h3>
-                {selectedStamp.comments.map((comment, index) => (
-                  <p key={index} className="text-gray-600">
-                    - {comment}
-                  </p>
-                ))}
+              {/* Right Side - Details */}
+              <div className="w-full md:w-1/2 p-6 space-y-6">
+                <button
+                  onClick={closeModal}
+                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                >
+                  ✖
+                </button>
+
+                <h2 className="text-xl md:text-2xl font-bold">{selectedStamp.name}</h2>
+
+                {/* Comments Section */}
+                <div className="space-y-2">
+                  <h3 className="text-lg font-medium">Comments</h3>
+                  {selectedStamp.comments.map((comment, index) => (
+                    <p key={index} className="text-gray-600">
+                      - {comment}
+                    </p>
+                  ))}
+                </div>
+
+                {/* Additional Details */}
+                <p className="text-gray-700 mb-4">{selectedStamp.caption}</p>
+                <p className="text-gray-500 text-sm mb-4">{selectedStamp.time}</p>
               </div>
             </div>
           </div>

@@ -46,7 +46,7 @@ export async function logout() {
 export async function verifySession(request) {
   const session = request.cookies.get("dak_session")?.value;
 
-  if (session && request.nextUrl.pathname.startsWith("/login")) {
+  if (session && request.nextUrl.pathname.startsWith("/signup")) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 

@@ -7,19 +7,19 @@ export function CustomerType({ value, onChange }) {
   
     return (
       <div className="space-y-6">
-        <h2 className="text-2xl font-semibold mb-4">Select Customer Type</h2>
-        <div className="grid gap-4 md:grid-cols-3">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-4">Select Customer Type</h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {customerTypes.map(type => (
             <button
               key={type.id}
-              className={`p-6 rounded-lg border-2 transition-all ${
+              className={`p-4 rounded-lg border-2 transition-all ${
                 value === type.id 
                   ? 'border-secondary bg-secondary/10' 
                   : 'border-gray-200 hover:border-secondary/50'
               }`}
               onClick={() => onChange(type.id)}
             >
-              <h3 className="text-xl font-medium">{type.label}</h3>
+              <h3 className="text-lg sm:text-xl font-medium">{type.label}</h3>
             </button>
           ))}
         </div>

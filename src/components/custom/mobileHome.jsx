@@ -8,7 +8,7 @@ const elsieSwashCaps = Elsie_Swash_Caps({
 
 const MobileHome = () => {
   return (
-    <div className="relative w-full overflow-hidden" style={{ height: '60vh' }}>
+    <div className="relative overflow-hidden m-2 rounded-xl" style={{ height: '80vh' }}>
       <Image
         src="/heronew.png"
         alt="Stamp background"
@@ -18,11 +18,11 @@ const MobileHome = () => {
         priority
       />
       <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div className="text-white p-6 text-center max-w-md">
-          <h1 className={`text-5xl font-serif mb-3 ${elsieSwashCaps.className}`}>
+        <div className="text-white p-5 text-center max-w-md">
+          <h1 className={`text-4xl font-serif mb-3 ${elsieSwashCaps.className}`}>
             Each stamp carries a piece of history.
           </h1>
-          <p className="text-sm">
+          <p className="text-xs">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </p>
         </div>

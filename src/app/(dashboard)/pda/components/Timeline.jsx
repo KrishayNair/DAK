@@ -23,20 +23,18 @@ export const Timeline = ({ children }) => {
   return (
     <div ref={containerRef} className="relative h-full">
       {/* Background line */}
-      <div className="absolute left-10 top-0 h-full w-1.5 bg-gray-200 rounded-full" />
+      <div className="absolute left-8 top-0 h-full w-1.5 bg-gray-200 rounded-full" />
 
       {/* Animated progress line */}
       <motion.div
-        className="absolute left-10 top-0 w-1.5 bg-[#B45309] origin-top rounded-full"
+        className="absolute left-8 top-0 w-1.5 bg-[#B45309] origin-top rounded-full"
         style={{
           height: lineHeight,
           opacity: lineOpacity,
         }}
       />
 
-      <div className="space-y-48">
-        {" "}
-        {/* Increased vertical spacing significantly */}
+      <div className="space-y-12 md:space-y-48">
         {children}
       </div>
     </div>
@@ -46,7 +44,7 @@ export const Timeline = ({ children }) => {
 Timeline.Item = ({ children, active }) => {
   return (
     <motion.div
-      className="relative flex gap-10" // Increased gap
+      className="relative flex flex-col gap-4 md:gap-10"
       initial={{ opacity: 0, x: -20 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true, margin: "-250px" }}
@@ -60,7 +58,7 @@ Timeline.Item = ({ children, active }) => {
 Timeline.Point = ({ children }) => {
   return (
     <motion.div
-      className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full bg-white border-3 border-[#B45309] shadow-xl" // Increased size further
+      className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-white border-3 border-[#B45309] shadow-xl"
       whileInView={{ scale: [0.8, 1] }}
       viewport={{ once: true }}
       transition={{ duration: 0.3 }}
@@ -73,7 +71,7 @@ Timeline.Point = ({ children }) => {
 Timeline.Content = ({ children }) => {
   return (
     <motion.div
-      className="flex-1 pt-6" // Increased padding
+      className="flex-1 pt-4 md:pt-6"
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}

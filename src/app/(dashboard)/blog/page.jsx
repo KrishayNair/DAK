@@ -172,7 +172,7 @@ const CreateBlogModal = ({ isOpen, onClose, onBlogCreated }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col">
         {/* Header - fixed at top */}
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex justify-between items-center">
@@ -187,117 +187,17 @@ const CreateBlogModal = ({ isOpen, onClose, onBlogCreated }) => {
         </div>
 
         {/* Content - scrollable */}
-        {/* <div className="flex-1 overflow-y-auto px-6 py-4">
-          {error && (
-            <div className="bg-red-50 text-red-500 p-3 rounded mb-4">
-              {error}
-            </div>
-          )}
-
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Title
-              </label>
-              <input
-                type="text"
-                required
-                className={`mt-1 block w-full rounded-md border ${validationErrors.title ? "border-red-500" : "border-gray-300"
-                  } px-3 py-2`}
-                value={formData.title}
-                onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
-                }
-              />
-              <ValidationError error={validationErrors.title} />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Description
-              </label>
-              <textarea
-                required
-                className={`mt-1 block w-full rounded-md border ${validationErrors.description
-                    ? "border-red-500"
-                    : "border-gray-300"
-                  } px-3 py-2`}
-                rows={3}
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-              />
-              <ValidationError error={validationErrors.description} />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Content
-              </label>
-              <div
-                className={`mt-1 ${validationErrors.content
-                    ? "border-red-500"
-                    : "border-gray-300"
-                  }`}
-              >
-                <ReactQuill
-                  theme="snow"
-                  value={formData.content}
-                  onChange={(content) =>
-                    setFormData((prev) => ({ ...prev, content }))
-                  }
-                  modules={modules}
-                  formats={formats}
-                  className="h-64 mb-12"
-                />
-              </div>
-              <ValidationError error={validationErrors.content} />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Read Time (minutes)
-              </label>
-              <input
-                type="number"
-                required
-                min="0"
-                className={`mt-1 block w-full rounded-md border ${validationErrors.read_time
-                    ? "border-red-500"
-                    : "border-gray-300"
-                  } px-3 py-2`}
-                value={formData.read_time}
-                onChange={(e) =>
-                  setFormData({ ...formData, read_time: e.target.value })
-                }
-              />
-              <ValidationError error={validationErrors.read_time} />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Cover Image
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                className="mt-1 block w-full"
-                onChange={(e) =>
-                  setFormData({ ...formData, image: e.target.files[0] })
-                }
-              />
-            </div>
-          </div>
-        </div> */}
+        <div className="flex-1 overflow-y-auto px-6 py-4">
+          <CreateBlog />
+        </div>
 
         {/* Footer - fixed at bottom */}
-        {/* <div className="px-6 py-4 border-t border-gray-200 bg-white">
+        <div className="px-6 py-4 border-t border-gray-200 bg-white">
           <div className="flex justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+              className="md:px-4 md:py-2 px-2 py-1 pyborder border-gray-300 rounded-md hover:bg-gray-50"
             >
               Cancel
             </button>
@@ -309,10 +209,6 @@ const CreateBlogModal = ({ isOpen, onClose, onBlogCreated }) => {
               {loading ? "Creating..." : "Create Blog Post"}
             </button>
           </div>
-        </div> */}
-
-        <div className="flex-1 overflow-y-auto px-6 py-4">
-          <CreateBlog />
         </div>
       </div>
     </div>
@@ -494,13 +390,35 @@ const BlogListing = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 flex">
-      <div className="w-2/3 pr-8">
+    
+    <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row">
+            <div className="block lg:hidden w-full md:w-1/3 mt-4 md:mt-0">
+        <div className="sticky top-4 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+          <h2 className="font-bold text-lg mb-4 text-gray-800">Staff Picks</h2>
+          <div className="mt-8">
+            <h2 className="font-bold text-lg mb-4 text-gray-800">
+              Recommended topics
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              <span className="px-4 py-2 rounded-full bg-gray-50 text-sm hover:bg-gray-100 cursor-pointer transition-colors duration-200 border border-gray-200">
+                Stamp Collecting
+              </span>
+              <span className="px-4 py-2 rounded-full bg-gray-50 text-sm hover:bg-gray-100 cursor-pointer transition-colors duration-200 border border-gray-200">
+                Postal History
+              </span>
+              <span className="px-4 py-2 rounded-full bg-gray-50 text-sm hover:bg-gray-100 cursor-pointer transition-colors duration-200 border border-gray-200">
+                Rare Stamps
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-full md:w-2/3 pr-0 md:pr-8">
         <div className="mb-6 flex justify-between items-center">
           <h2 className="text-2xl font-bold">Latest Posts</h2>
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            className="bg-blue-600 text-white md:px-4 md:py-2 px-2 py-1 rounded-md hover:bg-blue-700"
           >
             Create New Post
           </button>
@@ -512,8 +430,7 @@ const BlogListing = () => {
           <p>No blogs found</p>
         )}
       </div>
-
-      <div className="w-1/3">
+      <div className="hidden lg:block w-full md:w-1/3 mt-4 md:mt-0">
         <div className="sticky top-4 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
           <h2 className="font-bold text-lg mb-4 text-gray-800">Staff Picks</h2>
           <div className="mt-8">
@@ -535,6 +452,7 @@ const BlogListing = () => {
         </div>
       </div>
 
+
       <CreateBlogModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
@@ -548,21 +466,6 @@ const BlogListing = () => {
 const BlogPage = () => {
   return (
     <div>
-      <div className="border-b border-gray-200">
-        <div className="flex items-center justify-between p-8 max-w-7xl mx-auto">
-          <div>
-            <h1 className="text-6xl font-bold text-gray-800">
-              Discover Rare Stamps
-            </h1>
-            <p className="mt-2 text-2xl text-gray-600">
-              Explore the World of Philately
-            </p>
-          </div>
-          <div className="flex-shrink-0">
-            <img src="/blogbanner.png" alt="Stamp Illustration" className="" />
-          </div>
-        </div>
-      </div>
 
       {/* Blog Listing */}
       <BlogListing />

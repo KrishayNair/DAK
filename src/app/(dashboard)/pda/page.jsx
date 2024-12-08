@@ -7,14 +7,7 @@ import {
   OrderDetails,
   Review,
   PaymentGateway,
-  StepIndicator,
   DepositModal,
-  Header,
-  StepNavigation,
-  StepContent,
-  FormContainer,
-  AadharUpload,
-  GeneratePDF,
 } from "./components";
 import { Elsie_Swash_Caps } from "next/font/google";
 import { Timeline } from "./components/Timeline";
@@ -24,6 +17,7 @@ const elsieSwashCaps = Elsie_Swash_Caps({
   subsets: ["latin"],
   weight: ["400"],
 });
+
 
 const steps = [
   { number: "01", title: "Type of customers" },
@@ -333,11 +327,11 @@ export default function PDAPage() {
   return (
     <div className="container mx-auto px-4 py-8 bg-primary min-h-screen">
       <div className="rounded-lg overflow-hidden">
-        <div className="p-6 sm:p-8 lg:p-12">
-          <h1 className="text-4xl font-bold mb-2">
+        <div className="p-4 sm:p-6 lg:p-8">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2">
             Philatelic Deposit Account
           </h1>
-          <p className="text-sm text-gray-600 mb-12">
+          <p className="text-sm sm:text-base text-gray-600 mb-6">
             Fill this easy Form to activate your philately deposit account and
             receive your favorite material regularly
           </p>

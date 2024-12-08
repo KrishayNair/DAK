@@ -6,7 +6,7 @@ const elsieSwashCaps = Elsie_Swash_Caps({
   weight: ['400'],
 });
 
-export default function Hero() {
+export default function Heronew() {
   return (
     <div className="container mx-auto px-4 py-12 flex flex-col md:flex-row items-center justify-between">
       <div className="md:w-1/2 mb-8 md:mb-0">
