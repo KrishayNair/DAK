@@ -1,7 +1,10 @@
 import React from "react";
 import { Clock, Users } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function AuctionCard({ item, onItemClick }) {
+  const router = useRouter();
+
   // Function to calculate time remaining
   const getTimeRemaining = (endTime) => {
     const total = Date.parse(endTime) - Date.parse(new Date());
@@ -11,12 +14,20 @@ export default function AuctionCard({ item, onItemClick }) {
     return `${days}d ${hours}h ${minutes}m`;
   };
 
+  const handleClick = () => {
+    if (item.status === 'ongoing') {
+      router.push(`/auction/live/${item.id}`);
+    } else {
+      onItemClick(item);
+    }
+  };
+
   return (
     <div
       className={`group bg-white/80 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl 
                  transition-all duration-300 overflow-hidden cursor-pointer transform hover:-translate-y-1
                  border border-[#8B4513]/10 ${item.status === 'ended' ? 'opacity-90' : ''}`}
-      onClick={() => onItemClick(item)}
+      onClick={handleClick}
     >
       <div className="relative">
         {item.status === 'ended' && (
