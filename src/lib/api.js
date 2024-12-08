@@ -39,7 +39,7 @@ export async function putDataToAPI(url, data, isFile = false) {
   }`;
   try {
     const response = await axios.patch(url, data, isFile ? { headers: { 'Content-Type': 'multipart/form-data' } } : {});
-    return response.data;
+    return response.data; 
   } catch (error) {
     console.error("API call error:", error);
     throw error;
