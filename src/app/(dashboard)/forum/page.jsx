@@ -1,6 +1,8 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { fetchFromAPI } from "@/lib/api";
+import CreateForumModal from "./components/CreateForumModal";
 
 /**
  * @typedef {Object} Post
@@ -186,49 +188,78 @@ const FilterButton = ({ icon, label, subtext, active, onClick }) => {
 };
 
 const ForumPage = () => {
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      author: "John Doe",
-      content: "Lorem ipsum...",
-      likes: 45,
-      image: "/path-to-image.jpg",
-      // ... other post data
-    },
-    // ... more posts
-  ]);
+  const [posts, setPosts] = useState([]);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handlePostLike = (postId, isLiked) => {
-    setPosts(posts.map(post => 
-      post.id === postId 
-        ? { ...post, likes: isLiked ? post.likes + 1 : post.likes - 1 }
-        : post
-    ));
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      // Update the endpoint to match your backend API
+      const response = await fetchFromAPI("/forum"); // or whatever your actual endpoint is
+      if (response?.data) {
+        setPosts(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      setError("Failed to load forum posts");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCreatePost = (newPost) => {
-    setPosts(prevPosts => [newPost, ...prevPosts]);
+  const handlePostCreated = () => {
+    fetchPosts();
+    setIsCreateModalOpen(false);
   };
+
+  if (loading) {
+    return <div className="max-w-6xl mx-auto p-6">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="max-w-6xl mx-auto p-6 text-red-500">{error}</div>;
+  }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-primary min-h-screen">
+    <div className="max-w-6xl mx-auto p-6">
       <div className="flex flex-col lg:flex-row gap-8">
         <main className="flex-1">
-          <CreatePost onPostCreate={handleCreatePost} />
+          <div className="mb-6 flex justify-between items-center">
+            <h2 className="text-2xl font-bold">Forum Discussions</h2>
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            >
+              Create New Post
+            </button>
+          </div>
+
           {posts.map(post => (
             <PostItem 
               key={post.id} 
-              post={post} 
-              onLikeChange={handlePostLike}
+              post={post}
             />
           ))}
         </main>
+        
         <aside className="w-full lg:w-80">
           <SearchBar />
           <FeedFilter />
           <PopularHashtags />
         </aside>
       </div>
+
+      <CreateForumModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onPostCreated={handlePostCreated}
+      />
     </div>
   );
 };
@@ -576,7 +607,7 @@ const CommentModal = ({ post, onClose, isLiked, onLike }) => {
               <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
               <div className="flex items-center gap-2">
                 <span className="font-semibold">{post.author}</span>
-                <span className="text-gray-400 text-sm">• {post.timeAgo}</span>
+                <span className="text-gray-400 text-sm">�� {post.timeAgo}</span>
               </div>
             </div>
             <p className="text-gray-800 mb-2">
@@ -765,7 +796,7 @@ const PostItem = ({ post, onLikeChange }) => {
 
 const CategoryList = () => {
   const categories = [
-    { icon: "📰", label: "Feed", count: 12 },
+    { icon: "��", label: "Feed", count: 12 },
     { icon: "📅", label: "Events", count: 3 },
     { icon: "📢", label: "Announcement", count: 2 },
   ];

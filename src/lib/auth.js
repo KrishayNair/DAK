@@ -50,8 +50,8 @@ export async function verifySession(request) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (!session && !request.nextUrl.pathname.startsWith("/login")) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if (!session && !request.nextUrl.pathname.startsWith("/signup")) {
+    return NextResponse.redirect(new URL("/signup", request.url));
   }
 
   // return NextResponse.redirect(request.url)
