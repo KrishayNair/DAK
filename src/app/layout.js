@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/context/theme-provider";
 import { NotificationProvider } from '@/context/NotificationContext';
+import { CartProvider } from '@/context/CartContext';
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -27,7 +28,9 @@ export default function RootLayout({ children }) {
       >
         <SmoothScroll>
           <NotificationProvider>
-            {children}
+            <CartProvider>
+              {children}
+            </CartProvider>
           </NotificationProvider>
         </SmoothScroll>
       </body>

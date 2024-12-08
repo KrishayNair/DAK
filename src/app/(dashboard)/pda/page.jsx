@@ -7,14 +7,7 @@ import {
   OrderDetails,
   Review,
   PaymentGateway,
-  StepIndicator,
   DepositModal,
-  Header,
-  StepNavigation,
-  StepContent,
-  FormContainer,
-  AadharUpload,
-  GeneratePDF,
 } from "./components";
 import { Elsie_Swash_Caps } from "next/font/google";
 import { Timeline } from "./components/Timeline";
@@ -24,6 +17,7 @@ const elsieSwashCaps = Elsie_Swash_Caps({
   subsets: ["latin"],
   weight: ["400"],
 });
+
 
 const steps = [
   { number: "01", title: "Type of customers" },
