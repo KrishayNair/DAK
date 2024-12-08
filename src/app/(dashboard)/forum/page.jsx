@@ -3,13 +3,14 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { fetchFromAPI } from "@/lib/api";
 import CreateForumModal from "./components/CreateForumModal";
+import { buildImageUrl } from "@/lib/utils";
 
 /**
  * @typedef {Object} Post
  * @property {string} id
  * @property {{id: string, name: string, avatar: string}} author
  * @property {string} content
- * @property {string} [image]
+ * @property {{id: number, image: string}[]} post_images
  * @property {number} likes
  * @property {number} comments
  * @property {string} timeAgo
@@ -742,23 +743,16 @@ const PostItem = ({ post, onLikeChange }) => {
         <p className="text-gray-800 mb-2">{post.content}</p>
 
         {/* Images */}
-        {post.images && post.images.length > 0 && (
+        {post.post_images && post.post_images.length > 0 && (
           <div className="grid grid-cols-2 gap-2 mb-4">
-            {post.images.map((image, index) => (
+            {post.post_images.map((image, index) => (
               <img 
                 key={index}
-                src={image}
+                src={buildImageUrl(image.image)}
                 alt={`Post image ${index + 1}`}
                 className="w-full h-32 object-cover rounded-lg"
               />
             ))}
-          </div>
-        )}
-
-        {/* Video */}
-        {post.video && (
-          <div className="mb-4">
-            <video src={post.video} className="w-full rounded-lg" controls />
           </div>
         )}
 
