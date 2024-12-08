@@ -165,7 +165,7 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
             <img
               src={product.image}
               alt={product.name}
-              className="w-full h-[400px] object-cover rounded-lg"
+              className="w-full h-[300px] md:h-[400px] object-cover rounded-lg"
             />
           </div>
 

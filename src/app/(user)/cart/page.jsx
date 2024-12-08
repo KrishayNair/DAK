@@ -6,36 +6,37 @@ import { useCart } from "@/context/CartContext"; // Import the useCart hook
 
 export default function Cart() {
   const router = useRouter();
-  const { cartItems, removeFromCart } = useCart(); // Get cart items from context
+  const { 
+    cartItems, 
+    removeFromCart, 
+    updateQuantity, 
+    getCartTotal 
+  } = useCart();
   const [showNotification, setShowNotification] = useState(true);
 
-  // Handle quantity changes
-  const updateQuantity = (id, change) => {
-    setCartItems(
-      cartItems.map((item) => {
-        if (item.id === id) {
-          const newQuantity = Math.max(1, item.quantity + change); // Prevent going below 1
-          return { ...item, quantity: newQuantity };
-        }
-        return item;
-      })
-    );
-  };
-
   // Calculate totals
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + (item.price * item.quantity || 0), // Ensure price is a number
-    0
-  );
-  const shipping = 50; // Example shipping cost
-  const tax = 0; // Example tax
+  const subtotal = getCartTotal();
+  const shipping = cartItems.length > 0 ? 50 : 0;
+  const tax = subtotal * 0.18; // 18% tax
   const grandTotal = subtotal + shipping + tax;
 
-  // Handle enrollment (proceed to checkout)
   const handleEnroll = () => {
-    // Redirect to the checkout page
-    router.push("/checkout"); // Ensure you have a checkout page at this route
+    router.push("/checkout");
   };
+
+  if (!cartItems || cartItems.length === 0) {
+    return (
+      <div className="min-h-screen bg-primary p-8 flex flex-col items-center justify-center">
+        <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
+        <button 
+          onClick={() => router.push('/shop')}
+          className="bg-white text-black border border-gray-200 px-6 py-3 rounded-xl hover:bg-gray-50"
+        >
+          Continue Shopping
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-primary p-8">
@@ -60,10 +61,9 @@ export default function Cart() {
             {cartItems.map((item) => (
               <div
                 key={item.id}
-                className="grid grid-cols-[2fr,1fr,1fr,auto] gap-8 items-center"
+                className="grid grid-cols-[2fr,1fr,1fr,auto] gap-8 items-center bg-white p-4 rounded-lg"
               >
                 <div className="flex items-center gap-4">
-                  <input type="checkbox" />
                   <img
                     src={item.image}
                     alt={item.name}
@@ -71,48 +71,30 @@ export default function Cart() {
                   />
                   <div>
                     <h3 className="font-medium">{item.name}</h3>
-                    <p className="text-sm text-gray-500">{item.type}</p>
+                    <p className="text-sm text-gray-500">Added: {new Date(item.addedAt).toLocaleDateString()}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => updateQuantity(item.id, -1)}
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
                     className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center"
                   >
                     -
                   </button>
-                  <input
-                    type="text"
-                    value={String(item.quantity).padStart(2, "0")}
-                    className="w-12 text-center border-none bg-transparent"
-                    readOnly
-                  />
+                  <span className="w-12 text-center">{item.quantity}</span>
                   <button
-                    onClick={() => updateQuantity(item.id, 1)}
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
                     className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center"
                   >
                     +
                   </button>
                 </div>
-                <div>₹{(item.price * item.quantity).toFixed(2)}</div>{" "}
-                {/* Ensure price is parsed */}
+                <div>₹{(item.price * item.quantity).toFixed(2)}</div>
                 <button
                   onClick={() => removeFromCart(item.id)}
-                  className="text-red-500"
+                  className="text-red-500 hover:text-red-700"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  Remove
                 </button>
               </div>
             ))}

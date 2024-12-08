@@ -41,16 +41,16 @@ export default function Navbar() {
 
   return (
     <div className="relative z-50">
-      <nav className="bg-[#FFF7E5]/80 backdrop-blur-sm font-primary shadow-lg sticky top-0 w-full">
+      <nav className="bg-primary backdrop-blur-sm font-primary shadow-lg sticky top-0 w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="text-primary hover:text-gray-900">
-              <img src="/images/dAk.png" alt="DAK" className="w-20 h-8" />
+              <img src="/images/dAk.png" alt="DAK" className="w-16 h-6 md:w-20 md:h-8" />
             </Link>
 
             {/* Navigation Links */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center xl:space-x-6 space-x-2 ml-10">
               {[
                 { href: "/", label: "HOME" },
                 { href: "/pda", label: "PHILATELY DEPOSIT ACCOUNT" },
@@ -63,7 +63,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-[#604234] text-sm hover:text-gray-900 ${
+                  className={`text-[#604234] xl:text-base text-xs hover:text-gray-900 text-center ${
                     pathname === link.href ? "font-bold border-b-2 border-[#604234]" : ""
                   }`}
                 >
@@ -73,15 +73,15 @@ export default function Navbar() {
             </div>
 
             {/* Right Side Icons */}
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center xl:space-x-6 space-x-2">
               {/* Bell Icon */}
               <div className="relative">
-                <BsBell className="w-6 h-6 text-[#604234]" />
+                <BsBell className="w-5 h-5 ml-10 xl:w-6 md:h-6 text-[#604234]" />
               </div>
 
               {/* Cart Icon */}
               <Link href="/cart">
-                <BsCart3 className="w-6 h-6 text-[#604234]" />
+                <BsCart3 className="w-5 h-5 xl:w-6 md:h-6 text-[#604234]" />
               </Link>
 
               {/* Profile Dropdown with Username */}
@@ -90,7 +90,7 @@ export default function Navbar() {
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center space-x-2 text-[#604234] hover:text-gray-900"
                 >
-                  <span>Welcome, {userData ? userData.name : 'Loading...'}</span>
+                  <span className="text-xs xl:text-base">Welcome, {userData ? userData.name : 'Loading...'}</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                   </svg>
