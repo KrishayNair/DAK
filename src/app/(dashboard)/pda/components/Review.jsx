@@ -32,4 +32,4 @@ export function Review({ formData, onDepositChange }) {
         </div>
       </div>
     );
-  }
+}

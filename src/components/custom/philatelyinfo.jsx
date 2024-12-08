@@ -16,19 +16,19 @@ const elsieSwashCaps = Elsie_Swash_Caps({
 
 export default function PhilatelyIntro() {
   return (
-    <div className="bg-[#E7D4B5] py-8 px-4 sm:px-6 rounded-none sm:rounded-[12rem] sm:rounded-b-none w-full ">
+    <div className="bg-[#FFF8E8] py-8 px-4 sm:px-6 rounded-none lg:rounded-t-[8rem] xl:rounded-[12rem] sm:rounded-b-none w-full ">
       <div className="max-w-6xl mx-auto">
         <h2
-          className={`text-5xl font-bold mt-10 mb-6 text-secondary ${elsieSwashCaps.className}`}
+          className={`text-4xl md:text-5xl font-bold mt-10 mb-6 lg:ml-20 xl:ml-0 text-secondary ${elsieSwashCaps.className}`}
         >
           New to Philately?
         </h2>
-        <p className="text-secondary text-xl mb-8 font-secondary">
+        <p className="text-lg md:text-xl text-secondary mb-8 lg:ml-20 xl:ml-0 font-secondary">
           Start your journey with DAK
         </p>
 
         <div className="relative mb-8">
-          <Card className="overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
+          <Card className="overflow-hidden rounded-lg md:rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
             <div className="flex flex-col md:flex-row">
               <div className="md:w-2/5 bg-white m-4">
                 <div className="relative w-full h-full min-h-[300px]">
@@ -42,11 +42,11 @@ export default function PhilatelyIntro() {
               </div>
               <CardContent className="md:w-3/5 p-8 flex flex-col justify-center">
                 <CardHeader className="p-0 mb-4">
-                  <CardTitle className="text-2xl font-primary font-semibold">
+                  <CardTitle className="text-xl md:text-2xl font-primary font-semibold">
                     Government-Authorized Philatelic Marketplace
                   </CardTitle>
                 </CardHeader>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 mb-4 text-base md:text-lg">
                   StampXchange revolutionizes stamp trading through a secure,
                   official platform. This digital marketplace offers verified
                   listings and dynamic auctions, ensuring authenticity and fair
@@ -72,7 +72,7 @@ export default function PhilatelyIntro() {
             fill
             className="object-cover -z-10 rotate-180"
           /> */}
-          <Card className="overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
+          <Card className="overflow-hidden rounded-lg md:rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
             <div className="flex flex-col md:flex-row-reverse">
               <div className="md:w-2/5 bg-white  m-4">
                 <div className="relative w-full h-full min-h-[300px]">
@@ -86,11 +86,11 @@ export default function PhilatelyIntro() {
               </div>
               <CardContent className="md:w-3/5 p-8 flex flex-col justify-center">
                 <CardHeader className="p-0 mb-4">
-                  <CardTitle className="text-2xl font-primary font-semibold">
+                  <CardTitle className="text-xl md:text-2xl font-primary font-semibold">
                     Raise your doubts or opinions in StampConnect Community
                   </CardTitle>
                 </CardHeader>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 mb-4 text-base md:text-lg">
                   HarmonyStamps leverages advanced hate speech recognition
                   technology to cultivate a respectful, diverse philatelic
                   community. This platform ensures discussions remain
@@ -119,7 +119,7 @@ export default function PhilatelyIntro() {
             fill
             className="object-cover -z-10"
           /> */}
-          <Card className="overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
+          <Card className="overflow-hidden rounded-lg md:rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
             <div className="flex flex-col md:flex-row">
               <div className="md:w-2/5 bg-white  m-4">
                 <div className="relative w-full h-full min-h-[300px]">
@@ -133,11 +133,11 @@ export default function PhilatelyIntro() {
               </div>
               <CardContent className="md:w-3/5 p-8 flex flex-col justify-center">
                 <CardHeader className="p-0 mb-4">
-                  <CardTitle className="text-2xl font-primary font-semibold">
+                  <CardTitle className="text-xl md:text-2xl font-primary font-semibold">
                     Annual Postal Release Showcase
                   </CardTitle>
                 </CardHeader>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 mb-4 text-base md:text-lg">
                   PostalVista offers a comprehensive, up-to-date catalog of
                   yearly philatelic releases. This dynamic platform provides
                   collectors with a curated preview of upcoming stamps,
@@ -164,7 +164,7 @@ export default function PhilatelyIntro() {
             fill
             className="object-cover -z-10 rotate-180"
           /> */}
-          <Card className="overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
+          <Card className="overflow-hidden rounded-lg md:rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
             <div className="flex flex-col md:flex-row-reverse">
               <div className="md:w-2/5 bg-white  m-4">
                 <div className="relative w-full h-full min-h-[300px]">
@@ -178,12 +178,12 @@ export default function PhilatelyIntro() {
               </div>
               <CardContent className="md:w-3/5 p-8 flex flex-col justify-center">
                 <CardHeader className="p-0 mb-4">
-                  <CardTitle className="text-2xl font-primary font-semibold">
+                  <CardTitle className="text-xl md:text-2xl font-primary font-semibold">
                     Educate yourself with interesting facts about stamp in
                     StampConnect
                   </CardTitle>
                 </CardHeader>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 mb-4 text-base md:text-lg">
                   StampSage transforms stamp education through cutting-edge OCR
                   technology. By simply uploading an image, students and
                   collectors gain instant access to rich historical, cultural,
@@ -212,7 +212,7 @@ export default function PhilatelyIntro() {
             fill
             className="object-cover -z-10"
           /> */}
-          <Card className="overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
+          <Card className="overflow-hidden rounded-lg md:rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
             <div className="flex flex-col md:flex-row">
               <div className="md:w-2/5 bg-white  m-4">
                 <div className="relative w-full h-full min-h-[300px]">
@@ -226,11 +226,11 @@ export default function PhilatelyIntro() {
               </div>
               <CardContent className="md:w-3/5 p-8 flex flex-col justify-center">
                 <CardHeader className="p-0 mb-4">
-                  <CardTitle className="text-2xl font-primary font-semibold">
+                  <CardTitle className="text-xl md:text-2xl font-primary font-semibold">
                     Collaborative Philately Education /Workshop Hub
                   </CardTitle>
                 </CardHeader>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 mb-4 text-base md:text-lg">
                   PhilaTech Academy transforms stamp collecting education
                   through innovative workshops and meetups. This platform
                   facilitates seamless collaboration between government
@@ -257,7 +257,7 @@ export default function PhilatelyIntro() {
             fill
             className="object-cover -z-10 rotate-180"
           /> */}
-          <Card className="overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
+          <Card className="overflow-hidden rounded-lg md:rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
             <div className="flex flex-col md:flex-row-reverse">
               <div className="md:w-2/5 bg-white m-4">
                 <div className="relative w-full h-full min-h-[300px]">
@@ -271,11 +271,11 @@ export default function PhilatelyIntro() {
               </div>
               <CardContent className="md:w-3/5 p-8 flex flex-col justify-center">
                 <CardHeader className="p-0 mb-4">
-                  <CardTitle className="text-2xl font-primary font-semibold">
+                  <CardTitle className="text-xl md:text-2xl font-primary font-semibold">
                     Philately material certification and validation
                   </CardTitle>
                 </CardHeader>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 mb-4 text-base md:text-lg">
                   CertifiStamp revolutionizes philatelic verification using
                   hyperledger private blockchain technology. This advanced
                   system provides tamper-proof certification for stamp

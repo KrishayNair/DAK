@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
-import { Search, ChevronRight } from "lucide-react";
+import React, { useState } from "react";
+import { Search, ChevronRight, Star, ShoppingCart, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CardTitle, CardDescription } from "@/components/ui/card";
 import { Elsie_Swash_Caps } from "next/font/google";
 import { useRouter } from "next/navigation";
+// import { useCart } from "@/contexts/CartContext";
 // Data
 const elsieSwashCaps = Elsie_Swash_Caps({
   subsets: ["latin"],
@@ -81,7 +82,7 @@ const categories = [
 
 // Components
 const SearchSection = () => (
-  <section className="w-full bg-[#FDF6EC] py-12">
+  <section className="w-full bg-[#FFFFF] py-12">
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="space-y-8">
         {/* Search Bar */}
@@ -89,34 +90,34 @@ const SearchSection = () => (
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <Input
             placeholder="Search"
-            className="w-full bg-[#FFF5E7] pl-12 h-14 rounded-full text-lg border-none"
+            className="w-full bg-gray-100 pl-12 h-14 rounded-full text-lg border-none"
           />
         </div>
 
         {/* Filter Options */}
-        <div className="flex items-center gap-6 overflow-x-auto pb-2">
+        <div className="flex flex-col sm:flex-row items-center gap-4 overflow-x-auto pb-2">
           <Button
             variant="outline"
-            className="bg-white/80 hover:bg-white/90 whitespace-nowrap px-4 py-2 h-auto rounded-2xl text-sm border border-gray-100"
+            className="bg-white/80 hover:bg-white/90 whitespace-nowrap px-4 py-2 rounded-2xl text-sm sm:text-base border border-gray-100 w-full sm:w-auto"
           >
             Recents
           </Button>
-          <div className="flex items-center gap-2 whitespace-nowrap px-6 py-4 text-gray-600 bg-white rounded-xl hover:bg-white/90 cursor-pointer">
+          <div className="flex items-center gap-2 whitespace-nowrap px-4 py-2 text-gray-600 bg-white rounded-xl hover:bg-white/90 cursor-pointer w-full sm:w-auto">
             Popular Items
-            <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center border border-gray-100">
-              <ChevronRight className="w-4 h-4" />
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/80 flex items-center justify-center border border-gray-100">
+              <ChevronRight className="w-3 sm:w-4 h-3 sm:h-4" />
             </div>
           </div>
-          <div className="flex items-center gap-2 whitespace-nowrap px-6 py-4 text-gray-600 bg-white rounded-xl hover:bg-white/90 cursor-pointer">
+          <div className="flex items-center gap-2 whitespace-nowrap px-4 py-2 text-gray-600 bg-white rounded-xl hover:bg-white/90 cursor-pointer w-full sm:w-auto">
             Special Offers for you
-            <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center border border-gray-100">
-              <ChevronRight className="w-4 h-4" />
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/80 flex items-center justify-center border border-gray-100">
+              <ChevronRight className="w-3 sm:w-4 h-3 sm:h-4" />
             </div>
           </div>
-          <div className="ml-auto flex items-center gap-2 bg-[#8B6E5B] hover:bg-[#7D6352] text-white px-4 py-3 rounded-2xl cursor-pointer">
+          <div className="ml-auto flex items-center gap-2 bg-[#8B6E5B] hover:bg-[#7D6352] text-white px-2 sm:px-4 py-1 sm:py-3 rounded-2xl cursor-pointer">
             Show All
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-              <ChevronRight className="w-4 h-4" />
+            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center">
+              <ChevronRight className="w-3 sm:w-4 h-3 sm:h-4" />
             </div>
           </div>
         </div>
@@ -172,7 +173,7 @@ const CategoryGrid = () => (
         </CardDescription>
       </div>
 
-      <div className="grid grid-cols-4 auto-rows-[240px] gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[240px] gap-4">
         {/* First row */}
         <BentoCard
           item={categories[0]}
@@ -262,6 +263,113 @@ const MasonryGrid = () => (
     </div>
   </section>
 );
+
+const ProductModal = ({ product, onClose, onAddToCart }) => {
+  const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
+  const router = useRouter();
+
+  const handleQuantityChange = (change) => {
+    const newQuantity = quantity + change;
+    if (newQuantity >= 1 && newQuantity <= 10) {
+      setQuantity(newQuantity);
+    }
+  };
+  const handleAddToCart = () => {
+    addToCart(product, quantity);
+    router.push("/cart");
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-full w-full max-h-[90vh] overflow-y-auto p-4 sm:max-w-4xl">
+        <div className="flex flex-col md:flex-row">
+          {/* Left: Image */}
+          <div className="w-full md:w-1/2 p-2">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-[300px] object-cover rounded-lg"
+            />
+          </div>
+
+          {/* Right: Details */}
+          <div className="w-full md:w-1/2 p-2 space-y-4">
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              ✖
+            </button>
+
+            <h2 className="text-2xl font-bold">{product.name}</h2>
+
+            {/* Rating */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-5 h-5 ${
+                      i < Math.floor(product.rating)
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-sm text-gray-600">
+                ({product.ratingCount} reviews)
+              </span>
+            </div>
+
+            {/* Price */}
+            <div className="text-2xl font-bold text-gray-900">
+              {product.price}
+            </div>
+
+            {/* Backstory */}
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Stamp History</h3>
+              <p className="text-gray-600">{product.backstory}</p>
+            </div>
+
+            {/* Quantity Selector */}
+            <div className="flex items-center gap-4">
+              <span className="text-gray-700">Quantity:</span>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleQuantityChange(-1)}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <span className="w-8 text-center">{quantity}</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleQuantityChange(1)}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Add to Cart Button */}
+            <Button
+              className="w-full bg-[#8B6E5B] hover:bg-[#7D6352] text-white"
+              onClick={() => handleAddToCart(product, quantity)}
+            >
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              Add to Cart
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Main Page Component
 export default function Page() {

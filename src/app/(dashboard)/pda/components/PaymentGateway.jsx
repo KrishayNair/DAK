@@ -3,7 +3,7 @@ export function PaymentGateway({ amount }) {
       <div className="space-y-6">
         <h2 className="text-2xl font-semibold mb-4">Payment Gateway</h2>
         <div className="bg-white p-6 rounded-lg border">
-          <p className="text-xl mb-4">Amount to Pay: ₹{amount}</p>
+          <p className="md:text-xl text-lg mb-4">Amount to Pay: ₹{amount}</p>
           <div className="space-y-4">
             <button className="w-full p-4 bg-secondary text-primary rounded-lg hover:bg-secondary/90 transition-colors">
               Pay with UPI

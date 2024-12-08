@@ -210,13 +210,13 @@ export default function PDAPage() {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8  bg-primary min-h-screen">
+    <div className="container mx-auto px-4 py-4 bg-primary min-h-screen">
       <div className="rounded-lg overflow-hidden">
-        <div className="p-6 sm:p-8 lg:p-12">
-          <h1 className="text-4xl font-bold mb-2">
+        <div className="p-4 sm:p-6 lg:p-8">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2">
             Philatelic Deposit Account
           </h1>
-          <p className="text-sm text-gray-600 mb-12">
+          <p className="text-sm sm:text-base text-gray-600 mb-6">
             Fill this easy Form to activate your philately deposit account and
             receive your favorite material regularly
           </p>
@@ -238,10 +238,7 @@ export default function PDAPage() {
                       </span>
                     </Timeline.Point>
                     <Timeline.Content>
-                      <div className="bg-white rounded-lg p-8 shadow-lg">
-                        {/* <h2 className="text-2xl font-bold mb-6">
-                          {step.title}
-                        </h2> */}
+                      <div className="bg-white rounded-lg p-4 sm:p-6 shadow-lg">
                         <div className="mb-4 text-sm text-gray-600">
                           Step {currentStep + 1} of {steps.length}
                           {isStepComplete(currentStep) && (
@@ -252,30 +249,32 @@ export default function PDAPage() {
                         </div>
                         {renderStepContent(index)}
 
-                        <div className="mt-8 flex justify-between items-center">
-                          <button
-                            onClick={handlePrev}
-                            className={`px-6 py-2 rounded-lg ${
-                              index === 0
-                                ? "opacity-50 cursor-not-allowed bg-gray-300"
-                                : "bg-gray-200 hover:bg-gray-300"
-                            }`}
-                            disabled={index === 0}
-                          >
-                            Previous
-                          </button>
+                        <div className="mt-4 flex flex-col sm:flex-row justify-between items-center">
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={handlePrev}
+                              className={`px-4 py-2 rounded-lg ${
+                                index === 0
+                                  ? "opacity-50 cursor-not-allowed bg-gray-300"
+                                  : "bg-gray-200 hover:bg-gray-300"
+                              }`}
+                              disabled={index === 0}
+                            >
+                              Previous
+                            </button>
 
-                          <button
-                            onClick={handleNext}
-                            className={`px-6 py-2 rounded-lg ${
-                              index === steps.length - 1
-                                ? "opacity-50 cursor-not-allowed bg-[#B45309]"
-                                : "bg-[#B45309] hover:bg-[#A34308]"
-                            } text-white`}
-                            disabled={index === steps.length - 1}
-                          >
-                            Next
-                          </button>
+                            <button
+                              onClick={handleNext}
+                              className={`px-4 py-2 rounded-lg ${
+                                index === steps.length - 1
+                                  ? "opacity-50 cursor-not-allowed bg-[#B45309]"
+                                  : "bg-[#B45309] hover:bg-[#A34308]"
+                              } text-white`}
+                              disabled={index === steps.length - 1}
+                            >
+                              Next
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </Timeline.Content>

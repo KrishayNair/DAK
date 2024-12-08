@@ -8,7 +8,7 @@ export function PersonalDetails({ details, onChange }) {
     };
   
     return (
-      <div className="space-y-6">
+      <div className="p-4">
         <h2 className="text-2xl font-semibold mb-4">Personal Details</h2>
         <div className="grid gap-6">
           <div>
@@ -18,7 +18,7 @@ export function PersonalDetails({ details, onChange }) {
               name="applicantName"
               value={details.applicantName}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-lg"
+              className="w-full p-1 border rounded-lg"
             />
           </div>
           <div>
@@ -38,7 +38,7 @@ export function PersonalDetails({ details, onChange }) {
               name="pinCode"
               value={details.pinCode}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-lg"
+              className="w-full p-1 border rounded-lg"
             />
           </div>
           <div>
@@ -47,7 +47,7 @@ export function PersonalDetails({ details, onChange }) {
               name="frequency"
               value={details.frequency}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-lg"
+              className="w-full p-3 border rounded-lg md:text-base text-sm"
             >
               <option value="">Select Frequency</option>
               <option value="monthly">Monthly</option>

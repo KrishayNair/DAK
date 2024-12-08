@@ -17,7 +17,7 @@ export function OrderDetails({ details, onChange }) {
               name="productType"
               value={details.productType}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-lg"
+              className="w-full p-3 border rounded-lg md:text-base text-sm"
             >
               <option value="">Select Product Type</option>
               <option value="stamps">Stamps</option>
@@ -32,7 +32,7 @@ export function OrderDetails({ details, onChange }) {
               name="quantity"
               value={details.quantity}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-lg"
+              className="w-full p-1 border rounded-lg"
             />
           </div>
         </div>

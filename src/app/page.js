@@ -9,6 +9,7 @@ import MobileHome from '@/components/custom/mobileHome'
 import PhilatelyInfo from '@/components/custom/philatelyinfo'
 import Footer from '../components/custom/Footer'
 import { useRouter } from 'next/navigation'
+import MobileSidebar from '@/components/custom/mobileNav'
 
 
 
@@ -29,7 +30,7 @@ export default function Home() {
   useEffect(() => {
     // Check if the screen is mobile
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768) // Adjust this breakpoint as needed
+      setIsMobile(window.innerWidth <= 1024) // Adjusted breakpoint to include iPad dimensions
     }
 
     checkMobile()
@@ -68,7 +69,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-primary">
+      <div className='hidden md:block'>
       <Navbar />
+      </div>
+      <div className='block md:hidden'>
+      <MobileSidebar />
+      </div>
       {/* <div className="bg-[#E7D4B5] text-white py-4 text-center">
         <p className="mb-2 text-secondary"> <span className="text-xl font-bold mb-2 text-secondary">Note : </span>This website is still under development. you can visit the government site or user profile to know more about the project.</p>
         <div className="space-x-4">
@@ -104,7 +110,7 @@ export default function Home() {
             style={{
               y: useTransform(scrollYProgress, [0, 1], ['100vh', '0vh'])
             }}
-          >
+        >
             <PhilatelyInfo />
             <Footer />
           </motion.div>

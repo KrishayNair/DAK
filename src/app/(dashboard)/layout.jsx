@@ -5,6 +5,7 @@ import Navbar from "@/components/custom/navbar";
 import Footer from "../../components/custom/Footer";
 import { cn } from "@/lib/utils";
 import Header from "../../components/custom/Header";
+import MobileSidebar from '@/components/custom/mobileNav';
 
 export default function DashboardLayout({ children }) {
   useEffect(() => {
@@ -33,8 +34,13 @@ export default function DashboardLayout({ children }) {
   }, []);
 
   return (
-    <main className="flex flex-col min-h-screen bg-[#FFF8E8]">
+    <main className="flex flex-col min-h-screen bg-white">
+      <div className='hidden md:block'>
       <Navbar className="sticky top-2 z-50" />
+      </div>
+      <div className='block md:hidden'>
+      <MobileSidebar />
+      </div>
       <div className={cn("relative w-full flex-1 ")}>
         <Header />
         <div className="w-full min-h-screen">
