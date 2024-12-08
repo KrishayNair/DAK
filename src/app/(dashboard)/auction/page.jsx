@@ -3,11 +3,13 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Clock, Users, Award } from "lucide-react";
+import { Clock, Users, Award, X } from "lucide-react";
 import { Search } from "lucide-react";
+import AuctionCard from "./components/auctionCard";
+import Link from "next/link";
 
 // Updated auction items array with more auction-specific details
-const auctionItems = [
+export const auctionItems = [
   {
     id: 1,
     name: "Rare 1953 Telegraph Centenary Stamp",
@@ -135,6 +137,19 @@ export default function AuctionPage() {
   const [bidAmount, setBidAmount] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [filterStatus, setFilterStatus] = useState("all"); // new state for filtering
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [auctionRequest, setAuctionRequest] = useState({
+    phone: "",
+    title: "",
+    description: "",
+    condition: "",
+    stampPhoto: null,
+    holdingPhoto: null,
+    expectedDate: ""
+  });
+  const [showEndedAuctionModal, setShowEndedAuctionModal] = useState(false);
+  const [selectedEndedAuction, setSelectedEndedAuction] = useState(null);
+  const [showUpcomingModal, setShowUpcomingModal] = useState(false);
 
   // Function to calculate time remaining
   const getTimeRemaining = (endTime) => {
@@ -164,13 +179,37 @@ export default function AuctionPage() {
   };
 
   const handleItemClick = (item) => {
-    setSelectedItem(item);
+    if (item.status === "ended") {
+      setSelectedEndedAuction(item);
+      setShowEndedAuctionModal(true);
+    } else if (item.status === "upcoming") {
+      setSelectedItem(item);
+      setShowUpcomingModal(true);
+    } else {
+      setSelectedItem(item);
+    }
   };
 
   const closeModal = () => {
     setSelectedItem(null);
     setBidAmount(""); // Reset bid amount when closing modal
     setQuantity(1); // Reset quantity when closing modal
+  };
+
+  const handleRequestSubmit = (e) => {
+    e.preventDefault();
+    console.log("Auction request:", auctionRequest);
+    setShowRequestModal(false);
+    // Reset form
+    setAuctionRequest({
+      phone: "",
+      title: "",
+      description: "",
+      condition: "",
+      stampPhoto: null,
+      holdingPhoto: null,
+      expectedDate: ""
+    });
   };
 
   return (
@@ -332,7 +371,7 @@ export default function AuctionPage() {
             <h1 className="text-3xl font-bold text-[#8B4513]">
               Current Auctions
             </h1>
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap justify-center">
               <Button 
                 onClick={() => setFilterStatus("all")}
                 className={`px-6 py-2 rounded-full transition-all duration-300 ${
@@ -343,16 +382,16 @@ export default function AuctionPage() {
               >
                 All Auctions
               </Button>
-              <Button 
-                onClick={() => setFilterStatus("ongoing")}
-                className={`px-6 py-2 rounded-full transition-all duration-300 ${
-                  filterStatus === "ongoing" 
-                    ? "bg-[#D2691E] text-white shadow-lg" 
-                    : "bg-[#fff8e8] text-[#8B4513] hover:bg-[#FFE4B5]"
-                }`}
-              >
-                Ongoing
-              </Button>
+              
+              <Link href="/auction/live">
+                <Button 
+                  className="px-6 py-2 rounded-full transition-all duration-300 
+                           bg-[#D2691E] text-white hover:bg-[#A0522D] shadow-lg"
+                >
+                  Live Auctions
+                </Button>
+              </Link>
+              
               <Button 
                 onClick={() => setFilterStatus("upcoming")}
                 className={`px-6 py-2 rounded-full transition-all duration-300 ${
@@ -363,6 +402,13 @@ export default function AuctionPage() {
               >
                 Upcoming
               </Button>
+              
+              <Button 
+                onClick={() => setShowRequestModal(true)}
+                className="bg-[#D2691E] text-white px-6 py-2 rounded-full hover:bg-[#A0522D] transition-all duration-300"
+              >
+                Request Auction
+              </Button>
             </div>
           </div>
         </div>
@@ -370,64 +416,11 @@ export default function AuctionPage() {
         {/* Auction Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {filteredAuctions.map((item) => (
-            <div
+            <AuctionCard
               key={item.id}
-              className="group bg-white/80 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl 
-                       transition-all duration-300 overflow-hidden cursor-pointer transform hover:-translate-y-1
-                       border border-[#8B4513]/10"
-              onClick={() => handleItemClick(item)}
-            >
-              <div className="relative">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute top-4 right-4">
-                  <span className={`px-4 py-2 rounded-full text-sm font-medium ${
-                    item.status === 'ongoing' ? 'bg-[#D2691E] text-white' :
-                    item.status === 'ended' ? 'bg-[#8B4513] text-white' :
-                    'bg-[#A0522D] text-white'
-                  }`}>
-                    {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="p-6">
-                <h2 className="text-xl font-bold text-[#8B4513] mb-3 line-clamp-2">
-                  {item.name}
-                </h2>
-                
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[#A0522D]">Current Bid</span>
-                    <span className="text-xl font-bold text-[#D2691E]">₹{item.currentBid}</span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-[#A0522D]">Starting Bid</span>
-                    <span className="text-[#8B4513]">₹{item.startingBid}</span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-[#A0522D]">Total Bids</span>
-                    <span className="bg-[#fff8e8] text-[#8B4513] px-3 py-1 rounded-full font-medium">
-                      {item.numberOfBids} bids
-                    </span>
-                  </div>
-                  
-                  <div className="pt-3 border-t border-[#8B4513]/10">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-[#A0522D]">Time Remaining</span>
-                      <span className="text-sm font-medium text-[#D2691E]">
-                        {getTimeRemaining(item.endTime)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+              item={item}
+              onItemClick={handleItemClick}
+            />
           ))}
         </div>
       </div>
@@ -486,6 +479,307 @@ export default function AuctionPage() {
                              transition-colors duration-200 border border-[#8B4513]/20"
                   >
                     Cancel
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showRequestModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+          <div className="bg-[#fff8e8] rounded-2xl shadow-2xl max-w-2xl w-full m-4 overflow-hidden border border-[#8B4513]/10">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-[#8B4513]">Request Auction</h2>
+                <button 
+                  onClick={() => setShowRequestModal(false)}
+                  className="text-[#8B4513] hover:text-[#A0522D]"
+                >
+                  ×
+                </button>
+              </div>
+
+              <form onSubmit={handleRequestSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-[#8B4513] mb-2">Phone Number</label>
+                  <Input
+                    type="tel"
+                    value={auctionRequest.phone}
+                    onChange={(e) => setAuctionRequest({...auctionRequest, phone: e.target.value})}
+                    className="w-full rounded-lg border-[#8B4513]/20"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[#8B4513] mb-2">Stamp Title</label>
+                  <Input
+                    type="text"
+                    value={auctionRequest.title}
+                    onChange={(e) => setAuctionRequest({...auctionRequest, title: e.target.value})}
+                    className="w-full rounded-lg border-[#8B4513]/20"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[#8B4513] mb-2">Description</label>
+                  <textarea
+                    value={auctionRequest.description}
+                    onChange={(e) => setAuctionRequest({...auctionRequest, description: e.target.value})}
+                    className="w-full rounded-lg border-[#8B4513]/20 min-h-[100px] p-2"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[#8B4513] mb-2">Condition</label>
+                  <select
+                    value={auctionRequest.condition}
+                    onChange={(e) => setAuctionRequest({...auctionRequest, condition: e.target.value})}
+                    className="w-full rounded-lg border-[#8B4513]/20 p-2"
+                    required
+                  >
+                    <option value="">Select condition</option>
+                    <option value="mint">Mint</option>
+                    <option value="excellent">Excellent</option>
+                    <option value="good">Good</option>
+                    <option value="fair">Fair</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[#8B4513] mb-2">Stamp Photo</label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setAuctionRequest({...auctionRequest, stampPhoto: e.target.files[0]})}
+                    className="w-full rounded-lg border-[#8B4513]/20"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[#8B4513] mb-2">Photo Holding the Stamp</label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setAuctionRequest({...auctionRequest, holdingPhoto: e.target.files[0]})}
+                    className="w-full rounded-lg border-[#8B4513]/20"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[#8B4513] mb-2">Expected Auction Date</label>
+                  <Input
+                    type="date"
+                    value={auctionRequest.expectedDate}
+                    onChange={(e) => setAuctionRequest({...auctionRequest, expectedDate: e.target.value})}
+                    className="w-full rounded-lg border-[#8B4513]/20"
+                    min={new Date().toISOString().split('T')[0]}
+                    required
+                  />
+                  <span className="text-sm text-[#A0522D] mt-1">
+                    Select your preferred date to host the auction
+                  </span>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <Button 
+                    type="submit"
+                    className="flex-1 bg-[#8B4513] hover:bg-[#A0522D] text-white py-2 rounded-lg"
+                  >
+                    Submit Request
+                  </Button>
+                  <Button 
+                    type="button"
+                    onClick={() => setShowRequestModal(false)}
+                    className="flex-1 bg-[#fff8e8] hover:bg-[#FFE4B5] text-[#8B4513] py-2 rounded-lg border border-[#8B4513]/20"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showEndedAuctionModal && selectedEndedAuction && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+          <div className="bg-[#fff8e8] rounded-2xl shadow-2xl max-w-2xl w-full m-4 overflow-hidden border border-[#8B4513]/10">
+            <div className="relative">
+              <img
+                src={selectedEndedAuction.image}
+                alt={selectedEndedAuction.name}
+                className="w-full h-72 object-cover"
+              />
+              <button 
+                onClick={() => {
+                  setShowEndedAuctionModal(false);
+                  setSelectedEndedAuction(null);
+                }}
+                className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-lg 
+                         hover:bg-white transition-colors duration-200"
+              >
+                <span className="text-[#8B4513]">×</span>
+              </button>
+              <div className="absolute top-4 left-4">
+                <span className="bg-[#8B4513] text-white px-4 py-2 rounded-full text-sm font-medium">
+                  Auction Ended
+                </span>
+              </div>
+            </div>
+            
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-[#8B4513] mb-4">
+                {selectedEndedAuction.name}
+              </h2>
+              
+              <div className="space-y-4">
+                <p className="text-[#A0522D] mb-6">{selectedEndedAuction.backstory}</p>
+                
+                <div className="bg-white/50 rounded-lg p-4 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#A0522D]">Final Bid</span>
+                    <span className="text-2xl font-bold text-[#D2691E]">
+                      ₹{selectedEndedAuction.currentBid}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#A0522D]">Starting Price</span>
+                    <span className="text-[#8B4513]">
+                      ₹{selectedEndedAuction.startingBid}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#A0522D]">Total Bids</span>
+                    <span className="bg-[#fff8e8] text-[#8B4513] px-3 py-1 rounded-full">
+                      {selectedEndedAuction.numberOfBids} bids
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <h3 className="text-lg font-semibold text-[#8B4513] mb-2">
+                    Looking for similar items?
+                  </h3>
+                  <p className="text-[#A0522D] mb-4">
+                    Check out our upcoming auctions or request a specific item.
+                  </p>
+                  <div className="flex gap-3">
+                    <Button 
+                      onClick={() => {
+                        setShowEndedAuctionModal(false);
+                        setFilterStatus("upcoming");
+                      }}
+                      className="flex-1 bg-[#8B4513] hover:bg-[#A0522D] text-white py-2 rounded-lg"
+                    >
+                      View Upcoming Auctions
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        setShowEndedAuctionModal(false);
+                        setShowRequestModal(true);
+                      }}
+                      className="flex-1 bg-[#fff8e8] hover:bg-[#FFE4B5] text-[#8B4513] py-2 rounded-lg 
+                               border border-[#8B4513]/20"
+                    >
+                      Request Similar Item
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upcoming Auction Modal */}
+      {selectedItem && selectedItem.status === "upcoming" && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+          <div className="bg-[#fff8e8] rounded-2xl shadow-2xl max-w-2xl w-full m-4 overflow-hidden">
+            <div className="relative">
+              <img
+                src={selectedItem.image}
+                alt={selectedItem.name}
+                className="w-full h-72 object-cover"
+              />
+              <button 
+                onClick={() => setSelectedItem(null)}
+                className="absolute top-4 right-4 bg-white/80 p-2 rounded-full 
+                           hover:bg-white transition-all duration-300"
+              >
+                <X size={20} className="text-[#8B4513]" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-[#8B4513] mb-2">
+                  {selectedItem.name}
+                </h2>
+                <div className="flex items-center gap-2 text-[#A0522D]">
+                  <Clock size={18} />
+                  <span>Starts in: {getTimeRemaining(selectedItem.endTime)}</span>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold text-[#8B4513] mb-2">About this Auction</h3>
+                  <p className="text-[#A0522D]">{selectedItem.backstory}</p>
+                </div>
+
+                <div className="bg-white/50 rounded-xl p-4 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-[#8B4513]">Starting Bid</span>
+                    <span className="font-semibold text-[#D2691E]">
+                      ₹{selectedItem.startingBid.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#8B4513]">Expected Value</span>
+                    <span className="font-semibold text-[#D2691E]">
+                      ₹{(selectedItem.startingBid * 1.5).toLocaleString()} - 
+                      ₹{(selectedItem.startingBid * 2).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold text-[#8B4513]">Get Notified</h3>
+                  <p className="text-sm text-[#A0522D]">
+                    Apply now to participate in this auction when it goes live.
+                  </p>
+                </div>
+
+                <div className="flex gap-4">
+                  <Button 
+                    onClick={() => {
+                      // Handle auction application
+                      setSelectedItem(null);
+                      alert("Your application has been submitted!");
+                    }}
+                    className="flex-1 bg-[#8B4513] hover:bg-[#A0522D] text-white py-2 rounded-lg"
+                  >
+                    Apply for Auction
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      // Add to calendar functionality
+                      setSelectedItem(null);
+                      alert("Added to calendar!");
+                    }}
+                    className="flex-1 bg-white hover:bg-[#FFE4B5] text-[#8B4513] py-2 rounded-lg 
+                             border border-[#8B4513]/20"
+                  >
+                    Add to Calendar
                   </Button>
                 </div>
               </div>

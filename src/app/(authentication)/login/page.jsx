@@ -159,6 +159,15 @@ export default function ForgotPassword() {
             "Send 5-digit code"
           )}
         </Button>
+
+        <div className="text-center mt-6">
+          <p className="text-gray-600">
+            Don't have an account?{" "}
+            <Link href="/signup" className="text-black font-semibold hover:underline">
+              Sign up
+            </Link>
+          </p>
+        </div>
       </form>
     </Form>
   );
