@@ -8,6 +8,7 @@ import NotificationModal from "@/components/custom/NotificationModal";
 import { useNotifications } from "@/context/NotificationContext";
 import Cookies from "js-cookie";
 import { fetchFromAPI } from '@/lib/api';
+import { logout } from "@/lib/auth";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -105,7 +106,7 @@ export default function Navbar() {
                     </Link>
                     <button
                       onClick={() => {
-                        Cookies.remove("token");
+                        logout();
                         router.push("/login");
                       }}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
