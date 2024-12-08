@@ -3,11 +3,7 @@ export { PersonalDetails } from './PersonalDetails';
 export { OrderDetails } from './OrderDetails';
 export { Review } from './Review';
 export { PaymentGateway } from './PaymentGateway';
-export { StepIndicator } from './StepIndicator';
+
 export { DepositModal } from './DepositModal';
-export { Header } from './Header';
-export { StepNavigation } from './StepNavigation';
-export { StepContent } from './StepContent';
-export { FormContainer } from './FormContainer';
-export { GeneratePDF } from './GeneratePDF';
-export { AadharUpload } from './AadharUpload';
+
+

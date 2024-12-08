@@ -17,41 +17,150 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, RefreshCw } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { getOTP, login, verifyOTP } from "@/lib/auth";
 
 // Add form schema
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  contact: z.string().min(10, "Contact number must be at least 10 digits"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  phone_number: z
+    .string()
+    .min(10, "Phone number must be at least 10 digits")
+    .regex(/^\d+$/, "Must contain only digits"),
+  postal_code: z
+    .string()
+    .length(6, "Postal code must be 6 digits")
+    .regex(/^\d+$/, "Must contain only digits"),
 });
 
 // Carousel Component
 
 // Main Signup Component
 export default function Signup() {
-  const [showForm, setShowForm] = useState(false);
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [visible, setVisible] = useState(false);
-
-  const toggleVisible = () => setVisible((prev) => !prev);
+  const [showOTP, setShowOTP] = useState(false);
+  const [email, setEmail] = useState("");
+  const [uid, setUID] = useState(null);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
-      contact: "",
-      password: "",
+      phone_number: "",
+      postal_code: "",
     },
   });
 
   async function onSubmit(values) {
     setLoading(true);
-    console.log(values);
-    // Add your signup logic here
-    setLoading(false);
+
+    const userData = {
+      name: values.name,
+      email: values.email,
+      phone_number: values.phone_number,
+      postal_code: values.postal_code
+    };
+
+    try {
+      const res = await login(userData);
+
+      if (res.success) {
+        setUID(res.data?.id);
+        setEmail(values.email);
+
+        const emailSent = await getOTP(res.data?.id);
+
+        if (emailSent.success) {
+          setShowOTP(true);
+        } else {
+          alert("Error in sending OTP", emailSent?.message);
+        }
+      } else {
+        alert("Something went wrong : ", res?.mesage);
+      }
+    } catch (error) {
+      console.error('Login Error:', error);
+      alert(error.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   }
+
+  async function onOTPSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      const otpInputs = document.querySelectorAll('input[type="text"]');
+      const otpArray = Array.from(otpInputs).map(input => input.value);
+      const otpString = otpArray.join('');
+
+      if (otpString.length !== 5) {
+        alert('Please enter all 5 digits');
+        return;
+      }
+
+      const response = await verifyOTP(uid, otpString);
+
+      if (response) {
+        router.replace('/');
+      }
+    } catch (error) {
+      console.error('OTP Verification Error:', error);
+      alert(error.message || 'Verification failed');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Add OTP Form Component
+  const OTPForm = (
+    <form onSubmit={onOTPSubmit} className="space-y-6">
+      <p className="text-gray-600">We sent the code to {email}</p>
+
+      <div className="flex gap-4 justify-center my-8">
+        {[0, 1, 2, 3, 4].map((index) => (
+          <input
+            key={index}
+            type="text"
+            maxLength="1"
+            className="w-16 h-16 text-center text-2xl border rounded-xl focus:border-black focus:ring-0 outline-none"
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value.match(/^[0-9]$/)) {
+                const nextInput = e.target.nextElementSibling;
+                if (nextInput) nextInput.focus();
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Backspace' && !e.target.value) {
+                const prevInput = e.target.previousElementSibling;
+                if (prevInput) prevInput.focus();
+              }
+            }}
+          />
+        ))}
+      </div>
+
+      <Button
+        type="submit"
+        className="w-full rounded-full py-6 h-auto text-lg"
+        disabled={loading}
+      >
+        {loading ? (
+          <>
+            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+            Verifying...
+          </>
+        ) : (
+          "Continue"
+        )}
+      </Button>
+    </form>
+  );
 
   return (
     <div className="flex h-screen bg-white">
@@ -67,147 +176,139 @@ export default function Signup() {
             </Link>
           </p>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              {/* Name Field */}
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          placeholder=" "
-                          className="rounded-full py-5 peer"
-                          {...field}
-                        />
-                        <FormLabel className="absolute text-sm left-3 top-1/2 -translate-y-1/2 text-gray-400 bg-white px-2 transition-all duration-200 peer-focus:text-xs peer-focus:-top-1 peer-focus:text-black peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-top-1 peer-[:not(:placeholder-shown)]:text-black">
-                          Name
-                        </FormLabel>
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              />
+          {showOTP ? (
+            OTPForm
+          ) : (
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                {/* Name Field */}
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className="relative">
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            placeholder=" "
+                            className="rounded-full py-5 peer"
+                            {...field}
+                          />
+                          <FormLabel className="absolute text-sm left-3 top-1/2 -translate-y-1/2 text-gray-400 bg-white px-2 transition-all duration-200 peer-focus:text-xs peer-focus:-top-1 peer-focus:text-black peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-top-1 peer-[:not(:placeholder-shown)]:text-black">
+                            Name
+                          </FormLabel>
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-xs" />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Email Field */}
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          placeholder=" "
-                          className="rounded-full py-5 peer"
-                          {...field}
-                        />
-                        <FormLabel className="absolute text-sm left-3 top-1/2 -translate-y-1/2 text-gray-400 bg-white px-2 transition-all duration-200 peer-focus:text-xs peer-focus:-top-1 peer-focus:text-black peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-top-1 peer-[:not(:placeholder-shown)]:text-black">
-                          Email
-                        </FormLabel>
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              />
+                {/* Email Field */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="relative">
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            placeholder=" "
+                            className="rounded-full py-5 peer"
+                            {...field}
+                          />
+                          <FormLabel className="absolute text-sm left-3 top-1/2 -translate-y-1/2 text-gray-400 bg-white px-2 transition-all duration-200 peer-focus:text-xs peer-focus:-top-1 peer-focus:text-black peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-top-1 peer-[:not(:placeholder-shown)]:text-black">
+                            Email
+                          </FormLabel>
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-xs" />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Contact Field */}
-              <FormField
-                control={form.control}
-                name="contact"
-                render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          placeholder=" "
-                          className="rounded-full py-5 peer"
-                          {...field}
-                        />
-                        <FormLabel className="absolute text-sm left-3 top-1/2 -translate-y-1/2 text-gray-400 bg-white px-2 transition-all duration-200 peer-focus:text-xs peer-focus:-top-1 peer-focus:text-black peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-top-1 peer-[:not(:placeholder-shown)]:text-black">
-                          Contact number
-                        </FormLabel>
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              />
+                {/* Phone Number Field */}
+                <FormField
+                  control={form.control}
+                  name="phone_number"
+                  render={({ field }) => (
+                    <FormItem className="relative">
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            placeholder=" "
+                            className="rounded-full py-5 peer"
+                            {...field}
+                          />
+                          <FormLabel className="absolute text-sm left-3 top-1/2 -translate-y-1/2 text-gray-400 bg-white px-2 transition-all duration-200 peer-focus:text-xs peer-focus:-top-1 peer-focus:text-black peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-top-1 peer-[:not(:placeholder-shown)]:text-black">
+                            Phone Number
+                          </FormLabel>
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-xs" />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Password Field */}
-              {/* <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          type={visible ? "text" : "password"}
-                          placeholder=" "
-                          className="rounded-full py-5 peer"
-                          {...field}
-                        />
-                        <FormLabel className="absolute text-sm left-3 top-1/2 -translate-y-1/2 text-gray-400 bg-white px-2 transition-all duration-200 peer-focus:text-xs peer-focus:-top-1 peer-focus:text-black peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-top-1 peer-[:not(:placeholder-shown)]:text-black">
-                          Password
-                        </FormLabel>
-                        <button
-                          type="button"
-                          onClick={toggleVisible}
-                          className="absolute right-3 top-1/2 -translate-y-1/2"
-                        >
-                          {visible ? (
-                            <EyeOff className="h-5 w-5 text-gray-500" />
-                          ) : (
-                            <Eye className="h-5 w-5 text-gray-500" />
-                          )}
-                        </button>
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              /> */}
+                {/* Postal Code Field */}
+                <FormField
+                  control={form.control}
+                  name="postal_code"
+                  render={({ field }) => (
+                    <FormItem className="relative">
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            placeholder=" "
+                            className="rounded-full py-5 peer"
+                            {...field}
+                          />
+                          <FormLabel className="absolute text-sm left-3 top-1/2 -translate-y-1/2 text-gray-400 bg-white px-2 transition-all duration-200 peer-focus:text-xs peer-focus:-top-1 peer-focus:text-black peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-top-1 peer-[:not(:placeholder-shown)]:text-black">
+                            Postal Code
+                          </FormLabel>
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-xs" />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Terms Checkbox */}
-              <div className="flex items-start gap-2">
-                <input type="checkbox" className="mt-1" required />
-                <p className="text-xs text-gray-600">
-                  I agree with Dak's{" "}
-                  <Link href="/terms" className="underline">
-                    Terms of Service
-                  </Link>
-                  ,{" "}
-                  <Link href="/privacy" className="underline">
-                    Privacy Policy
-                  </Link>
-                  , and default{" "}
-                  <Link href="/notifications" className="underline">
-                    Notification Settings
-                  </Link>
-                </p>
-              </div>
+                {/* Terms Checkbox */}
+                <div className="flex items-start gap-2">
+                  <input type="checkbox" className="mt-1" required />
+                  <p className="text-xs text-gray-600">
+                    I agree with Dak's{" "}
+                    <Link href="/terms" className="underline">
+                      Terms of Service
+                    </Link>
+                    ,{" "}
+                    <Link href="/privacy" className="underline">
+                      Privacy Policy
+                    </Link>
+                    , and default{" "}
+                    <Link href="/notifications" className="underline">
+                      Notification Settings
+                    </Link>
+                  </p>
+                </div>
 
-              <Button
-                type="submit"
-                className="w-full rounded-full py-5 text-base bg-[#FFE5C2] hover:bg-[#FFE5C2/90]"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                    Loading
-                  </>
-                ) : (
-                  "Create Account"
-                )}
-              </Button>
-            </form>
-          </Form>
+                <Button
+                  type="submit"
+                  className="w-full rounded-full py-5 text-base bg-[#FFE5C2] hover:bg-[#FFE5C2/90]"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                      Loading
+                    </>
+                  ) : (
+                    "Create Account"
+                  )}
+                </Button>
+              </form>
+            </Form>
+          )}
         </div>
       </div>
 

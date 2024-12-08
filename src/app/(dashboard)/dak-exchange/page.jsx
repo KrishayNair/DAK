@@ -193,6 +193,9 @@ export default function ExchangePage() {
           <div className="stamp-3 absolute w-24 h-24 opacity-40 animate-float animation-delay-2000">
             <img src="/collage.png" alt="" className="w-full h-full" />
           </div>
+          <div className="stamp-4 absolute w-24 h-24 opacity-40 animate-float animation-delay-3000">
+            <img src="/collage.png" alt="" className="w-full h-full" />
+          </div>
         </div>
       </div>
 

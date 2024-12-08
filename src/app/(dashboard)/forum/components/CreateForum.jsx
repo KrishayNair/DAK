@@ -43,21 +43,9 @@ export default function CreateForum({ onSuccess }) {
 
     async function onSubmit(data) {
         try {
-            // Create FormData object
-            const formData = new FormData();
             
-            // Append text data
-            formData.append("content", data.content.trim());
-            
-            // Handle multiple image uploads
-            if (data.uploaded_images && data.uploaded_images.length > 0) {
-                Array.from(data.uploaded_images).forEach((file, index) => {
-                    formData.append(`uploaded_images`, file); // Django expects a list of files
-                });
-            }
-
             // Send the request with multipart/form-data
-            const response = await postDataToAPI("/forum/", formData, true);
+            const response = await postDataToAPI("forum/", toFormData(data), true);
             
             if (response?.success) {
                 form.reset();

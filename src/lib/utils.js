@@ -10,6 +10,6 @@ export function buildImageUrl(path) {
     return path;
   }
   
-  const base = process.env.NEXT_PUBLIC_API_URL + "media/";
-  return base + path;
+  const base = process.env.NEXT_PUBLIC_API_URL;
+  return base.slice(0, -1) + path;
 }
