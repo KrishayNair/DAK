@@ -4,11 +4,6 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Gift,
-  LayoutDashboardIcon,
-  Settings,
-  User,
-  Users,
   Menu,
   X,
   Bell,
@@ -17,7 +12,7 @@ import {
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-export default function MobileSidebar() {
+export default function MobileNav() {
   const [isClick, setisClick] = useState(false);
 
   const toggleNavbar = () => {
@@ -42,31 +37,41 @@ export default function MobileSidebar() {
   const pathname = usePathname();
 
   const sideBarRoutes = [
-    { title: "Home", url: "/", icon: LayoutDashboardIcon},
-    { title: "Philatelist Deposit Account", url: "/pda", icon: Gift},
+    { 
+      title: "Home", 
+      url: "/", 
+      regex: /^\/$/ 
+    },
+    { 
+      title: "Philatelist Deposit Account", 
+      url: "/pda", 
+      regex: /^\/pda/ 
+    },
     {
       title: "Shop",
       url: "/shop",
+      regex: /^\/shop/
     },
     {
       title: "Catalog",
       url: "/catalog",
+      regex: /^\/catalog/
     },
     {
-        title: "Blog",
-        url: "/blog",
-      },
+      title: "Blog",
+      url: "/blog",
+      regex: /^\/blog/
+    },
     {
-        title: "Forum",
-        url: "/forum",
-      },
-      {
-        title: "Auctions",
-        url: "/auction",
-      },
-      
-
-
+      title: "Forum",
+      url: "/forum",
+      regex: /^\/forum/
+    },
+    {
+      title: "Auctions",
+      url: "/auction",
+      regex: /^\/auction/
+    }
   ];
 
   return (
@@ -82,13 +87,6 @@ export default function MobileSidebar() {
           src="/logo.png"
           width={130}
           height={50}
-          className="block dark:hidden"
-        />
-        <Image
-          src="/logo-dark.png"
-          width={130}
-          height={50}
-          className="hidden dark:block"
         />
         <div className="ml-auto cursor-pointer flex items-center space-x-3">
           <Bell className="w-6 h-6" />
@@ -108,7 +106,7 @@ export default function MobileSidebar() {
             <h2 className="text-lg block md:hidden text-muted font-bold py-3">
               {getGreeting()},
               <br />
-              <span className="text-xl text-black dark:text-white ">Dhruv</span>
+              <span className="text-xl text-black dark:text-white ">User</span>
             </h2>
             <Avatar className="w-12 h-12 ml-auto mr-2">
               <AvatarImage src="https://github.com/shadcn.png" />
@@ -121,15 +119,14 @@ export default function MobileSidebar() {
                 key={i}
                 href={route.url}
                 className={cn(
-                  "relative",
+                  "relative py-3",
                   pathname.match(route.regex) &&
-                  "w-full flex items-center gap-3 font-semibold rounded-md py-3 transition-all hover:text-primary",
+                  "w-full font-semibold rounded-md transition-all hover:text-primary",
                   pathname.match(route.regex)
                     ? "text-secondary"
                     : "text-slate-400"
                 )}
               >
-                <route.icon className="h-6 w-6" />
                 {route.title}
               </Link>
             ))}

@@ -9,8 +9,7 @@ import MobileHome from '@/components/custom/mobileHome'
 import PhilatelyInfo from '@/components/custom/philatelyinfo'
 import Footer from '../components/custom/Footer'
 import { useRouter } from 'next/navigation'
-import MobileSidebar from '@/components/custom/mobileNav'
-
+import MobileNav from '@/components/custom/MobileNav'
 
 
 export default function Home() {
@@ -73,7 +72,7 @@ export default function Home() {
       <Navbar />
       </div>
       <div className='block md:hidden'>
-      <MobileSidebar />
+      <MobileNav />
       </div>
       {/* <div className="bg-[#E7D4B5] text-white py-4 text-center">
         <p className="mb-2 text-secondary"> <span className="text-xl font-bold mb-2 text-secondary">Note : </span>This website is still under development. you can visit the government site or user profile to know more about the project.</p>
