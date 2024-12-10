@@ -21,7 +21,7 @@ export default function Header() {
       <nav
         className={cn(
           "w-full flex items-center justify-start",
-          "px-4 select-none mb-6"
+          "px-4 select-none"
         )}
       >
         {/* <ThemeIcon 
