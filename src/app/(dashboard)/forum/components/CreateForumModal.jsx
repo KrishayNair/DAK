@@ -23,10 +23,12 @@ const CreateForumModal = ({ isOpen, onClose, onPostCreated }) => {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto px-6 py-4">
-          <CreateForum onSuccess={() => {
-            onClose();
-            onPostCreated && onPostCreated();
-          }} />
+          <CreateForum
+            onSuccess={() => {
+              onClose();
+              onPostCreated && onPostCreated();
+            }}
+          />
         </div>
       </div>
     </div>

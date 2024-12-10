@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { fetchFromAPI } from "@/lib/api";
 import { buildImageUrl } from "@/lib/utils";
+import Spinner from "@/components/custom/Spinner";
 
 export default function Sidebar() {
   const [userData, setUserData] = useState(null);
@@ -31,7 +32,7 @@ export default function Sidebar() {
         <div>
           <p className="text-sm text-gray-800 font-bold">Hi</p>
           <p className="  text-black-900 font-bold">
-            {userData ? userData.name : "Loading..."}
+            {userData ? userData.name : <Spinner />}
           </p>
         </div>
       </div>
