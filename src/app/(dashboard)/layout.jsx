@@ -36,7 +36,7 @@ export default function DashboardLayout({ children }) {
   return (
     <main className="flex flex-col min-h-screen bg-white">
       <div className='hidden md:block'>
-      <Navbar className="sticky top-2 z-50" />
+      <Navbar/>
       </div>
       <div className='block md:hidden'>
       <MobileNav />

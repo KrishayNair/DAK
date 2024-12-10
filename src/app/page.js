@@ -67,7 +67,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-primary">
+    <div className="min-h-screen bg-[#FFF8E8]">
       <div className='hidden md:block'>
       <Navbar />
       </div>
@@ -103,7 +103,7 @@ export default function Home() {
             <Hero scrollY={scrollY} />
           </motion.div>
         )}
-        <div className="relative z-10">
+        <div className="relative z-10 mt-20">
           <motion.div
             className="parallax-section"
             style={{

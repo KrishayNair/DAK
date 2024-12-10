@@ -119,14 +119,15 @@ export default function MobileNav() {
                 key={i}
                 href={route.url}
                 className={cn(
-                  "relative py-3",
+                  "relative",
                   pathname.match(route.regex) &&
-                  "w-full font-semibold rounded-md transition-all hover:text-primary",
+                  "w-full flex items-center gap-3 font-semibold rounded-md py-3 transition-all hover:text-primary",
                   pathname.match(route.regex)
                     ? "text-secondary"
                     : "text-slate-400"
                 )}
               >
+                <route.icon className="h-6 w-6" />
                 {route.title}
               </Link>
             ))}
