@@ -6,6 +6,8 @@ export function cn(...inputs) {
 }
 
 export function buildImageUrl(path) {
+  if (!path) return null;
+
   if (path.startsWith("http")) {
     return path;
   }
