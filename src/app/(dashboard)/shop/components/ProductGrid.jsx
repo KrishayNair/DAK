@@ -25,7 +25,7 @@ export default function ProductsGrid() {
                 <h2 className="text-3xl font-bold mb-2">Our Best Sellers</h2>
                 <p className="text-lg text-gray-600">Discover our most popular and sought-after stamps</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}

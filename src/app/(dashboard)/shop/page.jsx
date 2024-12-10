@@ -416,19 +416,67 @@ const ProductModal = ({ product, onClose, onAddToCart }) => {
   );
 };
 
-// Main Page Component
+// Add this new component for the side navigation
+const SideNavigation = () => (
+  <div className="w-64 pr-8 bg-white rounded-lg shadow-md p-6 h-fit sticky top-24">
+    <h3 className="text-2xl font-semibold mb-6 text-[#8B6E5B] border-b pb-4">Categories</h3>
+    <div className="space-y-1">
+      {[
+        "Miniature Sheets",
+        "First Day Cover",
+        "Setenant",
+        "Definitive",
+        "Sheetlets",
+        "Full Sheets",
+        "Single Mint Stamp",
+        "Block of 4",
+        "Year Pack",
+        "Error / Oddities",
+        "Cancelled Brochure",
+        "Special Cover",
+        "MS on FDC",
+        "MS on Brochure",
+        "Setenant on FDC",
+        "Setenant Brochure",
+        "Army Covers",
+        "VIP Folders",
+        "Maxim Cards",
+        "Booklets & Thematic Pack",
+        "Used Stamps",
+        "Broken Setenant",
+        "Foreign Stamps",
+        "Miscellaneous Items",
+        "UNIQUE"
+      ].map((category) => (
+        <button
+          key={category}
+          className="block w-full text-left py-2.5 px-4 rounded-lg text-gray-600 hover:text-[#8B6E5B] hover:bg-[#fff7e5] transition-all duration-200 font-medium text-sm"
+        >
+          {category}
+        </button>
+      ))}
+    </div>
+  </div>
+);
+
+// Update the main Page component
 export default function Page() {
   return (
     <main className="min-h-screen w-full bg-white">
       <div className="w-full">
         <HeroSection />
         <SearchSection />
-
-        {/* TODO: Add the products grid here */}
-        <ProductsGrid />
-
-        {/* TODO: Add the collection grid here */}
-        <CollectionGrid />
+        
+        {/* New layout with side navigation */}
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex gap-8">
+            <SideNavigation />
+            <div className="flex-1">
+              <ProductsGrid />
+              <CollectionGrid />
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );

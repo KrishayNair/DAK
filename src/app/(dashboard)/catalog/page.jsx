@@ -6,13 +6,14 @@ import { Elsie_Swash_Caps } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { postDataToAPI } from "@/lib/api";
+import Link from 'next/link';
 
 const elsieSwashCaps = Elsie_Swash_Caps({
   subsets: ["latin"],
   weight: ["400"],
 });
 
-const stampImages = [
+export const stampImages = [
   "images/stamps/1.jpg",
   "images/stamps/2.jpg",
   "images/stamps/3.jpg",
@@ -25,7 +26,7 @@ const stampImages = [
   "images/stamps/10.jpg",
 ];
 
-const stampDetails = [
+export const stampDetails = [
   {
     name: "'75' and Flag",
     caption: "A commemorative stamp celebrating India's 75th year of independence",
@@ -344,77 +345,78 @@ export default function StampCollection() {
         <h2 className="text-3xl font-semibold text-gray-800 mb-8">Featured Stamps</h2>
         <div className="flex flex-wrap gap-6">
           {stampImages.map((image, index) => (
-            <div 
-              key={index}
-              className="w-[300px] h-[400px] relative group cursor-pointer"
-              onClick={() => handleImageClick(index)}
-            >
-              {/* Card Container */}
-              <div className="absolute inset-0 bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden">
-                {/* Image Section */}
-                <div className="h-[65%] overflow-hidden">
-                  <img
-                    src={image}
-                    alt={`Stamp ${index + 1}`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  {/* Overlay Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/60 group-hover:opacity-100 transition-opacity" />
-                  
-                  {/* Rarity Badge */}
-                  {stampDetails[index] && (
-                    <div className="absolute top-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
-                      <span className="text-sm font-semibold text-gray-900">
-                        {stampDetails[index].rarity}
-                      </span>
-                    </div>
-                  )}
+            <Link key={index} href={`/catalog/${index}`}>
+              <div 
+                className="w-[300px] h-[400px] relative group cursor-pointer"
+                onClick={() => handleImageClick(index)}
+              >
+                {/* Card Container */}
+                <div className="absolute inset-0 bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden">
+                  {/* Image Section */}
+                  <div className="h-[65%] overflow-hidden">
+                    <img
+                      src={image}
+                      alt={`Stamp ${index + 1}`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    {/* Overlay Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/60 group-hover:opacity-100 transition-opacity" />
+                    
+                    {/* Rarity Badge */}
+                    {stampDetails[index] && (
+                      <div className="absolute top-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
+                        <span className="text-sm font-semibold text-gray-900">
+                          {stampDetails[index].rarity}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="absolute bottom-0 w-full h-[35%] p-4 bg-white">
+                    {stampDetails[index] && (
+                      <>
+                        {/* Title and Year */}
+                        <div className="mb-2">
+                          <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">
+                            {stampDetails[index].name}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            {stampDetails[index].year}
+                          </p>
+                        </div>
+
+                        {/* Quick Info */}
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <span className="px-2 py-1 bg-amber-50 text-amber-800 text-xs font-medium rounded-md">
+                            {stampDetails[index].condition}
+                          </span>
+                          <span className="px-2 py-1 bg-blue-50 text-blue-800 text-xs font-medium rounded-md">
+                            {stampDetails[index].printingMethod}
+                          </span>
+                        </div>
+
+                        {/* Price and Details */}
+                        <div className="flex items-center justify-between">
+                          <span className="text-lg font-bold text-[#b39656]">
+                            {stampDetails[index].marketValue}
+                          </span>
+                          <button 
+                            className="px-3 py-1 text-sm text-[#b39656] border border-[#b39656] rounded-full 
+                                     hover:bg-[#b39656] hover:text-white transition-colors duration-300"
+                          >
+                            View Details
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Hover Overlay */}
+                  <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
                 </div>
-
-                {/* Content Section */}
-                <div className="absolute bottom-0 w-full h-[35%] p-4 bg-white">
-                  {stampDetails[index] && (
-                    <>
-                      {/* Title and Year */}
-                      <div className="mb-2">
-                        <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">
-                          {stampDetails[index].name}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          {stampDetails[index].year}
-                        </p>
-                      </div>
-
-                      {/* Quick Info */}
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        <span className="px-2 py-1 bg-amber-50 text-amber-800 text-xs font-medium rounded-md">
-                          {stampDetails[index].condition}
-                        </span>
-                        <span className="px-2 py-1 bg-blue-50 text-blue-800 text-xs font-medium rounded-md">
-                          {stampDetails[index].printingMethod}
-                        </span>
-                      </div>
-
-                      {/* Price and Details */}
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold text-[#b39656]">
-                          {stampDetails[index].marketValue}
-                        </span>
-                        <button 
-                          className="px-3 py-1 text-sm text-[#b39656] border border-[#b39656] rounded-full 
-                                   hover:bg-[#b39656] hover:text-white transition-colors duration-300"
-                        >
-                          View Details
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
