@@ -2,7 +2,7 @@ import { verifySession } from "@/lib/auth";
 
 export async function middleware(request) {
   // return await verifySession(request);
-  console.log("yoyoyo");
+  //  console.log("yoyoyo");
 }
 
 // export const config = {
