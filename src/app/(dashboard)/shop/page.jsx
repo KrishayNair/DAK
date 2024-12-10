@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { CardTitle, CardDescription } from "@/components/ui/card";
 import { Elsie_Swash_Caps } from "next/font/google";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 import ProductsGrid from "./components/ProductGrid";
 import CollectionGrid from "./components/CollectionGrid";
@@ -85,6 +86,74 @@ const categories = [
 ];
 
 // Components
+const HeroSection = () => (
+  <section className="relative w-full bg-gradient-to-b from-[#fff7e5] to-white py-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="space-y-6"
+        >
+          <h2 className={`text-4xl md:text-5xl font-bold text-gray-900 ${elsieSwashCaps.className}`}>
+            Discover Rare Philatelic Treasures
+          </h2>
+          <p className="text-lg text-gray-600">
+            Explore our curated collection of unique stamps, first day covers, and miniature sheets from around the world.
+          </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="flex gap-4"
+          >
+            <Button className="bg-[#8B6E5B] hover:bg-[#7D6352] text-white px-8 py-6 rounded-full text-lg">
+              Start Collecting
+            </Button>
+            <Button variant="outline" className="px-8 py-6 rounded-full text-lg">
+              View Catalog
+            </Button>
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          className="relative"
+        >
+          <div className="aspect-square relative w-[400px] h-[400px] mx-auto">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 rounded-full border-2 border-dashed border-[#8B6E5B] opacity-40"
+            />
+            <div className="absolute inset-0 rounded-full overflow-hidden cover-fit p-2">
+              <img
+                src="/shophead.jpg"
+                alt="Featured Stamp Collection"
+                className="w-full h-full object-cover rounded-full"
+              />
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+
+    {/* Decorative elements */}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 0.1 }}
+      transition={{ delay: 1 }}
+      className="absolute inset-0 overflow-hidden pointer-events-none"
+    >
+      <div className="absolute top-1/4 left-4 w-24 h-24 border border-[#8B6E5B] rounded-lg rotate-12" />
+      <div className="absolute bottom-1/4 right-4 w-32 h-32 border border-[#8B6E5B] rounded-lg -rotate-12" />
+    </motion.div>
+  </section>
+);
+
 const SearchSection = () => (
   <section className="w-full bg-[#FFFFF] py-12">
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,34 +165,6 @@ const SearchSection = () => (
             placeholder="Search"
             className="w-full bg-gray-100 pl-12 h-14 rounded-full text-lg border-none"
           />
-        </div>
-
-        {/* Filter Options */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 overflow-x-auto pb-2">
-          <Button
-            variant="outline"
-            className="bg-white/80 hover:bg-white/90 whitespace-nowrap px-4 py-2 rounded-2xl text-sm sm:text-base border border-gray-100 w-full sm:w-auto"
-          >
-            Recents
-          </Button>
-          <div className="flex items-center gap-2 whitespace-nowrap px-4 py-2 text-gray-600 bg-white rounded-xl hover:bg-white/90 cursor-pointer w-full sm:w-auto">
-            Popular Items
-            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/80 flex items-center justify-center border border-gray-100">
-              <ChevronRight className="w-3 sm:w-4 h-3 sm:h-4" />
-            </div>
-          </div>
-          <div className="flex items-center gap-2 whitespace-nowrap px-4 py-2 text-gray-600 bg-white rounded-xl hover:bg-white/90 cursor-pointer w-full sm:w-auto">
-            Special Offers for you
-            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/80 flex items-center justify-center border border-gray-100">
-              <ChevronRight className="w-3 sm:w-4 h-3 sm:h-4" />
-            </div>
-          </div>
-          <div className="ml-auto flex items-center gap-2 bg-[#8B6E5B] hover:bg-[#7D6352] text-white px-2 sm:px-4 py-1 sm:py-3 rounded-2xl cursor-pointer">
-            Show All
-            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center">
-              <ChevronRight className="w-3 sm:w-4 h-3 sm:h-4" />
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -380,11 +421,7 @@ export default function Page() {
   return (
     <main className="min-h-screen w-full bg-white">
       <div className="w-full">
-        <h1
-          className={`text-black text-4xl sm:text-6xl font-bold text-center px-4 py-2 rounded ${elsieSwashCaps.className}`}
-        >
-          SHOP
-        </h1>
+        <HeroSection />
         <SearchSection />
 
         {/* TODO: Add the products grid here */}
