@@ -1,10 +1,52 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import toast, { Toaster } from 'react-hot-toast';
 
-export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDepositChange }) {
+export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDepositChange, onValidityChange }) {
   const router = useRouter();
   const productType = details.productType;
   const [addedItems, setAddedItems] = React.useState(details.addedItems || []);
+
+  React.useEffect(() => {
+    const initializedDetails = {
+      ...details,
+      mintCommemorative: details.mintCommemorative || 0,
+      mintCommWithoutPersonalities: details.mintCommWithoutPersonalities || 0,
+      mintDefinitive: details.mintDefinitive || 0,
+      topMarginal: details.topMarginal || 0,
+      bottomMarginal: details.bottomMarginal || 0,
+      fullSheet: details.fullSheet || 0,
+      fdcWithStamp: details.fdcWithStamp || 0,
+      fdcWithoutPersonality: details.fdcWithoutPersonality || 0,
+      fdcBlank: details.fdcBlank || 0,
+      brochureWithStamp: details.brochureWithStamp || 0,
+      brochureBlank: details.brochureBlank || 0,
+      annualStampPack: details.annualStampPack || 0,
+      specialAnnualPack: details.specialAnnualPack || 0,
+      childrensPack: details.childrensPack || 0,
+      specialCollectorPack: details.specialCollectorPack || 0,
+      fdcAnnualPack: details.fdcAnnualPack || 0,
+      postalStationaryItem: details.postalStationaryItem || 0,
+      miniSheet: details.miniSheet || 0,
+      otherItemQuantity: details.otherItemQuantity || 0
+    };
+    onChange(initializedDetails);
+  }, []);
+
+  React.useEffect(() => {
+    const isValid = validateForm();
+    onValidityChange(isValid);
+  }, [details, addedItems]);
+
+  const validateForm = () => {
+    if (!productType) return false;
+    if (addedItems.length === 0) return false;
+
+    const totalDeposit = parseFloat(depositAmount) || 0;
+    if (totalDeposit < 200) return false;
+
+    return true;
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -51,6 +93,17 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
           ...details,
           addedItems: updatedItems
         });
+
+        toast.success(
+          <div className="flex flex-col">
+            <span className="font-medium">Item Updated</span>
+            <span className="text-sm">{itemLabel}: {quantity} units</span>
+          </div>,
+          {
+            duration: 3000,
+            icon: '✏️'
+          }
+        );
       } else {
         const newItems = [...addedItems, newItem];
         setAddedItems(newItems);
@@ -59,19 +112,38 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
           ...details,
           addedItems: newItems
         });
+
+        toast.success(
+          <div className="flex flex-col">
+            <span className="font-medium">Item Added</span>
+            <span className="text-sm">{itemLabel}: {quantity} units</span>
+          </div>,
+          {
+            duration: 3000,
+            icon: '✅'
+          }
+        );
       }
       
       onAddItem(newItem);
+      handleQuantityChange(itemName, '0');
+    } else {
+      toast.error('Please enter a quantity greater than 0', {
+        icon: '⚠️',
+        duration: 3000
+      });
     }
   };
 
-  const handleRemoveItem = (itemId) => {
+  const handleRemoveItem = (itemId, itemName) => {
     const updatedItems = addedItems.filter(i => i.id !== itemId);
     setAddedItems(updatedItems);
     onChange({
       ...details,
       addedItems: updatedItems
     });
+    
+    toast.success(`Removed: ${itemName}`);
   };
 
   const renderQuantityInput = (item) => (
@@ -180,7 +252,7 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
                 Qty: {item.quantity}
               </span>
               <button
-                onClick={() => handleRemoveItem(item.id)}
+                onClick={() => handleRemoveItem(item.id, item.name)}
                 className="text-red-500 hover:text-red-600 p-1 rounded-full hover:bg-red-50 transition-colors"
                 title="Remove item"
               >
@@ -193,6 +265,19 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
         ))}
       </div>
     );
+  };
+
+  const renderValidationMessage = () => {
+    if (!productType) {
+      return <p className="text-red-500 text-sm mt-4">Please select a product type</p>;
+    }
+    if (addedItems.length === 0) {
+      return <p className="text-red-500 text-sm mt-4">Please add at least one item to continue</p>;
+    }
+    if (parseFloat(depositAmount) < 200) {
+      return <p className="text-red-500 text-sm mt-4">Minimum deposit amount of ₹200 is required</p>;
+    }
+    return null;
   };
 
   return (
@@ -354,19 +439,21 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
         </div>
       </div>
 
-      {addedItems.length === 0 && (
-        <div className="mt-4 p-4 bg-amber-50 border-l-4 border-amber-500 text-amber-700">
-          <p className="font-medium">Required Action</p>
-          <p className="text-sm">Please add at least one item to proceed to the next step</p>
-        </div>
-      )}
+      {renderValidationMessage()}
 
-      {depositAmount < 200 && (
-        <div className="mt-4 p-4 bg-amber-50 border-l-4 border-amber-500 text-amber-700">
-          <p className="font-medium">Required Action</p>
-          <p className="text-sm">Minimum deposit amount of ₹200 is required to proceed</p>
-        </div>
-      )}
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          className: '',
+          duration: 3000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+            padding: '16px',
+            borderRadius: '8px',
+          },
+        }}
+      />
     </div>
   );
 }

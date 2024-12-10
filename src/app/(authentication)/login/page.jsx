@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Link from "next/link";
 import { RefreshCw } from "lucide-react";
+import Cookies from 'js-cookie';
 
 import {
   Form,
@@ -55,53 +56,50 @@ export default function ForgotPassword() {
   async function onEmailSubmit(values) {
     setLoading(true);
 
-    const res = await login(values);
+    try {
+      const res = await login(values);
 
-    if (res.success) {
-      setUID(res.data?.id);
-      setEmail(values.email);
+      if (res.success) {
+        setUID(res.data?.id);
+        setEmail(values.email);
 
-      const emailSent = await getOTP(res.data?.id);
+        const emailSent = await getOTP(res.data?.id);
 
-      if (emailSent.success) {
-        setShowOTP(true);
-        setLoading(false);
+        if (emailSent.success) {
+          setShowOTP(true);
+          setLoading(false);
+        } else {
+          alert("Error in sending OTP");
+        }
       } else {
-        alert("error in sending otp")
+        alert("Something went wrong: " + (res.err?.message || "Unknown error"));
       }
-
-    } else {
-      alert("something went wrong")
+    } catch (err) {
+      alert("Something went wrong: " + err.message);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   async function onOTPSubmit(e) {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault();
     setLoading(true);
     
     try {
-        // Get all OTP input values
         const otpInputs = document.querySelectorAll('input[type="text"]');
         const otpArray = Array.from(otpInputs).map(input => input.value);
         const otpString = otpArray.join('');
-        
-        console.log('OTP Inputs:', otpArray);
-        console.log('Combined OTP:', otpString);
 
         if (otpString.length !== 5) {
             alert('Please enter all 5 digits');
             return;
         }
 
-        // Call verify OTP
         const response = await verifyOTP(uid, otpString);
-        console.log('Verification Response:', response);
 
         if (response) {
-            router.replace('/')
-            // Handle successful verification
+            Cookies.set('show_tour', 'true', { expires: 1 });
+            router.replace('/');
         }
     } catch (error) {
         console.error('OTP Verification Error:', error);

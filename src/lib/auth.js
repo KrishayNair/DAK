@@ -20,14 +20,15 @@ export async function verifyOTP(uid, otp) {
     otp,
   });
 
-  const expires = new Date(Date.now() + 10 * 1000);
   if (res.data.success) {
     const accessToken = res.data.data.access_token;
-
     const decodedToken = jwtDecode(accessToken);
     const expires = new Date(decodedToken.exp * 1000);
 
+    // Set the auth token
     cookies().set("dak_session", accessToken, { expires, httpOnly: true });
+    // Always set show_tour to true on successful login/signup
+    cookies().set("show_tour", "true", { expires });
   }
 
   return true;

@@ -31,8 +31,7 @@ const steps = [
   { number: "02", title: "Personal Details" },
   { number: "03", title: "Order Details" },
   { number: "04", title: "Document Upload" },
-  { number: "05", title: "Review" },
-  { number: "06", title: "Confirmation" },
+  { number: "05", title: "Review & Pay" },
 ];
 
 export default function PDAPage() {
@@ -79,6 +78,7 @@ export default function PDAPage() {
     }
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isStepValid, setIsStepValid] = useState(false);
 
   useEffect(() => {
     const savedData = localStorage.getItem("pdaFormData");
@@ -96,6 +96,7 @@ export default function PDAPage() {
           [section]:
             typeof data === "object" ? { ...prev[section], ...data } : data,
         };
+        console.log('Form Data Updated:', JSON.stringify(newData, null, 2));
         return newData;
       });
     } catch (err) {
@@ -104,42 +105,61 @@ export default function PDAPage() {
     }
   };
 
-  const isStepComplete = (step) => {
+  const handleDocumentChange = (documents) => {
+    setFormData(prev => ({
+      ...prev,
+      documents
+    }));
+  };
+
+  const handleValidityChange = (isValid) => {
+    setIsStepValid(isValid);
+  };
+
+  const handleStepValidityChange = (isValid) => {
+    console.log('Step validity changed:', isValid);
+    setIsStepValid(isValid);
+  };
+
+  const isStepComplete = (stepIndex) => {
     try {
-      switch (step) {
+      switch (stepIndex) {
         case 0: // Customer Type
-          return !!formData.customerType;
-        
+          return !!formData.customerType && 
+                 formData.customerType.trim() !== '';
+
         case 1: // Personal Details
-          return (
-            formData.personalDetails &&
-            !!formData.personalDetails.applicantName &&
-            !!formData.personalDetails.mailingAddress &&
-            !!formData.personalDetails.pinCode &&
-            !!formData.personalDetails.frequency
+          return !!(
+            formData.personalDetails?.applicantName?.trim() &&
+            formData.personalDetails?.mailingAddress?.trim() &&
+            formData.personalDetails?.pinCode?.trim() &&
+            formData.personalDetails?.frequency
           );
-        
+
         case 2: // Order Details
-          return (
-            formData.orderDetails &&
-            Array.isArray(formData.orderDetails.addedItems) &&
-            formData.orderDetails.addedItems.length > 0 &&
-            Number(formData.depositAmount) >= 200
+          return !!(
+            formData.orderDetails?.addedItems?.length > 0 &&
+            formData.depositAmount &&
+            Number(formData.depositAmount) >= 200 &&
+            isStepValid // This checks any additional order validations
           );
-        
+
         case 3: // Document Upload
-          return (
-            formData.documents &&
-            formData.documents.idProof &&
-            formData.documents.addressProof
-          );
-        
+          const hasIdProof = formData.documents?.idProof?.file || formData.documents?.idProof?.url;
+          const hasPanCard = formData.documents?.panCard?.file || formData.documents?.panCard?.url;
+          const documentsValid = hasIdProof && hasPanCard && isStepValid;
+          console.log('Document step check:', { hasIdProof, hasPanCard, isStepValid });
+          return documentsValid;
+
         case 4: // Review
-          return true;
-        
-        case 5: // Payment Gateway
-          return true;
-        
+          // Check if all previous steps are complete before allowing review
+          return (
+            isStepComplete(0) &&
+            isStepComplete(1) &&
+            isStepComplete(2) &&
+            isStepComplete(3)
+          );
+
         default:
           return false;
       }
@@ -149,40 +169,67 @@ export default function PDAPage() {
     }
   };
 
-  const getStepValidationMessage = (step) => {
-    switch (step) {
-      case 2:
-        if (!formData.orderDetails?.addedItems?.length) {
-          return "Please add at least one item to your order";
-        }
-        if (Number(formData.depositAmount) < 200) {
-          return "Minimum deposit amount of ₹200 is required";
-        }
-        return "";
-      default:
-        return "Please complete all required fields";
-    }
+  // Add this helper function to validate email format
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
-  const canAccessStep = (stepIndex) => {
-    // Can always access current or previous steps
-    if (stepIndex <= currentStep) return true;
-    
-    // Can only access next step if current step is complete
-    if (stepIndex === currentStep + 1) {
-      return isStepComplete(currentStep);
-    }
-    
-    // Cannot skip steps
-    return false;
+  // Add this helper function to validate mobile number
+  const isValidMobile = (mobile) => {
+    const mobileRegex = /^[0-9]{10}$/;
+    return mobileRegex.test(mobile);
   };
 
+  // Add this helper function to validate PIN code
+  const isValidPinCode = (pinCode) => {
+    const pinCodeRegex = /^[0-9]{6}$/;
+    return pinCodeRegex.test(pinCode);
+  };
+
+  // Update the handleStepChange function to include additional validation
   const handleStepChange = (direction) => {
     if (direction === "next") {
       if (!isStepComplete(currentStep)) {
-        setError(`Please complete all required fields in ${steps[currentStep].title}`);
+        let errorMessage = "Please complete all required fields";
+        
+        // Custom error messages based on step
+        switch (currentStep) {
+          case 0:
+            errorMessage = "Please select your customer type";
+            break;
+          case 1:
+            if (!formData.personalDetails?.applicantName?.trim()) {
+              errorMessage = "Please enter your full name";
+            } else if (!formData.personalDetails?.mailingAddress?.trim()) {
+              errorMessage = "Please enter your complete mailing address";
+            } else if (!isValidPinCode(formData.personalDetails?.pinCode)) {
+              errorMessage = "Please enter a valid 6-digit PIN code";
+            } else if (!formData.personalDetails?.frequency) {
+              errorMessage = "Please select your preferred frequency";
+            }
+            break;
+          case 2:
+            if (!formData.orderDetails?.addedItems?.length) {
+              errorMessage = "Please add at least one item to your order";
+            } else if (!formData.depositAmount || Number(formData.depositAmount) < 200) {
+              errorMessage = "Minimum deposit amount of ₹200 is required";
+            }
+            break;
+          case 3:
+            errorMessage = "Please upload both ID proof and PAN card documents";
+            break;
+          case 4:
+            errorMessage = "Please review all information and ensure it's correct";
+            break;
+        }
+        
+        setError(errorMessage);
         return;
       }
+
+      // Log form data when moving to next step
+      console.log(`Completed Step ${currentStep + 1}:`, JSON.stringify(formData, null, 2));
 
       // Move to next step
       const nextStep = currentStep + 1;
@@ -199,34 +246,18 @@ export default function PDAPage() {
           });
         }
       }
-    } else if (direction === "prev") {
-      // Move to previous step
-      const prevStep = currentStep - 1;
-      if (prevStep >= 0) {
-        setCurrentStep(prevStep);
-        setError(null);
-
-        // Scroll to the previous section
-        const sections = document.querySelectorAll(".timeline-section");
-        if (sections[prevStep]) {
-          sections[prevStep].scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-          });
-        }
-      }
+    } else if (direction === "prev" && currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+      setError(null);
     }
   };
 
   const renderStepContent = (index) => {
-    // Only render content for the current step
     if (index !== currentStep) {
       return (
         <div className="text-center py-8 text-gray-500">
           {index < currentStep ? (
-            <div>
-              <span className="text-green-600">✓</span> Step Completed
-            </div>
+            <div><span className="text-green-600">✓</span> Step Completed</div>
           ) : (
             <div>Please complete previous steps first</div>
           )}
@@ -236,19 +267,9 @@ export default function PDAPage() {
 
     switch (index) {
       case 0:
-        return (
-          <CustomerType
-            value={formData.customerType}
-            onChange={(type) => updateFormData("customerType", type)}
-          />
-        );
+        return <CustomerType value={formData.customerType} onChange={(type) => updateFormData("customerType", type)} />;
       case 1:
-        return (
-          <PersonalDetails
-            details={formData.personalDetails}
-            onChange={(details) => updateFormData("personalDetails", details)}
-          />
-        );
+        return <PersonalDetails details={formData.personalDetails} onChange={(details) => updateFormData("personalDetails", details)} />;
       case 2:
         return (
           <OrderDetails
@@ -257,23 +278,27 @@ export default function PDAPage() {
             onAddItem={handleAddItem}
             depositAmount={formData.depositAmount}
             onDepositChange={(amount) => updateFormData("depositAmount", amount)}
+            onValidityChange={handleValidityChange}
           />
         );
       case 3:
         return (
           <DocumentUpload
             documents={formData.documents}
-            onChange={(documents) => updateFormData("documents", documents)}
+            onChange={handleDocumentChange}
+            onValidityChange={handleStepValidityChange}
           />
         );
       case 4:
-        return (
-          <Review
-            formData={formData}
-          />
-        );
-      case 5:
-        return <PaymentGateway amount={formData.depositAmount} />;
+        // Log the complete form data when reaching the Review step
+        console.log('Review Component Data:', {
+          customerType: formData.customerType,
+          personalDetails: formData.personalDetails,
+          orderDetails: formData.orderDetails,
+          documents: formData.documents,
+          depositAmount: formData.depositAmount
+        });
+        return <Review formData={formData} />;
       default:
         return null;
     }
@@ -329,6 +354,63 @@ export default function PDAPage() {
         return [...prev, item];
       }
     });
+  };
+
+  const getStepGuidance = (step) => {
+    switch (step) {
+      case 0:
+        return "Select your customer type. This helps us customize your PDA experience based on whether you're an individual collector or representing an organization.";
+      case 1:
+        return "Fill in your personal details carefully. Make sure your mailing address is complete and accurate as this will be used for delivering your philatelic items.";
+      case 2:
+        return "Choose the items you'd like to receive. Remember, you need a minimum deposit of ₹200 to proceed. You can always add more items later.";
+      case 3:
+        return "Upload clear, legible copies of your ID and address proof. Accepted formats are JPG, PNG, or PDF (max 5MB each).";
+      case 4:
+        return "Review all your information carefully before proceeding. You can go back to any previous step to make changes if needed.";
+      default:
+        return "";
+    }
+  };
+
+  const getStepSpecificTips = (step) => {
+    switch (step) {
+      case 0:
+        return [
+          "Individual accounts are for personal collectors",
+          "Institutional accounts are for organizations and businesses",
+          "Your selection will determine the required documents"
+        ];
+      case 1:
+        return [
+          "Use your full legal name as it appears on your ID",
+          "Provide a complete mailing address including landmarks",
+          "PIN code must be valid and current",
+          "Choose a frequency that matches your collection goals"
+        ];
+      case 2:
+        return [
+          "Minimum deposit amount is ₹250",
+          "You can modify your selections later",
+          "Consider your collecting interests when choosing items",
+          "Special packs offer better value for regular collectors"
+        ];
+      case 3:
+        return [
+          "Acceptable ID proofs: Aadhaar, PAN, Passport",
+          "Ensure documents are clearly visible and complete",
+          "File size should not exceed 5MB per document"
+        ];
+      case 4:
+        return [
+          "Double-check all entered information",
+          "Verify your mailing address carefully",
+          "Confirm your selected items and quantities",
+          "Make sure your deposit amount meets requirements"
+        ];
+      default:
+        return [];
+    }
   };
 
   return (
@@ -502,93 +584,126 @@ export default function PDAPage() {
 </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="rounded-lg overflow-hidden">
-          <div className="p-4 sm:p-6 lg:p-8">
-           
-
-            {error && (
-              <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-lg shadow-md">
-                <p className="font-medium">Error</p>
-                <p className="text-sm">{error}</p>
-              </div>
-            )}
-
-            <div className="relative">
-              <Timeline>
-                {steps.map((step, index) => (
-                  <div 
-                    key={index} 
-                    className={`timeline-section min-h-[60vh] transition-opacity duration-300 ${
-                      index !== currentStep ? 'opacity-60' : ''
-                    }`}
-                  >
-                    <Timeline.Item active={currentStep >= index}>
-                      <Timeline.Point>
-                        <span className={`text-2xl font-bold ${
-                          currentStep >= index ? `text-[${theme.secondary}]` : "text-gray-400"
-                        }`}>
-                          {step.number}
-                        </span>
-                      </Timeline.Point>
-                      <Timeline.Content>
-                        <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-                          <div className="mb-6 flex justify-between items-center">
-                            <div className="text-sm font-medium" style={{ color: theme.primary }}>
-                              Step {index + 1} of {steps.length}
+        <div className="max-w-6xl mx-auto">
+          <div className="relative">
+            <Timeline>
+              {steps.map((step, index) => (
+                <div 
+                  key={index} 
+                  className={`timeline-section transition-all duration-500 ease-in-out ${
+                    index !== currentStep ? 'opacity-60 scale-95' : 'scale-100'
+                  }`}
+                >
+                  <Timeline.Item active={currentStep >= index}>
+                    <Timeline.Point>
+                      <span className={`text-xl font-bold ${
+                        currentStep >= index ? `text-[${theme.secondary}]` : "text-gray-400"
+                      }`}>
+                        {step.number}
+                      </span>
+                    </Timeline.Point>
+                    <Timeline.Content>
+                      <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 w-full mb-8">
+                        {/* Header Section */}
+                        <div className="mb-6">
+                          <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-xl font-semibold" style={{ color: theme.primary }}>
+                              {step.title}
+                            </h2>
+                            <div className="flex items-center space-x-2">
+                              <div className="text-sm font-medium text-gray-500">
+                                Step {index + 1} of {steps.length}
+                              </div>
                               {isStepComplete(index) && (
-                                <span className="ml-2 text-green-600">
-                                  ✓ Complete
+                                <span className="text-green-600 flex items-center">
+                                  <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                  </svg>
+                                  Complete
                                 </span>
                               )}
                             </div>
                           </div>
                           
-                          {renderStepContent(index)}
+                          {/* Guidance Box */}
+                          <div className="mt-2 p-3 bg-blue-50 rounded-lg text-sm text-blue-700">
+                            {getStepGuidance(index)}
+                          </div>
+                        </div>
 
-                          {index === currentStep && (
-                            <div className="mt-8 flex flex-col items-center">
-                              {!isStepComplete(index) && (
-                                <p className="text-red-500 text-sm mb-4">
-                                  {getStepValidationMessage(index)}
-                                </p>
-                              )}
-                              
-                              <div className="flex justify-between items-center w-full">
-                                <button
-                                  onClick={() => handleStepChange("prev")}
-                                  className={`px-6 py-3 rounded-lg transition-all duration-300 ${
-                                    index === 0
-                                      ? "opacity-50 cursor-not-allowed bg-gray-200"
-                                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                                  }`}
-                                  disabled={index === 0}
-                                >
-                                  Previous
-                                </button>
+                        {/* Main Content Area */}
+                        <div className="mb-8">
+                          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {/* Main Form - Takes 2 columns */}
+                            <div className="lg:col-span-2 space-y-4">
+                              {renderStepContent(index)}
+                            </div>
 
-                                {index !== steps.length - 1 && (
-                                  <button
-                                    onClick={() => handleStepChange("next")}
-                                    className={`px-6 py-3 rounded-lg transition-all duration-300 ${
-                                      !isStepComplete(index)
-                                        ? "opacity-50 cursor-not-allowed bg-gray-200"
-                                        : `bg-[${theme.secondary}] hover:brightness-110 text-white shadow-md hover:shadow-lg`
-                                    }`}
-                                    disabled={!isStepComplete(index)}
-                                  >
-                                    Continue
-                                  </button>
-                                )}
+                            {/* Helper Content - Takes 1 column */}
+                            <div className="hidden lg:block">
+                              <div className="bg-gray-50 rounded-lg p-4">
+                                <h3 className="text-lg font-medium mb-3" style={{ color: theme.secondary }}>
+                                  Helpful Tips
+                                </h3>
+                                <div className="space-y-3">
+                                  {getStepSpecificTips(index).map((tip, i) => (
+                                    <div key={i} className="flex items-start space-x-2">
+                                      <div className="text-blue-500 mt-1">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                      </div>
+                                      <p className="text-sm text-gray-600">{tip}</p>
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
                             </div>
-                          )}
+                          </div>
                         </div>
-                      </Timeline.Content>
-                    </Timeline.Item>
-                  </div>
-                ))}
-              </Timeline>
-            </div>
+
+                        {/* Navigation Buttons */}
+                        <div className="border-t border-gray-200 pt-6">
+                          <div className="flex justify-between items-center max-w-md mx-auto">
+                            <button
+                              onClick={() => handleStepChange("prev")}
+                              className={`px-6 py-3 rounded-lg transition-all duration-300 flex items-center ${
+                                index === 0
+                                  ? "opacity-50 cursor-not-allowed bg-gray-200"
+                                  : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                              }`}
+                              disabled={index === 0}
+                            >
+                              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                              </svg>
+                              Previous
+                            </button>
+
+                            {index !== steps.length - 1 && currentStep === index && (
+                              <button
+                                onClick={() => handleStepChange("next")}
+                                className={`px-6 py-3 rounded-lg transition-all duration-300 flex items-center ${
+                                  !isStepComplete(index)
+                                    ? "opacity-50 cursor-not-allowed bg-gray-200"
+                                    : `bg-[${theme.secondary}] hover:brightness-110 text-white shadow-md hover:shadow-lg`
+                                }`}
+                                disabled={!isStepComplete(index)}
+                              >
+                                Continue
+                                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </Timeline.Content>
+                  </Timeline.Item>
+                </div>
+              ))}
+            </Timeline>
           </div>
         </div>
       </div>
