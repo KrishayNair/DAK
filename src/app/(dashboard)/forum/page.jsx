@@ -37,36 +37,36 @@ import { buildImageUrl } from "@/lib/utils";
 // Mock Data (can be replaced with API calls)
 const MOCK_FILTERS = [
   {
-    id: 'newest',
-    icon: '✨',
-    iconBg: 'bg-emerald-100',
-    iconColor: 'text-emerald-600',
-    label: 'Newest and recent post',
-    subtext: 'Find the latest update'
+    id: "newest",
+    icon: "✨",
+    iconBg: "bg-emerald-100",
+    iconColor: "text-emerald-600",
+    label: "Newest and recent post",
+    subtext: "Find the latest update",
   },
   {
-    id: 'popular',
-    icon: '❤️',
-    iconBg: 'bg-pink-100',
-    iconColor: 'text-pink-600',
-    label: 'Popular of the day',
-    subtext: 'Most liked posts'
+    id: "popular",
+    icon: "❤️",
+    iconBg: "bg-pink-100",
+    iconColor: "text-pink-600",
+    label: "Popular of the day",
+    subtext: "Most liked posts",
   },
   {
-    id: 'recommended',
-    icon: '⭐',
-    iconBg: 'bg-yellow-100',
-    iconColor: 'text-yellow-600',
-    label: 'Recommended for you',
-    subtext: 'Personalized posts based on your interest'
-  }
+    id: "recommended",
+    icon: "⭐",
+    iconBg: "bg-yellow-100",
+    iconColor: "text-yellow-600",
+    label: "Recommended for you",
+    subtext: "Personalized posts based on your interest",
+  },
 ];
 
 const MOCK_HASHTAGS = [
-  { id: '1', tag: 'sigma', postCount: 250 },
-  { id: '2', tag: 'Cooked', postCount: 180 },
-  { id: '3', tag: 'Gooning', postCount: 120 },
-  { id: '4', tag: 'Mewing', postCount: 90 },
+  { id: "1", tag: "sigma", postCount: 250 },
+  { id: "2", tag: "Cooked", postCount: 180 },
+  { id: "3", tag: "Gooning", postCount: 120 },
+  { id: "4", tag: "Mewing", postCount: 90 },
 ];
 
 // Hooks
@@ -84,7 +84,7 @@ const useHashtags = () => {
       // setHashtags(data);
       setHashtags(MOCK_HASHTAGS); // Using mock data for now
     } catch (err) {
-      setError('Failed to fetch hashtags');
+      setError("Failed to fetch hashtags");
     } finally {
       setLoading(false);
     }
@@ -133,13 +133,20 @@ const PopularHashtags = () => {
       <div className="h-px bg-gray-200 -mx-4 mb-4"></div>
       <div className="space-y-4">
         {hashtags.map((item) => (
-          <div key={item.id} className="flex items-center justify-between group cursor-pointer">
+          <div
+            key={item.id}
+            className="flex items-center justify-between group cursor-pointer"
+          >
             <div className="flex items-center gap-2">
               <span className="text-gray-600">#{item.tag}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-400">{item.postCount} Posts</span>
-              <span className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">⋯</span>
+              <span className="text-sm text-gray-400">
+                {item.postCount} Posts
+              </span>
+              <span className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                ⋯
+              </span>
             </div>
           </div>
         ))}
@@ -149,15 +156,17 @@ const PopularHashtags = () => {
 };
 
 const FeedFilter = () => {
-  const [activeFilter, setActiveFilter] = React.useState('newest');
+  const [activeFilter, setActiveFilter] = React.useState("newest");
 
   return (
     <div className="space-y-2 mb-6">
       {MOCK_FILTERS.map((filter) => (
-        <FilterButton 
+        <FilterButton
           key={filter.id}
           icon={
-            <div className={`w-8 h-8 ${filter.iconBg} rounded-lg flex items-center justify-center ${filter.iconColor}`}>
+            <div
+              className={`w-8 h-8 ${filter.iconBg} rounded-lg flex items-center justify-center ${filter.iconColor}`}
+            >
               {filter.icon}
             </div>
           }
@@ -173,10 +182,10 @@ const FeedFilter = () => {
 
 const FilterButton = ({ icon, label, subtext, active, onClick }) => {
   return (
-    <button 
+    <button
       onClick={onClick}
       className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${
-        active ? 'bg-white shadow-sm' : 'hover:bg-white'
+        active ? "bg-white shadow-sm" : "hover:bg-white"
       }`}
     >
       {icon}
@@ -241,14 +250,11 @@ const ForumPage = () => {
             </button>
           </div>
 
-          {posts.map(post => (
-            <PostItem 
-              key={post.id} 
-              post={post}
-            />
+          {posts.map((post) => (
+            <PostItem key={post.id} post={post} />
           ))}
         </main>
-        
+
         <aside className="w-full lg:w-80">
           <SearchBar />
           <FeedFilter />
@@ -275,19 +281,19 @@ const CreatePost = ({ onPostCreate }) => {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    const imageFiles = files.filter(file => file.type.startsWith('image/'));
-    setImages(prev => [...prev, ...imageFiles]);
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+    setImages((prev) => [...prev, ...imageFiles]);
   };
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith('video/')) {
+    if (file && file.type.startsWith("video/")) {
       setVideo(file);
     }
   };
 
   const handleEmojiClick = (emoji) => {
-    setContent(prev => prev + emoji);
+    setContent((prev) => prev + emoji);
   };
 
   const handleCreatePost = () => {
@@ -297,11 +303,11 @@ const CreatePost = ({ onPostCreate }) => {
       id: Date.now(),
       author: "John Doe", // Replace with actual user
       content: content,
-      images: images.map(image => URL.createObjectURL(image)),
+      images: images.map((image) => URL.createObjectURL(image)),
       video: video ? URL.createObjectURL(video) : null,
       likes: 0,
       timeAgo: "Just now",
-      comments: []
+      comments: [],
     };
 
     onPostCreate(newPost);
@@ -312,7 +318,7 @@ const CreatePost = ({ onPostCreate }) => {
   };
 
   const removeImage = (index) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const removeVideo = () => {
@@ -330,7 +336,7 @@ const CreatePost = ({ onPostCreate }) => {
           placeholder="Let's share what's on your mind..."
           className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none"
         />
-        <button 
+        <button
           onClick={handleCreatePost}
           className="px-4 py-2 bg-blue-500 text-white rounded-full text-sm hover:bg-blue-600"
         >
@@ -343,8 +349,12 @@ const CreatePost = ({ onPostCreate }) => {
         <div className="mt-4 grid grid-cols-2 gap-2">
           {video && (
             <div className="relative">
-              <video src={URL.createObjectURL(video)} className="w-full rounded-lg" controls />
-              <button 
+              <video
+                src={URL.createObjectURL(video)}
+                className="w-full rounded-lg"
+                controls
+              />
+              <button
                 onClick={removeVideo}
                 className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
               >
@@ -354,12 +364,12 @@ const CreatePost = ({ onPostCreate }) => {
           )}
           {images.map((image, index) => (
             <div key={index} className="relative">
-              <img 
-                src={URL.createObjectURL(image)} 
-                alt={`Upload ${index + 1}`} 
+              <img
+                src={URL.createObjectURL(image)}
+                alt={`Upload ${index + 1}`}
                 className="w-full h-32 object-cover rounded-lg"
               />
-              <button 
+              <button
                 onClick={() => removeImage(index)}
                 className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
               >
@@ -378,7 +388,7 @@ const CreatePost = ({ onPostCreate }) => {
           onChange={handleVideoUpload}
           className="hidden"
         />
-        <button 
+        <button
           onClick={() => videoInputRef.current?.click()}
           className="flex items-center gap-2 text-gray-500 text-sm hover:text-blue-500"
           disabled={images.length > 0}
@@ -394,7 +404,7 @@ const CreatePost = ({ onPostCreate }) => {
           onChange={handleImageUpload}
           className="hidden"
         />
-        <button 
+        <button
           onClick={() => fileInputRef.current?.click()}
           className="flex items-center gap-2 text-gray-500 text-sm hover:text-blue-500"
           disabled={video !== null}
@@ -402,7 +412,7 @@ const CreatePost = ({ onPostCreate }) => {
           <span>📷</span> Images
         </button>
 
-        <button 
+        <button
           onClick={() => setShowEmojis(!showEmojis)}
           className="flex items-center gap-2 text-gray-500 text-sm hover:text-blue-500"
         >
@@ -414,7 +424,24 @@ const CreatePost = ({ onPostCreate }) => {
       {showEmojis && (
         <div className="mt-4 p-2 border rounded-lg bg-white shadow-lg">
           <div className="grid grid-cols-8 gap-2">
-            {["😊", "😂", "🥰", "😎", "🤔", "😅", "😍", "🤩", "😢", "😤", "🥺", "😴", "🤯", "🤪", "😇", "😈"].map((emoji) => (
+            {[
+              "😊",
+              "😂",
+              "🥰",
+              "😎",
+              "🤔",
+              "😅",
+              "😍",
+              "🤩",
+              "😢",
+              "😤",
+              "🥺",
+              "😴",
+              "🤯",
+              "🤪",
+              "😇",
+              "😈",
+            ].map((emoji) => (
               <button
                 key={emoji}
                 onClick={() => handleEmojiClick(emoji)}
@@ -471,14 +498,14 @@ const PostList = () => {
 
 const CommentModal = ({ post, onClose, isLiked, onLike }) => {
   const [comments, setComments] = useState([
-    { 
-      id: 1, 
-      author: "John Doe", 
-      content: "Lorem ipsum dolor sit amet.", 
-      likes: 1001, 
+    {
+      id: 1,
+      author: "John Doe",
+      content: "Lorem ipsum dolor sit amet.",
+      likes: 1001,
       replies: [],
-      likedBy: []
-    }
+      likedBy: [],
+    },
   ]);
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
@@ -490,68 +517,78 @@ const CommentModal = ({ post, onClose, isLiked, onLike }) => {
   const handleAddComment = () => {
     if (newComment.trim()) {
       if (replyingTo) {
-        setComments(comments.map(comment => {
-          if (comment.id === replyingTo.commentId) {
-            return {
-              ...comment,
-              replies: [...comment.replies, {
-                id: Date.now(),
-                author: "You",
-                content: newComment,
-                likes: 0,
-                likedBy: [],
-                replyingTo: replyingTo.author
-              }]
-            };
-          }
-          return comment;
-        }));
+        setComments(
+          comments.map((comment) => {
+            if (comment.id === replyingTo.commentId) {
+              return {
+                ...comment,
+                replies: [
+                  ...comment.replies,
+                  {
+                    id: Date.now(),
+                    author: "You",
+                    content: newComment,
+                    likes: 0,
+                    likedBy: [],
+                    replyingTo: replyingTo.author,
+                  },
+                ],
+              };
+            }
+            return comment;
+          })
+        );
         setReplyingTo(null);
       } else {
-        setComments([...comments, { 
-          id: Date.now(), 
-          author: "You", 
-          content: newComment, 
-          likes: 0, 
-          replies: [],
-          likedBy: []
-        }]);
+        setComments([
+          ...comments,
+          {
+            id: Date.now(),
+            author: "You",
+            content: newComment,
+            likes: 0,
+            replies: [],
+            likedBy: [],
+          },
+        ]);
       }
       setNewComment("");
     }
   };
 
   const handleLikeComment = (commentId, isReply, parentCommentId) => {
-    setComments(comments.map(comment => {
-      if (isReply && comment.id === parentCommentId) {
-        return {
-          ...comment,
-          replies: comment.replies.map(reply => {
-            if (reply.id === commentId) {
-              const isLiked = reply.likedBy.includes(currentUserId);
-              return {
-                ...reply,
-                likes: isLiked ? reply.likes - 1 : reply.likes + 1,
-                likedBy: isLiked 
-                  ? reply.likedBy.filter(userId => userId !== currentUserId)
-                  : [...reply.likedBy, currentUserId]
-              };
-            }
-            return reply;
-          })
-        };
-      } else if (comment.id === commentId) {
-        const isLiked = comment.likedBy.includes(currentUserId);
-        return {
-          ...comment,
-          likes: isLiked ? comment.likes - 1 : comment.likes + 1,
-          likedBy: isLiked 
-            ? comment.likedBy.filter(userId => userId !== currentUserId)
-            : [...comment.likedBy, currentUserId]
-        };
-      }
-      return comment;
-    }));
+    setComments(
+      comments.map((comment) => {
+        if (isReply && comment.id === parentCommentId) {
+          return {
+            ...comment,
+            replies: comment.replies.map((reply) => {
+              if (reply.id === commentId) {
+                const isLiked = reply.likedBy.includes(currentUserId);
+                return {
+                  ...reply,
+                  likes: isLiked ? reply.likes - 1 : reply.likes + 1,
+                  likedBy: isLiked
+                    ? reply.likedBy.filter((userId) => userId !== currentUserId)
+                    : [...reply.likedBy, currentUserId],
+                };
+              }
+              return reply;
+            }),
+          };
+        } else if (comment.id === commentId) {
+          const isLiked = comment.likedBy.includes(currentUserId);
+          return {
+            ...comment,
+            likes: isLiked ? comment.likes - 1 : comment.likes + 1,
+            likedBy: isLiked
+              ? comment.likedBy.filter((userId) => userId !== currentUserId)
+              : [...comment.likedBy, currentUserId],
+          };
+        }
+        return comment;
+      })
+    );
   };
 
   const handleReply = (commentId, author) => {
@@ -571,21 +608,25 @@ const CommentModal = ({ post, onClose, isLiked, onLike }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-3xl shadow-lg p-6 w-full max-w-4xl flex relative">
-        <button 
-          onClick={onClose} 
+        <button
+          onClick={onClose}
           className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:text-gray-700 hover:border-gray-500 transition-colors"
         >
           ✖️
         </button>
-        
+
         {/* Left side - Post Images/Video */}
         <div className="w-1/2 pr-4">
           {post.video ? (
-            <video src={post.video} className="w-full h-full rounded-lg" controls />
+            <video
+              src={post.video}
+              className="w-full h-full rounded-lg"
+              controls
+            />
           ) : post.images && post.images.length > 0 ? (
             <div className="grid grid-cols-1 gap-2">
               {post.images.map((image, index) => (
-                <img 
+                <img
                   key={index}
                   src={image}
                   alt={`Post image ${index + 1}`}
@@ -611,9 +652,7 @@ const CommentModal = ({ post, onClose, isLiked, onLike }) => {
                 <span className="text-gray-400 text-sm">�� {post.timeAgo}</span>
               </div>
             </div>
-            <p className="text-gray-800 mb-2">
-              {post.content}
-            </p>
+            <p className="text-gray-800 mb-2">{post.content}</p>
             <div className="text-gray-400 text-sm">
               #Loremipsum #dolorsitamet, #consectetur
             </div>
@@ -626,25 +665,29 @@ const CommentModal = ({ post, onClose, isLiked, onLike }) => {
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
                   <div>
-                    <span className="font-semibold text-sm">{comment.author}</span>
+                    <span className="font-semibold text-sm">
+                      {comment.author}
+                    </span>
                     <p className="text-gray-700 text-sm">{comment.content}</p>
                   </div>
                 </div>
                 <div className="flex gap-4 ml-10 text-xs text-gray-500">
-                  <button 
+                  <button
                     onClick={() => handleLikeComment(comment.id)}
-                    className={`hover:text-blue-500 ${checkIsLiked(comment) ? 'text-blue-500' : ''}`}
+                    className={`hover:text-blue-500 ${
+                      checkIsLiked(comment) ? "text-blue-500" : ""
+                    }`}
                   >
-                    {checkIsLiked(comment) ? '❤️' : '🤍'} {comment.likes}
+                    {checkIsLiked(comment) ? "❤️" : "🤍"} {comment.likes}
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleReply(comment.id, comment.author)}
                     className="hover:text-blue-500"
                   >
                     Reply
                   </button>
                 </div>
-                
+
                 {/* Replies */}
                 {comment.replies && comment.replies.length > 0 && (
                   <div className="ml-10 mt-2">
@@ -653,16 +696,24 @@ const CommentModal = ({ post, onClose, isLiked, onLike }) => {
                         <div className="flex items-center gap-2 mb-1">
                           <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
                           <div>
-                            <span className="font-semibold text-sm">{reply.author}</span>
-                            <p className="text-gray-700 text-sm">{reply.content}</p>
+                            <span className="font-semibold text-sm">
+                              {reply.author}
+                            </span>
+                            <p className="text-gray-700 text-sm">
+                              {reply.content}
+                            </p>
                           </div>
                         </div>
                         <div className="flex gap-4 ml-8 text-xs text-gray-500">
-                          <button 
-                            onClick={() => handleLikeComment(reply.id, true, comment.id)}
-                            className={`hover:text-blue-500 ${checkIsLiked(reply) ? 'text-blue-500' : ''}`}
+                          <button
+                            onClick={() =>
+                              handleLikeComment(reply.id, true, comment.id)
+                            }
+                            className={`hover:text-blue-500 ${
+                              checkIsLiked(reply) ? "text-blue-500" : ""
+                            }`}
                           >
-                            {checkIsLiked(reply) ? '❤️' : '🤍'} {reply.likes}
+                            {checkIsLiked(reply) ? "❤️" : "🤍"} {reply.likes}
                           </button>
                         </div>
                       </div>
@@ -675,13 +726,13 @@ const CommentModal = ({ post, onClose, isLiked, onLike }) => {
 
           {/* Like, Comment, Share Buttons */}
           <div className="flex gap-6 text-gray-500 text-sm mb-2 pt-4 border-t">
-            <button 
+            <button
               onClick={onLike}
               className={`flex items-center gap-1 transition-colors ${
-                isLiked ? 'text-blue-500' : 'hover:text-blue-500'
+                isLiked ? "text-blue-500" : "hover:text-blue-500"
               }`}
             >
-              {isLiked ? '❤️' : '🤍'} {post.likes} Like
+              {isLiked ? "❤️" : "🤍"} {post.likes} Like
             </button>
             <button className="flex items-center gap-1 hover:text-blue-600">
               <span>💬</span> Comment
@@ -701,11 +752,11 @@ const CommentModal = ({ post, onClose, isLiked, onLike }) => {
               placeholder={replyingTo ? "Write a reply..." : "Add your comment"}
               className="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:border-blue-500"
             />
-            <button 
+            <button
               onClick={handleAddComment}
               className="bg-blue-500 text-white rounded-full px-4 py-2 hover:bg-blue-600 transition-colors"
             >
-              {replyingTo ? 'Reply' : 'Post'}
+              {replyingTo ? "Reply" : "Post"}
             </button>
           </div>
         </div>
@@ -746,7 +797,7 @@ const PostItem = ({ post, onLikeChange }) => {
         {post.post_images && post.post_images.length > 0 && (
           <div className="grid grid-cols-2 gap-2 mb-4">
             {post.post_images.map((image, index) => (
-              <img 
+              <img
                 key={index}
                 src={buildImageUrl(image.image)}
                 alt={`Post image ${index + 1}`}
@@ -758,13 +809,15 @@ const PostItem = ({ post, onLikeChange }) => {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-6 text-gray-500">
-          <button 
+          <button
             onClick={handleLike}
-            className={`flex items-center gap-2 ${isLiked ? 'text-blue-500' : 'hover:text-gray-700'}`}
+            className={`flex items-center gap-2 ${
+              isLiked ? "text-blue-500" : "hover:text-gray-700"
+            }`}
           >
-            <span>{isLiked ? '❤️' : '🤍'}</span> {likeCount} Like
+            <span>{isLiked ? "❤️" : "🤍"}</span> {likeCount} Like
           </button>
-          <button 
+          <button
             onClick={() => setShowModal(true)}
             className="flex items-center gap-2 hover:text-gray-700"
           >
@@ -777,9 +830,9 @@ const PostItem = ({ post, onLikeChange }) => {
       </div>
 
       {showModal && (
-        <CommentModal 
-          post={{...post, likes: likeCount}}
-          onClose={() => setShowModal(false)} 
+        <CommentModal
+          post={{ ...post, likes: likeCount }}
+          onClose={() => setShowModal(false)}
           isLiked={isLiked}
           onLike={handleLike}
         />
@@ -816,4 +869,3 @@ const CategoryList = () => {
 };
 
 export default ForumPage;
-

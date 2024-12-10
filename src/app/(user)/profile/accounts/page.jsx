@@ -1,8 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { putDataToAPI, fetchFromAPI } from "@/lib/api";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import Spinner from "@/components/custom/Spinner";
 
 const profileSchema = z.object({
   email: z.string().email("Invalid email format"),
@@ -17,6 +18,7 @@ const AccountSettings = ({ userData }) => {
   const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
   const [isPrivate, setIsPrivate] = useState(userData?.isPrivate || false);
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleTogglePrivacy = () => {
     setIsPrivate(!isPrivate);
@@ -48,6 +50,7 @@ const AccountSettings = ({ userData }) => {
     }
 
     try {
+      setLoading(true);
       const profile = await fetchFromAPI("philatelist/getProfile");
       if (profile.success) {
         const res = await putDataToAPI(
@@ -65,8 +68,14 @@ const AccountSettings = ({ userData }) => {
     } catch (error) {
       console.error("Error saving changes:", error);
       alert("An error occurred while saving changes.");
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">

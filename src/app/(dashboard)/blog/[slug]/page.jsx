@@ -3,6 +3,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { fetchFromAPI } from "@/lib/api";
+import { buildImageUrl } from "@/lib/utils";
 
 // Add this new component for the comment section
 const CommentSection = () => {
@@ -102,6 +103,7 @@ export default function BlogPost() {
         const data = await fetchFromAPI(`services/blogs/${slug}/`);
         if (data.success) {
           setPost(data.data);
+          console.log(data.data)
         }
       } catch (error) {
         console.error("Error fetching post:", error);
@@ -128,10 +130,10 @@ export default function BlogPost() {
           {/* Author info */}
           <div className="flex items-center mb-8">
             <div>
-              <h3 className="font-medium">Author #{post.user}</h3>
+              <h3 className="font-medium">Author: {post?.author?.name}</h3>
               <div className="text-gray-600">
                 <span>
-                  {new Date(post.published_date).toLocaleDateString("en-US", {
+                  {new Date(post?.published_date).toLocaleDateString("en-US", {
                     month: "long",
                     day: "numeric",
                     year: "numeric",
@@ -145,8 +147,8 @@ export default function BlogPost() {
           {/* Article content */}
           <div className="mb-8">
             <img
-              src={post.image || "/collage.png"}
-              alt={post.title}
+              src={buildImageUrl(post?.image)}
+              alt={post?.title}
               className="w-full h-[400px] object-cover rounded-lg"
             />
           </div>
@@ -159,7 +161,7 @@ export default function BlogPost() {
           </div>
 
           {/* Interaction buttons */}
-          <div className="flex items-center justify-between mt-8 pt-8 border-t">
+          {/* <div className="flex items-center justify-between mt-8 pt-8 border-t">
             <div className="flex items-center space-x-4">
               <button className="flex items-center space-x-1 text-gray-600 hover:text-gray-900">
                 <svg
@@ -209,10 +211,10 @@ export default function BlogPost() {
                 />
               </svg>
             </button>
-          </div>
+          </div> */}
         </article>
       </div>
-      <CommentSection />
+      {/* <CommentSection /> */}
     </>
   );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext"; // Import the useCart hook
+import { buildImageUrl } from "@/lib/utils";
 
 export default function Cart() {
   const router = useRouter();
@@ -65,12 +66,12 @@ export default function Cart() {
               >
                 <div className="flex items-center gap-4">
                   <img
-                    src={item.image}
-                    alt={item.name}
+                    src={buildImageUrl(item.images[0])}
+                    alt={item.title}
                     className="w-20 h-20 object-cover rounded-lg"
                   />
                   <div>
-                    <h3 className="font-medium">{item.name}</h3>
+                    <h3 className="font-medium">{item.title}</h3>
                     <p className="text-sm text-gray-500">Added: {new Date(item.addedAt).toLocaleDateString()}</p>
                   </div>
                 </div>
@@ -104,7 +105,7 @@ export default function Cart() {
         {/* Right Column */}
         <div className="w-80 space-y-4">
           {/* Notification Message */}
-          {showNotification && (
+          {/* {showNotification && (
             <div className="bg-white rounded-lg p-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span>HEHEHE</span>
@@ -117,7 +118,7 @@ export default function Cart() {
                 ×
               </button>
             </div>
-          )}
+          )} */}
 
           {/* Cart Summary */}
           <div className="bg-white p-6 rounded-2xl shadow-sm">

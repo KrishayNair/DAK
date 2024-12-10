@@ -5,6 +5,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/context/CartContext";
+import { createOrder } from "@/components/custom/razorpay";
+import { postDataToAPI } from "@/lib/api";
 
 const checkoutSchema = z
   .object({
@@ -98,6 +101,8 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  const { cartItems, getCartTotal } = useCart();
+
   const {
     register,
     handleSubmit,
@@ -107,7 +112,7 @@ export default function CheckoutPage() {
   } = useForm({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      shippingMethod: "free",
+      shippingMethod: "regular",
     },
   });
 
@@ -131,32 +136,25 @@ export default function CheckoutPage() {
       setIsSubmitting(true);
       setError("");
 
-      // Prepare the order data
       const orderData = {
-        ...data,
-        orderTotal: total + shipping,
-        items: [
-          {
-            id: "india-1873-indipex",
-            name: "India 1873 Indipex MNH Miniature Sheet",
-            price: 2200.0,
-            quantity: 1,
-          },
-        ],
-        shippingCost: shipping,
-        tax: 0,
-        status: "pending",
-        orderDate: new Date().toISOString(),
+        shipping_method: shippingMethod,
+        transaction_details: {
+          order_total: getCartTotal() + shipping,
+          tax: 18,
+          id: null
+        },
+        create_order_lines: cartItems.map(item => ({ product: item.id, quantity: item.quantity })),
       };
 
-      // Store order details in localStorage for payment page
-      localStorage.setItem("pendingOrder", JSON.stringify(orderData));
+      const ok = await createOrder(getCartTotal() + shipping, orderData);
 
-      // Redirect to payment page
-      router.push("/payment");
+      if (ok) {
+        alert("zala")
+      }
+
+
     } catch (error) {
-      console.error("Checkout error:", error);
-      setError(error.message || "Something went wrong. Please try again.");
+      alert("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -293,25 +291,6 @@ export default function CheckoutPage() {
           <div className="space-y-4">
             <label
               className="flex items-center justify-between p-3 border rounded cursor-pointer transition-all duration-200 hover:bg-[#F5E6D8] data-[selected=true]:bg-[#F5E6D8]"
-              data-selected={watch("shippingMethod") === "free"}
-            >
-              <div className="flex items-center gap-3">
-                <input
-                  type="radio"
-                  {...register("shippingMethod")}
-                  value="free"
-                  className="accent-[#8B4513] w-4 h-4"
-                />
-                <div>
-                  <p className="font-medium">Free Shipping</p>
-                  <p className="text-sm text-gray-500">7-30 Business Days</p>
-                </div>
-              </div>
-              <span>₹0.00</span>
-            </label>
-
-            <label
-              className="flex items-center justify-between p-3 border rounded cursor-pointer transition-all duration-200 hover:bg-[#F5E6D8] data-[selected=true]:bg-[#F5E6D8]"
               data-selected={watch("shippingMethod") === "regular"}
             >
               <div className="flex items-center gap-3">
@@ -355,16 +334,18 @@ export default function CheckoutPage() {
         <div className="bg-[#FDF8F3] rounded-lg p-6 box-shadow shadow-lg">
           <h2 className="text-xl font-semibold mb-4">Items</h2>
           <div className="space-y-4">
-            <div className="flex justify-between">
-              <span>India 1873 Indipex MNH Miniature Sheet</span>
-              <span>₹2,200.00</span>
-            </div>
+            {cartItems.map((item, idx) => (
+              <div key={item.id} className="flex justify-between">
+                <span className="mr-2"> <b>{idx + 1}.</b> {item.title}</span>
+                <span>₹{item.price.toFixed(2)}</span>
+              </div>
+            ))}
 
             <hr />
 
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>₹{total.toFixed(2)}</span>
+              <span>₹{getCartTotal().toFixed(2)}</span>
             </div>
 
             <div className="flex justify-between">
@@ -381,7 +362,7 @@ export default function CheckoutPage() {
 
             <div className="flex justify-between font-semibold">
               <span>Grand total</span>
-              <span>₹{(total + shipping).toFixed(2)}</span>
+              <span>₹{(getCartTotal() + shipping).toFixed(2)}</span>
             </div>
 
             <button
@@ -389,10 +370,9 @@ export default function CheckoutPage() {
               form="checkout-form"
               disabled={isSubmitting}
               className={`w-full py-3 rounded-xl mt-6 transition-all duration-200
-                ${
-                  isSubmitting
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-white text-black border border-gray-200 hover:bg-gray-50"
+                ${isSubmitting
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-white text-black border border-gray-200 hover:bg-gray-50"
                 }`}
             >
               {isSubmitting ? (
