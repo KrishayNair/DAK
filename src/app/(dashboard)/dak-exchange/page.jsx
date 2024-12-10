@@ -403,7 +403,7 @@ export default function ExchangePage() {
           </div>
         )}
 
-        {/* Modal - Updated styling */}
+        {/* Modal */}
         {selectedItem && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 p-4">
             <div className="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -414,15 +414,39 @@ export default function ExchangePage() {
               />
               <h2 className="text-3xl font-bold mb-4 text-gray-800">{selectedItem.name}</h2>
               <p className="text-gray-700 mb-4 text-lg">{selectedItem.description}</p>
+              
+              {/* Backstory Section */}
+              <div className="mb-6">
+                <h3 className="text-xl font-semibold mb-2">Backstory</h3>
+                <p className="text-gray-600 mb-4">{selectedItem.backstory}</p>
+                
+                {/* Status Pills */}
+                <div className="flex flex-wrap gap-2 mt-4">
+                  <span className="px-3 py-1 bg-amber-50 text-amber-800 rounded-full text-sm font-medium">
+                    {selectedItem.rarity}
+                  </span>
+                  <span className="px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full text-sm font-medium">
+                    {selectedItem.condition}
+                  </span>
+                  <span className="px-3 py-1 bg-blue-50 text-blue-800 rounded-full text-sm font-medium">
+                    Year: {selectedItem.year}
+                  </span>
+                  <span className="px-3 py-1 bg-purple-50 text-purple-800 rounded-full text-sm font-medium">
+                    Value: {selectedItem.marketValue}
+                  </span>
+                </div>
+              </div>
+
+              {/* Other Details Grid */}
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <p className="text-gray-600"><strong>Theme:</strong> {selectedItem.theme}</p>
-                <p className="text-gray-600"><strong>Condition:</strong> {selectedItem.condition}</p>
-                <p className="text-gray-600"><strong>Year:</strong> {selectedItem.year}</p>
                 <p className="text-gray-600"><strong>Owner:</strong> {selectedItem.owner}</p>
               </div>
+
+              {/* Action Buttons */}
               <div className="flex gap-4">
                 <button
-                  className="flex-1 bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors duration-200"
+                  className="flex-1 bg-[#8B4513] text-white px-6 py-3 rounded-lg hover:bg-[#724011] transition-colors duration-200"
                   onClick={() => placeOrder(selectedItem)}
                 >
                   Place Order
