@@ -46,7 +46,7 @@ export default function Hero() {
             way.
           </p>
           <Link href="/">
-          <Button className="w-full rounded-full py-5 text-base bg-[#FFE5C2] hover:bg-[#FFE5C2/90]">
+          <Button className="ml-40 rounded-full py-5 text-base bg-[#FFE5C2] hover:bg-[#FFE5C2/90] mt-8">
             Explore More
           </Button>
           </Link>

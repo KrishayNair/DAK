@@ -46,7 +46,7 @@ export default function Navbar() {
     setIsOpen(!isOpen);
   };
 
-  const sideBarRoutes = [
+  const navBarRoutes = [
     {
       title: "Philatelist Deposit Account",
       url: "/pda",
@@ -187,14 +187,14 @@ export default function Navbar() {
       <Link href="/">
       <Image src="/logo.png" width={130} height={50} />
       </Link>
-      <nav className="flex items-center justify-center w-full">
+      <nav className="flex items-center justify-center w-full ml-10">
         <div className="flex space-x-8 text-[#604234] font-primary">
-          {sideBarRoutes.map((route, i) => (
+          {navBarRoutes.map((route, i) => (
             <Link
               key={i}
               href={route.url}
               className={cn(
-                "flex items-center font-extralight font-primary text-base hover:font-bold",
+                "flex items-center font-extralight font-primary text-sm hover:font-bold",
                 pathname.match(route.regex)
                   ? "font-bold"
                   : ""
