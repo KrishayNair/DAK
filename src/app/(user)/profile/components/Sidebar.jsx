@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { fetchFromAPI } from "@/lib/api";
+import { buildImageUrl } from "@/lib/utils";
 
 export default function Sidebar() {
   const [userData, setUserData] = useState(null);
@@ -22,10 +23,14 @@ export default function Sidebar() {
   return (
     <div className="w-80 bg-white p-8 shadow-xl rounded-3xl">
       <div className="flex items-center gap-3 mb-8 p-4 shadow-md rounded-2xl bg-white">
-        <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+        <img
+          src={buildImageUrl(userData?.profile_img || "")}
+          alt=""
+          className="w-10 h-10 rounded-full"
+        />
         <div>
-          <p className="text-sm text-gray-500">Hii</p>
-          <p className="font-medium">
+          <p className="text-sm text-gray-800 font-bold">Hi</p>
+          <p className="  text-black-900 font-bold">
             {userData ? userData.name : "Loading..."}
           </p>
         </div>

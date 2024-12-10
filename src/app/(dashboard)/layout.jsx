@@ -43,7 +43,7 @@ export default function DashboardLayout({ children }) {
       </div>
       <div className={cn("relative w-full flex-1 ")}>
         <Header />
-        <div className="w-full min-h-screen">
+        <div className="w-full min-h-screen mt-20">
           {children}
         </div>
       </div>

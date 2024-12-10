@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getOTP, login, verifyOTP } from "@/lib/auth";
+import Cookies from "js-cookie";
 
 // Add form schema
 const formSchema = z.object({
@@ -106,6 +107,7 @@ export default function Signup() {
       const response = await verifyOTP(uid, otpString);
 
       if (response) {
+        Cookies.set('show_tour', 'true', { expires: 1 }); // expires in 1 day
         router.replace('/');
       }
     } catch (error) {
