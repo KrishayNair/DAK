@@ -5,12 +5,11 @@ import { cookies } from "next/headers";
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 
-axios.defaults.headers.common["Content-Type"] = 'application/json' 
+axios.defaults.headers.common["Content-Type"] = 'application/json'
 
 export async function fetchFromAPI(url) {
-  axios.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("dak_session").value
-  }`;
+  axios.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("dak_session").value
+    }`;
   try {
     const res = await axios.get(url);
     return res.data;
@@ -21,9 +20,8 @@ export async function fetchFromAPI(url) {
 }
 
 export async function postDataToAPI(url, data, isFile = false) {
-  axios.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("dak_session").value
-  }`;
+  axios.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("dak_session").value
+    }`;
   try {
     const response = await axios.post(url, data, isFile ? { headers: { 'Content-Type': 'multipart/form-data' } } : {});
     return response.data;
@@ -34,14 +32,14 @@ export async function postDataToAPI(url, data, isFile = false) {
 }
 
 export async function putDataToAPI(url, data, isFile = false) {
-  axios.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("dak_session").value
-  }`;
+  axios.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("dak_session").value
+    }`;
   try {
     const response = await axios.patch(url, data, isFile ? { headers: { 'Content-Type': 'multipart/form-data' } } : {});
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error("API call error:", error);
     throw error;
   }
+
 }
