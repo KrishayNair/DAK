@@ -8,6 +8,8 @@ import calender from "../../../public/calender.jpeg";
 import workshop from "../../../public/workshop.jpeg";
 import blockchain from "../../../public/blockchain.png";
 import { Elsie_Swash_Caps } from "next/font/google";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 const elsieSwashCaps = Elsie_Swash_Caps({
   subsets: ["latin"],
@@ -16,18 +18,8 @@ const elsieSwashCaps = Elsie_Swash_Caps({
 
 export default function PhilatelyIntro() {
   return (
-    <div className="bg-[#FFF8E8] py-8 px-4 sm:px-6 rounded-none lg:rounded-t-[8rem] xl:rounded-[12rem] sm:rounded-b-none w-full ">
-      <div className="max-w-6xl mx-auto">
-        <h2
-          className={`text-4xl md:text-5xl font-bold mt-10 mb-6 lg:ml-20 xl:ml-0 text-secondary ${elsieSwashCaps.className}`}
-        >
-          New to Philately?
-        </h2>
-        <p className="text-lg md:text-xl text-secondary mb-8 lg:ml-20 xl:ml-0 font-secondary">
-          Start your journey with DAK
-        </p>
-
-        <div className="relative mb-8">
+    {
+      /* <div className="relative mb-8">
           <Card className="overflow-hidden rounded-lg md:rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
             <div className="flex flex-col md:flex-row">
               <div className="md:w-2/5 bg-white m-4">
@@ -39,8 +31,10 @@ export default function PhilatelyIntro() {
                     className="object-cover rounded-lg"
                   />
                 </div>
-              </div>
-              <CardContent className="md:w-3/5 p-8 flex flex-col justify-center">
+              </div> */
+    },
+    {
+      /* <CardContent className="md:w-3/5 p-8 flex flex-col justify-center">
                 <CardHeader className="p-0 mb-4">
                   <CardTitle className="text-xl md:text-2xl font-primary font-semibold">
                     Government-Authorized Philatelic Marketplace
@@ -63,15 +57,11 @@ export default function PhilatelyIntro() {
               </CardContent>
             </div>
           </Card>
-        </div>
+        </div> */
+    },
+    {
+      /* <div className="relative mb-8">
 
-        <div className="relative mb-8">
-          {/* <Image
-            src="/gradient2.svg"
-            alt="Background gradient"
-            fill
-            className="object-cover -z-10 rotate-180"
-          /> */}
           <Card className="overflow-hidden rounded-lg md:rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
             <div className="flex flex-col md:flex-row-reverse">
               <div className="md:w-2/5 bg-white  m-4">
@@ -109,16 +99,12 @@ export default function PhilatelyIntro() {
             </div>
           </Card>
         </div>
-      </div>
-
-      <div className="max-w-6xl mx-auto mt-10">
+      </div> */
+    },
+    {
+      /* <div className="max-w-6xl mx-auto mt-10">
         <div className="relative mb-8">
-          {/* <Image
-            src="/gradient2.svg"
-            alt="Background gradient"
-            fill
-            className="object-cover -z-10"
-          /> */}
+          
           <Card className="overflow-hidden rounded-lg md:rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
             <div className="flex flex-col md:flex-row">
               <div className="md:w-2/5 bg-white  m-4">
@@ -155,15 +141,16 @@ export default function PhilatelyIntro() {
               </CardContent>
             </div>
           </Card>
-        </div>
-
-        <div className="relative mb-8">
-          {/* <Image
+        </div> */
+    },
+    {
+      /* <div className="relative mb-8">
+          <Image
             src="/gradient2.svg"
             alt="Background gradient"
             fill
             className="object-cover -z-10 rotate-180"
-          /> */}
+          />
           <Card className="overflow-hidden rounded-lg md:rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
             <div className="flex flex-col md:flex-row-reverse">
               <div className="md:w-2/5 bg-white  m-4">
@@ -202,16 +189,17 @@ export default function PhilatelyIntro() {
             </div>
           </Card>
         </div>
-      </div>
-
-      <div className="max-w-6xl mx-auto mt-10">
+      </div> */
+    },
+    {
+      /* <div className="max-w-6xl mx-auto mt-10">
         <div className="relative mb-8">
-          {/* <Image
+          <Image
             src="/gradient2.svg"
             alt="Background gradient"
             fill
             className="object-cover -z-10"
-          /> */}
+          />
           <Card className="overflow-hidden rounded-lg md:rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
             <div className="flex flex-col md:flex-row">
               <div className="md:w-2/5 bg-white  m-4">
@@ -248,53 +236,271 @@ export default function PhilatelyIntro() {
               </CardContent>
             </div>
           </Card>
+        </div> */
+    },
+    (
+      <div className="bg-[#FFF8E8] py-8 px-4 sm:px-6 rounded-none lg:rounded-t-[8rem] xl:rounded-[12rem] sm:rounded-b-none w-full ">
+        <div className="max-w-6xl mx-auto">
+          <h2
+            className={`text-4xl md:text-5xl font-bold mt-10 mb-6 lg:ml-20 xl:ml-0 text-secondary ${elsieSwashCaps.className}`}
+          >
+            New to Philately?
+          </h2>
+          <p className="text-lg md:text-xl text-secondary mb-8 lg:ml-20 xl:ml-0 font-secondary z-100">
+            Dak's got you covered with secure transactions, expert guidance, and
+            a vibrant community to help <br /> you start your collection
+            journey!
+          </p>
         </div>
 
-        <div className="relative mb-8">
-          {/* <Image
-            src="/gradient2.svg"
-            alt="Background gradient"
-            fill
-            className="object-cover -z-10 rotate-180"
-          /> */}
-          <Card className="overflow-hidden rounded-lg md:rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
-            <div className="flex flex-col md:flex-row-reverse">
-              <div className="md:w-2/5 bg-white m-4">
-                <div className="relative w-full h-full min-h-[300px]">
-                  <Image
-                    src={blockchain}
-                    alt="StampConnect Community"
-                    fill
-                    className="object-cover rounded-lg"
-                  />
-                </div>
-              </div>
-              <CardContent className="md:w-3/5 p-8 flex flex-col justify-center">
-                <CardHeader className="p-0 mb-4">
-                  <CardTitle className="text-xl md:text-2xl font-primary font-semibold">
-                    Philately material certification and validation
-                  </CardTitle>
-                </CardHeader>
-                <p className="text-gray-600 mb-4 text-base md:text-lg">
-                  CertifiStamp revolutionizes philatelic verification using
-                  hyperledger private blockchain technology. This advanced
-                  system provides tamper-proof certification for stamp
-                  authenticity, ownership history, and provenance. By leveraging
-                  blockchain&apos;s security and transparency, it instills
-                  confidence in transactions and preserves the integrity of rare
-                  and valuable philatelic materials for future generations.
-                </p>
-                <Button
-                  variant="link"
-                  className="p-0 h-auto font-semibold self-start"
-                >
-                  See More &gt;
-                </Button>
-              </CardContent>
+        <Image
+          src="/gradient2.png"
+          width={500}
+          height={500}
+          className="absolute top-12 hidden xl:block left-[-10px]"
+        />
+        <div className="flex flex-col xl:flex-row xl:m-20 space-x-0 xl:space-x-20">
+          <div className="relative w-full xl:w-2/5 lg:min-h-[400px] min-h-[300px]">
+            <Image
+              src={workshop}
+              alt="Philatelic world"
+              fill
+              className="object-cover rounded-lg"
+            />
+          </div>
+          <div className="flex flex-col justify-center w-full xl:w-3/5">
+            <h1 className="font-bold xl:text-2xl text-lg mt-5">
+              Read the interesting backstory of a stamp, with a new story
+              featured every day to keep your collection journey exciting and
+              full of discoveries!
+            </h1>
+            <p className="font-medium md:text-base text-sm mt-5">
+              <span className="font-semibold md:text-base text-sm opacity-90">
+                Spotlight of the Day:
+              </span>
+              The Scinde Dawk: Issued in 1852.
+            </p>
+            <p className="font-thin md:text-base text-sm mt-2 opacity-90">
+              The Scinde Dawk is considered India's first postage stamp. It was
+              introduced by the British East India Company for use in the Sindh
+              region, which was then part of British India. The stamp features
+              the word 'Scinde' (the Persian name for .....
+            </p>
+            <Link href="/catalog" >
+            <button className="flex md:mt-8 space-x-3 mt-5 font-medium text-gray-600">
+              <p>See More</p>
+              <ChevronRight className="md:w-6 md:h-6 w-5 h-5" />
+            </button>
+            </Link>
+          </div>
+        </div>
+
+        <div className="relative">
+          <Image
+            src="/gradient2.png"
+            width={500}
+            height={500}
+            className="absolute right-[-150px] hidden xl:block "
+          />
+          <div className="flex flex-col xl:flex-row xl:m-20 xl:mt-0 mt-8">
+            <div className="block xl:hidden relative w-full xl:w-2/5 xl:min-h-[400px] min-h-[300px]">
+              <Image
+                src={workshop}
+                alt="Philatelic world"
+                fill
+                className="object-cover rounded-lg"
+              />
             </div>
-          </Card>
+            <div className="flex flex-col justify-center w-full xl:w-3/5 mr-20">
+              <h1 className="font-bold md:text-2xl text-lg mt-5 xl:mt-0">
+                Find your way anywhere with ease!
+              </h1>
+              <p className="font-thin md:text-base text-sm mt-2 opacity-90">
+                Our intelligent chatbot is designed to guide you effortlessly
+                through any route. Whether it's navigating locations or
+                answering queries, it ensures a smooth experience. With its
+                intuitive capabilities, you can rely on it for seamless
+                assistance every step of the way.
+              </p>
+              <Link href="/" > 
+            <button className="flex md:mt-8 space-x-3 mt-5 font-medium text-gray-600">
+              <p>See More</p>
+              <ChevronRight className="md:w-6 md:h-6 w-5 h-5" />
+            </button>
+            </Link>
+            </div>
+            <div className="hidden xl:block relative w-full md:w-2/5 md:min-h-[400px] min-h-[300px]">
+              <Image
+                src={workshop}
+                alt="Philatelic world"
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="relative">
+          <Image
+            src="/gradient2.png"
+            width={500}
+            height={500}
+            className="absolute top-[-200px] hidden xl:block "
+          />
+          <div className="flex flex-col xl:flex-row xl:m-20 space-x-0 xl:space-x-20">
+            <div className="relative w-full xl:w-2/5 lg:min-h-[400px] min-h-[300px]">
+              <Image
+                src={workshop}
+                alt="Philatelic world"
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
+            <div className="flex flex-col justify-center w-full xl:w-3/5">
+              <h1 className="font-bold xl:text-2xl text-lg mt-5">
+                Discover the latest stamps released by the government.
+              </h1>
+              <p className="font-thin md:text-base text-sm mt-2 opacity-90">
+                Perfect additions to your collection, these new
+                government-issued stamps offer a unique way to enhance your
+                philatelic journey. Each one tells a story, waiting to be
+                discovered. Don’t miss the opportunity to expand your collection
+                with these rare finds!
+              </p>
+              <Link href="/shop" >
+            <button className="flex md:mt-8 space-x-3 mt-5 font-medium text-gray-600">
+              <p>See More</p>
+              <ChevronRight className="md:w-6 md:h-6 w-5 h-5" />
+            </button>
+            </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative">
+          <Image
+            src="/gradient2.png"
+            width={500}
+            height={500}
+            className="absolute right-[-150px] hidden xl:block "
+          />
+          <div className="flex flex-col xl:flex-row xl:m-20 xl:mt-0 mt-8">
+            <div className="block xl:hidden relative w-full xl:w-2/5 xl:min-h-[400px] min-h-[300px]">
+              <Image
+                src={workshop}
+                alt="Philatelic world"
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
+            <div className="flex flex-col justify-center w-full xl:w-3/5 mr-20">
+              <h1 className="font-bold md:text-2xl text-lg mt-5 xl:mt-0">
+                Engage in India's biggest community!
+              </h1>
+              <p className="font-thin md:text-base text-sm mt-2 opacity-90">
+                Step into a vibrant community buzzing with energy and
+                creativity. Engage with like-minded individuals, exchange ideas,
+                and ignite new possibilities. Every interaction becomes a chance
+                to grow, inspire, and be inspired!
+              </p>
+              <Link href="/forum" >
+            <button className="flex md:mt-8 space-x-3 mt-5 font-medium text-gray-600">
+              <p>See More</p>
+              <ChevronRight className="md:w-6 md:h-6 w-5 h-5" />
+            </button>
+            </Link>
+            </div>
+            <div className="hidden xl:block relative w-full md:w-2/5 md:min-h-[400px] min-h-[300px]">
+              <Image
+                src={workshop}
+                alt="Philatelic world"
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="relative">
+          <Image
+            src="/gradient2.png"
+            width={500}
+            height={500}
+            className="absolute top-[-200px] hidden xl:block "
+          />
+          <div className="flex flex-col xl:flex-row xl:m-20 space-x-0 xl:space-x-20">
+            <div className="relative w-full xl:w-2/5 lg:min-h-[400px] min-h-[300px]">
+              <Image
+                src={workshop}
+                alt="Philatelic world"
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
+            <div className="flex flex-col justify-center w-full xl:w-3/5">
+              <h1 className="font-bold xl:text-2xl text-lg mt-5">
+                Bid for a chance to own the rarest and most coveted stamps
+              </h1>
+              <p className="font-thin md:text-base text-sm mt-2 opacity-90">
+                Participate in exclusive auctions to get your hands on the
+                rarest and most coveted stamps. Bid for timeless treasures that
+                embody history, culture, and artistry. Don’t miss your chance to
+                elevate your collection with these extraordinary finds!
+              </p>
+              <Link href="/auction" >
+            <button className="flex md:mt-8 space-x-3 mt-5 font-medium text-gray-600">
+              <p>See More</p>
+              <ChevronRight className="md:w-6 md:h-6 w-5 h-5" />
+            </button>
+            </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative">
+          <Image
+            src="/gradient2.png"
+            width={500}
+            height={500}
+            className="absolute right-[-150px] hidden xl:block "
+          />
+          <div className="flex flex-col xl:flex-row xl:m-20 xl:mt-0 mt-8">
+            <div className="block xl:hidden relative w-full xl:w-2/5 xl:min-h-[400px] min-h-[300px]">
+              <Image
+                src={workshop}
+                alt="Philatelic world"
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
+            <div className="flex flex-col justify-center w-full xl:w-3/5 mr-20">
+              <h1 className="font-bold md:text-2xl text-lg mt-5 xl:mt-0">
+                Show off your precious stamp collection and its unique stories.
+              </h1>
+              <p className="font-thin md:text-base text-sm mt-2 opacity-90">
+                Display your prized stamp collection and share its rich history
+                with fellow enthusiasts. Let each piece showcase its unique
+                story and heritage. Inspire admiration with the rarity and
+                beauty of your collection!
+              </p>
+              <Link href="/profile" >
+            <button className="flex md:mt-8 space-x-3 mt-5 font-medium text-gray-600">
+              <p>See More</p>
+              <ChevronRight className="md:w-6 md:h-6 w-5 h-5" />
+            </button>
+            </Link>
+            </div>
+            <div className="hidden xl:block relative w-full md:w-2/5 md:min-h-[400px] min-h-[300px]">
+              <Image
+                src={workshop}
+                alt="Philatelic world"
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    )
   );
 }
