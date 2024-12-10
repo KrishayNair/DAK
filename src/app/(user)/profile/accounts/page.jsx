@@ -1,17 +1,71 @@
 "use client";
 import React, { useState } from "react";
+import { putDataToAPI, fetchFromAPI } from "@/lib/api";
+import { z } from "zod";
+import { useRouter } from "next/navigation";
+
+const profileSchema = z.object({
+  email: z.string().email("Invalid email format"),
+  phoneNumber: z.string().min(1, "Phone number is required"),
+  isPrivate: z.boolean(),
+  profile_img: z.instanceof(File).optional(),
+});
 
 const AccountSettings = ({ userData }) => {
+  const router = useRouter();
   const [email, setEmail] = useState(userData?.email || "");
-  const [isPrivate, setIsPrivate] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
+  const [isPrivate, setIsPrivate] = useState(userData?.isPrivate || false);
+  const [image, setImage] = useState(null);
 
   const handleTogglePrivacy = () => {
     setIsPrivate(!isPrivate);
   };
 
-  const handleSaveChanges = () => {
-    // Logic to save changes (e.g., API call)
-    alert("Changes saved!");
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const handleSaveChanges = async () => {
+    const validationResult = profileSchema.safeParse({
+      email,
+      phoneNumber,
+      isPrivate,
+      profile_img: image,
+    });
+
+    if (!validationResult.success) {
+      alert(validationResult.error.errors.map((err) => err.message).join(", "));
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("isPrivate", isPrivate.toString());
+    if (image) {
+      formData.append("profile_img", image);
+    }
+
+    try {
+      const profile = await fetchFromAPI("philatelist/getProfile");
+      if (profile.success) {
+        const res = await putDataToAPI(
+          `philatelist/${profile.data.id}/`,
+          formData,
+          true
+        );
+        if (res.success) {
+          alert("Changes saved!");
+          router.push("/profile");
+        } else {
+          alert(res.message);
+        }
+      }
+    } catch (error) {
+      console.error("Error saving changes:", error);
+      alert("An error occurred while saving changes.");
+    }
   };
 
   return (
@@ -37,13 +91,20 @@ const AccountSettings = ({ userData }) => {
         </label>
       </div>
 
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Password
+      <div className="mb-6 relative">
+        <input
+          type="text"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          className={`w-full p-3 border border-black-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black-500 transition-all duration-300`}
+        />
+        <label
+          className={`absolute left-3 top-3 text-gray-700 transition-all duration-200 ${
+            phoneNumber ? "text-sm transform -translate-y-4" : "text-base"
+          }`}
+        >
+          Phone Number
         </label>
-        <button className="mr-4  bg-yellow-200 text-brown py-2 px-4 rounded-full hover:bg-amber-300">
-          Change Password
-        </button>
       </div>
 
       <div className="mb-6">
@@ -73,6 +134,18 @@ const AccountSettings = ({ userData }) => {
             ></div>
           </label>
         </div>
+      </div>
+
+      <div className="mb-6">
+        <label className="block text-lg font-semibold mb-1">
+          Profile Image
+        </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="border border-gray-300 rounded-md p-2"
+        />
       </div>
 
       <div className="mb-6">

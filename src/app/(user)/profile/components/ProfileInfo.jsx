@@ -1,16 +1,19 @@
 "use client";
 import Image from "next/image";
 import pfp from "../../../../../public/images/pfpWhite.jpg";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { fetchFromAPI } from "@/lib/api";
 import { buildImageUrl } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function ProfileInfo() {
+  const router = useRouter();
   const [userData, setUserData] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const fileInputRef = useRef(null);
 
   async function fetchProfile() {
     const res = await fetchFromAPI("philatelist/getProfile/");
-
     if (res.success) {
       setUserData(res.data);
     } else {
@@ -18,9 +21,15 @@ export default function ProfileInfo() {
     }
   }
 
+  // Load profile on component mount
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  // Function to refresh profile data
+  const refreshProfileData = () => {
+    fetchProfile();
+  };
 
   return (
     <div className="bg-white rounded-3xl overflow-hidden">
@@ -28,21 +37,19 @@ export default function ProfileInfo() {
       <div className="relative">
         <div className="h-48 bg-gray-200 rounded-t-3xl"></div>
         {/* Profile Image - Using Next.js Image */}
-        <div className="absolute -bottom-12 left-16">
-          <div className="w-32 h-32 bg-gray-200 rounded-full p-2">
-            <div className="w-full h-full bg-white rounded-full p-1">
-              <div className="relative w-full h-full">
-                <img
-                  src={buildImageUrl(userData?.profile_img || "") || pfp}
-                  alt=""
-                  className="object-contain rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+        <img
+          src={buildImageUrl(userData?.profile_img || "") || pfp}
+          alt=""
+          className="rounded-full absolute -bottom-12 left-16 w-32 h-32 border-[.4rem] border-white"
+        />
         {/* Edit Profile Button */}
-        <button className="absolute top-4 right-4 flex items-center gap-2 text-gray-600 hover:text-gray-900">
+        <button
+          className="absolute top-4 right-4 flex items-center gap-2 text-gray-600 hover:text-gray-900"
+          onClick={() => {
+            router.push("profile/accounts");
+            refreshProfileData(); // Refresh profile data after navigating
+          }}
+        >
           Edit profile
           <svg
             className="w-4 h-4"

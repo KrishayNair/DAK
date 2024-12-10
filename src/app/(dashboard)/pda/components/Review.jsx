@@ -28,7 +28,11 @@ export function Review({ formData }) {
   };
 
   const renderDocumentPreview = (document, title) => {
-    if (!document) return null;
+    if (!document?.url && !document?.file) return null;
+
+    const documentUrl = document.url || (document.file ? URL.createObjectURL(document.file) : null);
+    
+    if (!documentUrl) return null;
 
     return (
       <div className="bg-gray-50 p-4 rounded-lg">
@@ -43,7 +47,7 @@ export function Review({ formData }) {
             <p className="text-sm text-gray-500">{document.name}</p>
           </div>
           <a
-            href={URL.createObjectURL(document.file)}
+            href={documentUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="px-3 py-1 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
@@ -53,6 +57,10 @@ export function Review({ formData }) {
         </div>
       </div>
     );
+  };
+
+  const handlePayment = () => {
+    console.log('Proceeding to payment...');
   };
 
   return (
@@ -117,7 +125,7 @@ export function Review({ formData }) {
           <div className="flex items-center mb-6">
             <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-4">
               <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
             <div>
@@ -126,8 +134,11 @@ export function Review({ formData }) {
             </div>
           </div>
           <div className="space-y-4">
-            {renderDocumentPreview(formData.documents.idProof, 'ID Proof')}
-            {renderDocumentPreview(formData.documents.addressProof, 'Address Proof')}
+            {/* Aadhaar Card Preview */}
+            {renderDocumentPreview(formData.documents?.idProof, 'Aadhaar Card')}
+            
+            {/* PAN Card Preview */}
+            {renderDocumentPreview(formData.documents?.panCard, 'PAN Card')}
           </div>
         </div>
 
@@ -152,6 +163,26 @@ export function Review({ formData }) {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="mt-8 flex justify-center">
+        <button
+          onClick={handlePayment}
+          className="px-8 py-4 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors duration-300 flex items-center space-x-2 shadow-lg"
+        >
+          <span>Proceed to Payment</span>
+          <span className="text-2xl">₹{formData.depositAmount}</span>
+          <svg className="w-6 h-6 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </button>
+      </div>
+
+      <div className="text-center text-sm text-gray-500 flex items-center justify-center space-x-2">
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        <span>Secure payment powered by India Post Payment Gateway</span>
       </div>
     </div>
   );
