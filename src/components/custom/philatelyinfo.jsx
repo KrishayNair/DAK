@@ -345,7 +345,7 @@ export default function PhilatelyIntro() {
             src="/gradient2.png"
             width={500}
             height={500}
-            className="absolute top-[-200px] hidden xl:block "
+            className="absolute top-[-200px] left-[-100px] hidden xl:block "
           />
           <div className="flex flex-col xl:flex-row xl:m-20 space-x-0 xl:space-x-20">
             <div className="relative w-full xl:w-2/5 lg:min-h-[400px] min-h-[300px]">
@@ -426,7 +426,7 @@ export default function PhilatelyIntro() {
             src="/gradient2.png"
             width={500}
             height={500}
-            className="absolute top-[-200px] hidden xl:block "
+            className="absolute top-[-200px] left-[-100px] hidden xl:block "
           />
           <div className="flex flex-col xl:flex-row xl:m-20 space-x-0 xl:space-x-20">
             <div className="relative w-full xl:w-2/5 lg:min-h-[400px] min-h-[300px]">

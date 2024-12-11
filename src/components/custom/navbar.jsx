@@ -185,9 +185,9 @@ export default function Navbar() {
         : "bg-transparent"
     )}>
       <Link href="/">
-      <Image src="/logoNew.svg" width={130} height={50} />
+      <Image src="/logoNew.png" width={100} height={50}  className="absolute top-2 left-7"/>
       </Link>
-      <nav className="flex items-center justify-center w-full ml-10">
+      <nav className="flex items-center justify-center w-full ml-40">
         <div className="flex space-x-8 text-[#604234] font-primary">
           {navBarRoutes.map((route, i) => (
             <Link

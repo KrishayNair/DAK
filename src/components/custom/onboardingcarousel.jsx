@@ -1,22 +1,23 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 function Carousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
     {
-      image: "/calendar.jpeg",
+      image: "/carousal1.jpg",
       title: "Welcome to Dak",
       description: "Your digital journey starts here",
     },
     {
-      image: "/calendar.jpeg",
+      image: "/carousal1.jpg",
       title: "Connect & Collaborate",
       description: "Work together seamlessly",
     },
     {
-      image: "/calendar.jpeg",
+      image: "/carousal1.jpg",
       title: "Secure & Reliable",
       description: "Your data is safe with us",
     },
@@ -39,12 +40,12 @@ function Carousel() {
             ${index === currentSlide ? "opacity-100" : "opacity-0"}`}
         >
           <div className="relative h-full">
-            {/* <Image
+            <img
               src={slide.image}
               alt={slide.title}
               fill
-              className="object-cover"
-            /> */}
+              className="object-cover h-full rounded-[50px]"
+            />
             <div className="absolute bottom-10 left-10 text-white">
               <h3 className="text-2xl font-bold">{slide.title}</h3>
               <p>{slide.description}</p>

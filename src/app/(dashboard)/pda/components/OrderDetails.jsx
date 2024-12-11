@@ -40,7 +40,9 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
 
   const validateForm = () => {
     if (!productType) return false;
-    if (addedItems.length === 0) return false;
+    
+    const hasAddedItems = addedItems && addedItems.length > 0;
+    if (!hasAddedItems) return false;
 
     const totalDeposit = parseFloat(depositAmount) || 0;
     if (totalDeposit < 200) return false;
@@ -79,51 +81,38 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
         type: productType,
         name: itemLabel,
         quantity: quantity,
-        id: itemName
+        id: `${productType}-${itemName}`
       };
       
-      const existingItemIndex = addedItems.findIndex(item => item.id === itemName);
+      const existingItemIndex = addedItems.findIndex(item => item.id === newItem.id);
+      let updatedItems;
       
       if (existingItemIndex !== -1) {
-        const updatedItems = [...addedItems];
+        updatedItems = [...addedItems];
         updatedItems[existingItemIndex] = newItem;
-        setAddedItems(updatedItems);
-        
-        onChange({
-          ...details,
-          addedItems: updatedItems
-        });
-
-        toast.success(
-          <div className="flex flex-col">
-            <span className="font-medium">Item Updated</span>
-            <span className="text-sm">{itemLabel}: {quantity} units</span>
-          </div>,
-          {
-            duration: 3000,
-            icon: '✏️'
-          }
-        );
       } else {
-        const newItems = [...addedItems, newItem];
-        setAddedItems(newItems);
-        
-        onChange({
-          ...details,
-          addedItems: newItems
-        });
-
-        toast.success(
-          <div className="flex flex-col">
-            <span className="font-medium">Item Added</span>
-            <span className="text-sm">{itemLabel}: {quantity} units</span>
-          </div>,
-          {
-            duration: 3000,
-            icon: '✅'
-          }
-        );
+        updatedItems = [...addedItems, newItem];
       }
+      
+      setAddedItems(updatedItems);
+      
+      onChange({
+        ...details,
+        addedItems: updatedItems,
+        productType: productType,
+        depositAmount: depositAmount
+      });
+
+      toast.success(
+        <div className="flex flex-col">
+          <span className="font-medium">{existingItemIndex !== -1 ? 'Item Updated' : 'Item Added'}</span>
+          <span className="text-sm">{itemLabel}: {quantity} units</span>
+        </div>,
+        {
+          duration: 3000,
+          icon: existingItemIndex !== -1 ? '✏️' : '✅'
+        }
+      );
       
       onAddItem(newItem);
       handleQuantityChange(itemName, '0');
@@ -133,6 +122,18 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
         duration: 3000
       });
     }
+  };
+
+  const handleOtherItemAdd = () => {
+    if (!details.otherItemName?.trim()) {
+      toast.error('Please enter an item name', {
+        icon: '⚠️',
+        duration: 3000
+      });
+      return;
+    }
+    
+    handleAddItem('otherItemQuantity', details.otherItemName.trim());
   };
 
   const handleRemoveItem = (itemId, itemName) => {
@@ -406,10 +407,24 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
                 </div>
                 <div className="flex items-center justify-between py-2 border-b">
                   <span className="text-sm">Quantity:</span>
-                  {renderQuantityInput({
-                    name: 'otherItemQuantity',
-                    label: details.otherItemName || 'Other Item'
-                  })}
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="number"
+                      min="0"
+                      value={details.otherItemQuantity || 0}
+                      onChange={(e) => handleQuantityChange('otherItemQuantity', e.target.value)}
+                      className="w-24 p-2.5 border rounded-lg text-center"
+                    />
+                    <button
+                      onClick={handleOtherItemAdd}
+                      className="px-4 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors flex items-center space-x-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                      <span>Add</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

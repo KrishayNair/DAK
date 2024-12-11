@@ -62,7 +62,7 @@ export default function Signup() {
       name: values.name,
       email: values.email,
       phone_number: values.phone_number,
-      postal_code: values.postal_code
+      postal_code: values.postal_code,
     };
 
     try {
@@ -83,7 +83,7 @@ export default function Signup() {
         alert("Something went wrong : ", res?.mesage);
       }
     } catch (error) {
-      console.error('Login Error:', error);
+      console.error("Login Error:", error);
       alert(error.message || "Something went wrong");
     } finally {
       setLoading(false);
@@ -93,26 +93,26 @@ export default function Signup() {
   async function onOTPSubmit(e) {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       const otpInputs = document.querySelectorAll('input[type="text"]');
-      const otpArray = Array.from(otpInputs).map(input => input.value);
-      const otpString = otpArray.join('');
+      const otpArray = Array.from(otpInputs).map((input) => input.value);
+      const otpString = otpArray.join("");
 
       if (otpString.length !== 5) {
-        alert('Please enter all 5 digits');
+        alert("Please enter all 5 digits");
         return;
       }
 
       const response = await verifyOTP(uid, otpString);
 
       if (response) {
-        Cookies.set('show_tour', 'true', { expires: 1 }); // expires in 1 day
-        router.replace('/');
+        Cookies.set("show_tour", "true", { expires: 1 }); // expires in 1 day
+        router.replace("/");
       }
     } catch (error) {
-      console.error('OTP Verification Error:', error);
-      alert(error.message || 'Verification failed');
+      console.error("OTP Verification Error:", error);
+      alert(error.message || "Verification failed");
     } finally {
       setLoading(false);
     }
@@ -138,7 +138,7 @@ export default function Signup() {
               }
             }}
             onKeyDown={(e) => {
-              if (e.key === 'Backspace' && !e.target.value) {
+              if (e.key === "Backspace" && !e.target.value) {
                 const prevInput = e.target.previousElementSibling;
                 if (prevInput) prevInput.focus();
               }
@@ -165,13 +165,19 @@ export default function Signup() {
   );
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex flex-col md:flex-row min-h-screen bg-white">
       {/* Left Section - Signup Form */}
-      <div className="w-3/5 p-8 flex flex-col">
-        <div className="flex-grow flex flex-col justify-center max-w-md mx-auto w-full">
-          <h1 className="text-3xl font-bold mb-4">dAk.</h1>
-          <h2 className="text-6xl font-bold mb-2">Get Started</h2>
-          <p className="text-gray-600 mb-6 text-sm">
+      <div className="w-full md:w-3/5 flex flex-col px-4 sm:px-6 md:px-0">
+        <div className="flex-grow flex flex-col md:mr-40 md:ml-28 mt-10 sm:mt-16 md:mt-28">
+          <img
+            src="logoNew.png"
+            alt="DAK"
+            className="w-16 sm:w-20 md:w-28 h-auto mb-6 sm:mb-8 md:mb-10"
+          />
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2 md:mb-3">
+            Get Started
+          </h2>
+          <p className="text-gray-500 mb-6 sm:mb-8 md:mb-8 text-sm md:text-base">
             Already have an account?{" "}
             <Link href="/login" className="text-blue-600 font-semibold">
               Signin
@@ -182,7 +188,10 @@ export default function Signup() {
             OTPForm
           ) : (
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 {/* Name Field */}
                 <FormField
                   control={form.control}
@@ -315,7 +324,7 @@ export default function Signup() {
       </div>
 
       {/* Right Section - Carousel */}
-      <div className="w-2/5 bg-gradient-to-br from-orange-50 to-[#FFE5C2] m-6 rounded-3xl">
+      <div className="hidden md:block w-full md:w-2/5 bg-gradient-to-br from-orange-50 to-[#FFE5C2] p-2 sm:p-3 md:m-3 md:rounded-[50px]">
         <div className="h-full w-full relative overflow-hidden">
           <Carousel />
         </div>

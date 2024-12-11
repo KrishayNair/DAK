@@ -11,16 +11,16 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-[#3c5141] text-white py-8 px-4">
+    <footer className="bg-[#D1F1D3] text-gray-600 py-8 px-4">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div className="space-y-4 col-span-1 md:col-span-2 lg:col-span-1">
             
             <Link href="/" className="text-primary hover:text-gray-900">
             <img
-              src="/images/dAk.png"
+              src="logoNew.png"
               alt="DAK"
-              className="w-20 h-8"
+              className="w-36 h-20"
             />
             </Link>
            
