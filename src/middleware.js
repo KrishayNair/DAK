@@ -3,9 +3,8 @@ import { verifySession } from "@/lib/auth";
 export async function middleware(request) {
 
   return await verifySession(request);
-  //  console.log("yoyoyo");
+  // console.log("yoyoyo");
 
-  return await verifySession(request);
 }
 
 export const config = {
