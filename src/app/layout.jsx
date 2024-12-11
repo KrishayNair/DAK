@@ -19,10 +19,6 @@ const fontSans = FontSans({
   display: "swap",
 });
 
-export const metadata = {
-  title: "Dak",
-  description: "",
-};
 
 export default function RootLayout({ children }) {
   const [isTourOpen, setIsTourOpen] = useState(false);

@@ -85,8 +85,8 @@ export default function MobileNav() {
       <div className="h-14 flex items-center justify-between py-3 px-3">
         <Image
           src="/logo.png"
-          width={130}
-          height={50}
+          width={260}
+          height={100}
         />
         <div className="ml-auto cursor-pointer flex items-center space-x-3">
           <Bell className="w-6 h-6" />
