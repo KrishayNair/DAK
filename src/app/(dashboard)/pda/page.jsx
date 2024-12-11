@@ -50,28 +50,9 @@ export default function PDAPage() {
       detailType: "",
     },
     orderDetails: {
-      productType: "pack1",
+      productType: "",
       addedItems: [],
-      mintCommemorative: 0,
-      mintCommWithoutPersonalities: 0,
-      mintDefinitive: 0,
-      topMarginal: 0,
-      bottomMarginal: 0,
-      fullSheet: 0,
-      fdcWithStamp: 0,
-      fdcWithoutPersonality: 0,
-      fdcBlank: 0,
-      brochureWithStamp: 0,
-      brochureBlank: 0,
-      annualStampPack: 0,
-      specialAnnualPack: 0,
-      childrensPack: 0,
-      specialCollectorPack: 0,
-      fdcAnnualPack: 0,
-      postalStationaryItem: 0,
-      miniSheet: 0,
-      otherItemName: "",
-      otherItemQuantity: 0,
+      depositAmount: 0,
     },
     documents: {
       idProof: null,
@@ -84,10 +65,27 @@ export default function PDAPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const savedData = localStorage.getItem("pdaFormData");
-    if (savedData) {
-      setFormData(JSON.parse(savedData));
-    }
+    // Reset form data on component mount
+    setFormData({
+      customerType: "",
+      depositAmount: "",
+      personalDetails: {
+        applicantName: "",
+        mailingAddress: "",
+        pinCode: "",
+        frequency: "",
+        detailType: "",
+      },
+      orderDetails: {
+        productType: "",
+        addedItems: [],
+        depositAmount: 0,
+      },
+      documents: {
+        idProof: null,
+        addressProof: null,
+      }
+    });
   }, []);
 
   const updateFormData = (section, data) => {
@@ -116,6 +114,7 @@ export default function PDAPage() {
   };
 
   const handleValidityChange = (isValid) => {
+    console.log('Validity changed:', isValid);
     setIsStepValid(isValid);
   };
 
@@ -140,22 +139,20 @@ export default function PDAPage() {
           );
 
         case 2: // Order Details
-          return !!(
-            formData.orderDetails?.addedItems?.length > 0 &&
-            formData.depositAmount &&
-            Number(formData.depositAmount) >= 200 &&
-            isStepValid // This checks any additional order validations
-          );
+          const hasItems = formData.orderDetails?.addedItems?.length > 0;
+          console.log('Step 2 validation:', {
+            hasItems,
+            items: formData.orderDetails?.addedItems,
+            isStepValid
+          });
+          return hasItems || isStepValid;
 
         case 3: // Document Upload
           const hasIdProof = formData.documents?.idProof?.file || formData.documents?.idProof?.url;
           const hasPanCard = formData.documents?.panCard?.file || formData.documents?.panCard?.url;
-          const documentsValid = hasIdProof && hasPanCard && isStepValid;
-          console.log('Document step check:', { hasIdProof, hasPanCard, isStepValid });
-          return documentsValid;
+          return hasIdProof && hasPanCard;
 
         case 4: // Review
-          // Check if all previous steps are complete before allowing review
           return (
             isStepComplete(0) &&
             isStepComplete(1) &&
@@ -233,10 +230,8 @@ export default function PDAPage() {
 
       // If we're on the Document Upload step (index 3) and moving to Review
       if (currentStep === 3) {
-        // Store form data in localStorage before navigation
-        localStorage.setItem('pdaFormData', JSON.stringify(formData));
-        // Navigate to review page
-        router.push('/review');
+        // Fix the navigation
+        router.push(`/review?data=${encodeURIComponent(JSON.stringify(formData))}`);
         return;
       }
 
@@ -286,10 +281,35 @@ export default function PDAPage() {
         return (
           <OrderDetails
             details={formData.orderDetails}
-            onChange={(details) => updateFormData("orderDetails", details)}
-            onAddItem={handleAddItem}
+            onChange={(details) => {
+              console.log('OrderDetails onChange:', details);
+              setFormData(prev => ({
+                ...prev,
+                orderDetails: {
+                  ...prev.orderDetails,
+                  ...details,
+                  addedItems: details.addedItems || [],
+                }
+              }));
+            }}
+            onAddItem={(item) => {
+              console.log('New item added:', item);
+              setFormData(prev => ({
+                ...prev,
+                orderDetails: {
+                  ...prev.orderDetails,
+                  addedItems: [...(prev.orderDetails.addedItems || []), item]
+                }
+              }));
+              setIsStepValid(true);
+            }}
             depositAmount={formData.depositAmount}
-            onDepositChange={(amount) => updateFormData("depositAmount", amount)}
+            onDepositChange={(amount) => {
+              setFormData(prev => ({
+                ...prev,
+                depositAmount: amount
+              }));
+            }}
             onValidityChange={handleValidityChange}
           />
         );
@@ -437,6 +457,12 @@ export default function PDAPage() {
     setFormData(updatedFormData);
     localStorage.setItem('pdaFormData', JSON.stringify(updatedFormData));
   };
+
+  useEffect(() => {
+    console.log('Form Data Updated:', formData);
+    console.log('Current Step:', currentStep);
+    console.log('Step Valid:', isStepComplete(currentStep));
+  }, [formData, currentStep]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: theme.background }}>

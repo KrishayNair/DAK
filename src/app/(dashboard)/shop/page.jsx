@@ -102,7 +102,7 @@ const SearchSection = ({ onSearch, searchQuery, setSearchQuery }) => {
         
         try {
           if (searchQuery.trim()) {
-            const response = await fetchFromAPI('product');
+            const response = await fetchFromAPI('/product/');
             
             if (response.success) {
               const filteredProducts = response.data.filter(product => 
@@ -241,36 +241,13 @@ const SideNavigation = ({ onProductsFiltered }) => {
 
   const filterProducts = async (selectedCategoryIds, min, max) => {
     try {
-      const selectedCategoryObjects = selectedCategoryIds.map(id => 
-        categories.find(cat => cat._id === id || cat.id === id)
-      ).filter(Boolean);
-
-      if (selectedCategoryObjects.length === 0) {
-        console.error('No matching categories found');
-        return;
-      }
-
-      // Build URL parameters object
-      const params = new URLSearchParams();
       
-      // Add price range
-      // params.append('minPrice', min);
-      // params.append('maxPrice', max);
-      
-      // Add collections with proper slug formatting
-      selectedCategoryObjects.forEach(cat => {
-        const collectionSlug = (cat.slug || cat.name?.toLowerCase().replace(/\s+/g, '_'))
-          .replace(/-/g, '_'); // Ensure consistent use of underscores
-        if (collectionSlug) {
-          params.append('collection', collectionSlug);
-        }
-      });
-
-      const url = `product?/${params.toString()}/`;
-      console.log('Fetching from URL:', url); // For debugging
+      const url = `product/?min_price=${min}&max_price=${max}`;
+      console.log('Requesting URL:', url); // Log the URL being requested
 
       const response = await fetchFromAPI(url);
-      console.log(response)
+      console.log('Filtered Products Response:', response); // Log the entire response
+      console.log('Filtered Products Data:', response.data); // Log just the data array
       
       if (response.success) {
         onProductsFiltered(response.data);
@@ -292,9 +269,25 @@ const SideNavigation = ({ onProductsFiltered }) => {
     setMaxPrice(value);
   };
 
-  const applyFilters = async () => {
-    if (selectedCategories.length > 0) {
-      await filterProducts(selectedCategories, minPrice, maxPrice);
+  const applyFilters = async (e) => {
+    e.preventDefault(); // Prevent form submission/page reload
+    try {
+      const url = `product/?min_price=${minPrice}&max_price=${maxPrice}`;
+      console.log('Requesting URL:', url); // Log the URL being requested
+
+      const response = await fetchFromAPI(url);
+      console.log('Filtered Products Response:', response); // Log the entire response
+      
+      if (response.success) {
+        // Store the filtered data in a constant before passing it
+        const filteredData = response.data;
+        console.log('Filtered Products Data:', filteredData); // Log just the data array
+        onProductsFiltered(filteredData); // Pass the filtered data to parent
+      } else {
+        console.error('Failed to filter products:', response.message);
+      }
+    } catch (error) {
+      console.error('Error filtering products:', error);
     }
   };
 
@@ -453,70 +446,36 @@ const SideNavigation = ({ onProductsFiltered }) => {
   );
 };
 
-// Update the Page component to use FilteredProductsGrid
+// Update the Page component to control when ProductsGrid should render
 export default function Page() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFiltered, setIsFiltered] = useState(false);
 
+  // Update handleProductsFiltered to store filtered data
   const handleProductsFiltered = (products) => {
-    setFilteredProducts(products);
+    setFilteredProducts(products); // Store the filtered products
     setSearchResults([]);
+    setIsFiltered(true);
+    setSearchQuery("");
   };
 
   const handleSearch = (results) => {
-    setSearchResults(results);
-    setFilteredProducts([]);
+    if (!isFiltered) { // Only allow search if not in filtered state
+      setSearchResults(results);
+      setFilteredProducts([]);
+    }
   };
 
   const displayProducts = () => {
-    if (searchResults.length > 0) {
-      return (
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-10">
-            <CardTitle className="text-3xl mb-2">Search Results</CardTitle>
-            <CardDescription className="text-lg">
-              Found {searchResults.length} products
-            </CardDescription>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {searchResults.map((product) => (
-              <ProductCard key={product._id || product.id} product={product} />
-            ))}
-          </div>
-        </div>
-      );
-    } else if (searchResults.length === 0 && searchQuery) {
-      // Show "Product not available" message
-      return (
-        <div className="max-w-7xl mx-auto text-center py-12">
-          <div className="rounded-lg bg-gray-50 p-8">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-2">
-              Product Not Available
-            </h3>
-            <p className="text-gray-600">
-              We couldn't find any products matching "{searchQuery}". 
-              Please try a different search term.
-            </p>
-            <Button 
-              onClick={() => {
-                setSearchQuery("");
-                setSearchResults([]);
-              }}
-              className="mt-4 bg-[#8B6E5B] hover:bg-[#7D6352]"
-            >
-              Clear Search
-            </Button>
-          </div>
-        </div>
-      );
-    } else if (filteredProducts.length > 0) {
+    if (isFiltered) {
       return (
         <div className="max-w-7xl mx-auto">
           <div className="mb-10">
             <CardTitle className="text-3xl mb-2">Filtered Products</CardTitle>
             <CardDescription className="text-lg">
-              Showing filtered results
+              Showing {filteredProducts.length} filtered results
             </CardDescription>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -526,7 +485,7 @@ export default function Page() {
           </div>
         </div>
       );
-    } else {
+    } else if (!isFiltered) {
       return <ProductsGrid />;
     }
   };
@@ -545,13 +504,15 @@ export default function Page() {
           <div className="flex flex-col md:flex-row gap-8 relative">
             <aside className="md:w-64 flex-shrink-0 relative">
               <div className="sticky top-24 overflow-auto max-h-[calc(100vh-8rem)]">
-                <SideNavigation onProductsFiltered={handleProductsFiltered} />
+                <SideNavigation 
+                  onProductsFiltered={handleProductsFiltered}
+                />
               </div>
             </aside>
             
             <div className="flex-1">
               {displayProducts()}
-              <CollectionGrid />
+              {!isFiltered && !searchResults.length && <CollectionGrid />}
             </div>
           </div>
         </div>
