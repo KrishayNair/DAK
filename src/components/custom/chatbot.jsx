@@ -4,6 +4,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { motion, AnimatePresence } from "framer-motion";
+import { fetchFromAPI } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 const ChatMessage = ({ message, isBot }) => (
   <motion.div
@@ -32,6 +34,8 @@ const Chatbot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
+  const router = useRouter();
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -48,23 +52,18 @@ const Chatbot = () => {
     setInputMessage("");
     setIsLoading(true);
 
-    try {
-      const response = await fetch("/api/chatbot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: inputMessage }),
-      });
-
-      const data = await response.json();
-      setMessages(prev => [...prev, { text: data.response, isBot: true }]);
-    } catch (error) {
-      setMessages(prev => [
-        ...prev,
-        { text: "Sorry, I'm having trouble connecting. Please try again.", isBot: true },
-      ]);
-    } finally {
-      setIsLoading(false);
+    const res = await fetchFromAPI(`philatelist/chatBotResponse/?query="${inputMessage}" `)
+    
+    if (res.success) {
+      if (res.data.model == "genai") {
+        setMessages(prev => [...prev, { text: res.data.response, isBot: true }]);
+      } else {
+        // TODO: here if res.data.model is "intent" i'll get a route i just want to push to this route keeping chatbot open
+        router.push(res.data.route)
+      }
     }
+
+    setIsLoading(false);
   };
 
   return (
