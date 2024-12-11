@@ -39,7 +39,6 @@ export function Review() {
           }
         };
 
-        console.log('Loaded form data:', safeFormData);
         setFormData(safeFormData);
       } catch (error) {
         console.error('Error parsing form data:', error);

@@ -31,7 +31,6 @@ export function CustomerType({ value, onChange }) {
         timestamp: new Date().toISOString()
       };
       localStorage.setItem('pdaCustomerData', JSON.stringify(customerData));
-      console.log('Saved customer type to localStorage:', customerData);
     }
   }, [value]);
 
@@ -42,7 +41,6 @@ export function CustomerType({ value, onChange }) {
       timestamp: new Date().toISOString()
     };
     localStorage.setItem('pdaCustomerData', JSON.stringify(customerData));
-    console.log('Customer type changed:', customerData);
     
     onChange(typeId);
   };
@@ -64,17 +62,6 @@ export function CustomerType({ value, onChange }) {
             <h3 className="text-lg sm:text-xl font-medium">{type.label}</h3>
           </button>
         ))}
-      </div>
-
-      {/* Debug Information */}
-      <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-        <p className="font-medium">Selected Customer Type:</p>
-        <pre className="mt-2 text-sm overflow-auto">
-          {JSON.stringify({
-            selectedType: value,
-            savedData: localStorage.getItem('pdaCustomerData')
-          }, null, 2)}
-        </pre>
       </div>
     </div>
   );

@@ -97,7 +97,6 @@ export default function PDAPage() {
           [section]:
             typeof data === "object" ? { ...prev[section], ...data } : data,
         };
-        console.log('Form Data Updated:', JSON.stringify(newData, null, 2));
         return newData;
       });
     } catch (err) {
@@ -140,11 +139,6 @@ export default function PDAPage() {
 
         case 2: // Order Details
           const hasItems = formData.orderDetails?.addedItems?.length > 0;
-          console.log('Step 2 validation:', {
-            hasItems,
-            items: formData.orderDetails?.addedItems,
-            isStepValid
-          });
           return hasItems || isStepValid;
 
         case 3: // Document Upload
@@ -235,9 +229,6 @@ export default function PDAPage() {
         return;
       }
 
-      // Log form data when moving to next step
-      console.log(`Completed Step ${currentStep + 1}:`, JSON.stringify(formData, null, 2));
-
       // Move to next step
       const nextStep = currentStep + 1;
       if (nextStep < steps.length) {
@@ -282,7 +273,6 @@ export default function PDAPage() {
           <OrderDetails
             details={formData.orderDetails}
             onChange={(details) => {
-              console.log('OrderDetails onChange:', details);
               setFormData(prev => ({
                 ...prev,
                 orderDetails: {
@@ -293,7 +283,6 @@ export default function PDAPage() {
               }));
             }}
             onAddItem={(item) => {
-              console.log('New item added:', item);
               setFormData(prev => ({
                 ...prev,
                 orderDetails: {
@@ -322,14 +311,6 @@ export default function PDAPage() {
           />
         );
       case 4:
-        // Log the complete form data when reaching the Review step
-        console.log('Review Component Data:', {
-          customerType: formData.customerType,
-          personalDetails: formData.personalDetails,
-          orderDetails: formData.orderDetails,
-          documents: formData.documents,
-          depositAmount: formData.depositAmount
-        });
         return <Review formData={formData} />;
       default:
         return null;
@@ -446,23 +427,24 @@ export default function PDAPage() {
   };
 
   const handleOrderDetailsChange = (orderDetails) => {
-    const updatedFormData = {
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       orderDetails: {
-        ...formData.orderDetails,
-        ...orderDetails,
-        addedItems: orderDetails.addedItems || [], // Ensure addedItems is always an array
+        ...prev.orderDetails,
+        productType: orderDetails.productType,
+        [Object.keys(orderDetails).find(key => 
+          key !== 'productType' && 
+          key !== 'addedItems' && 
+          orderDetails[key] !== prev.orderDetails[key]
+        )]: orderDetails[Object.keys(orderDetails).find(key => 
+          key !== 'productType' && 
+          key !== 'addedItems' && 
+          orderDetails[key] !== prev.orderDetails[key]
+        )],
+        addedItems: orderDetails.addedItems || prev.orderDetails.addedItems || [],
       }
-    };
-    setFormData(updatedFormData);
-    localStorage.setItem('pdaFormData', JSON.stringify(updatedFormData));
+    }));
   };
-
-  useEffect(() => {
-    console.log('Form Data Updated:', formData);
-    console.log('Current Step:', currentStep);
-    console.log('Step Valid:', isStepComplete(currentStep));
-  }, [formData, currentStep]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: theme.background }}>
