@@ -215,8 +215,8 @@ export default function PDAPage() {
           case 2:
             if (!formData.orderDetails?.addedItems?.length) {
               errorMessage = "Please add at least one item to your order";
-            } else if (!formData.depositAmount || Number(formData.depositAmount) < 200) {
-              errorMessage = "Minimum deposit amount of ₹200 is required";
+            } else if (!formData.depositAmount || Number(formData.depositAmount) < 250) {
+              errorMessage = "Minimum deposit amount of ₹250 is required";
             }
             break;
           case 3:
