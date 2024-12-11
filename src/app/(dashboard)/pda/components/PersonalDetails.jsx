@@ -1,8 +1,12 @@
+"use client";
+import React, { useEffect } from 'react';
+
 export function PersonalDetails({ details = {}, onChange }) {
   const handleChange = (field, value) => {
+    let updatedDetails;
+    
     if (field === 'subscriptionType') {
-      // Clear all fields when switching subscription type
-      onChange({
+      updatedDetails = {
         ...details,
         subscriptionType: value,
         applicantName: '',
@@ -11,15 +15,34 @@ export function PersonalDetails({ details = {}, onChange }) {
         recipientName: '',
         recipientAddress: '',
         recipientPinCode: '',
-        frequency: details.frequency // Preserve frequency selection
-      });
+        frequency: details.frequency
+      };
     } else {
-      onChange({
+      updatedDetails = {
         ...details,
         [field]: value,
-      });
+      };
     }
+
+    // Save to localStorage
+    localStorage.setItem('pdaPersonalDetails', JSON.stringify(updatedDetails));
+    
+    // Update parent component
+    onChange(updatedDetails);
   };
+
+  // Save initial data to localStorage when component mounts
+  useEffect(() => {
+    const savedDetails = localStorage.getItem('pdaPersonalDetails');
+    if (!savedDetails) {
+      localStorage.setItem('pdaPersonalDetails', JSON.stringify(details));
+    }
+  }, []);
+
+  // Log changes for debugging
+  useEffect(() => {
+    console.log('Personal Details Updated:', details);
+  }, [details]);
 
   return (
     <div className="space-y-6">
@@ -129,54 +152,35 @@ export function PersonalDetails({ details = {}, onChange }) {
         </div>
       )}
 
-      {/* Frequency Options - Show when subscription type is selected */}
+      {/* Frequency Options */}
       {details.subscriptionType && (
         <div className="flex justify-between items-center gap-4 mt-4">
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="frequency"
-              value="yearly"
-              checked={details.frequency === 'yearly'}
-              onChange={(e) => handleChange('frequency', e.target.value)}
-            />
-            <span>Once a Year</span>
-          </label>
-          
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="frequency"
-              value="halfYearly"
-              checked={details.frequency === 'halfYearly'}
-              onChange={(e) => handleChange('frequency', e.target.value)}
-            />
-            <span>Twice a Year</span>
-          </label>
-
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="frequency"
-              value="quarterly"
-              checked={details.frequency === 'quarterly'}
-              onChange={(e) => handleChange('frequency', e.target.value)}
-            />
-            <span>Four times a year</span>
-          </label>
-
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="frequency"
-              value="bimonthly"
-              checked={details.frequency === 'bimonthly'}
-              onChange={(e) => handleChange('frequency', e.target.value)}
-            />
-            <span>Six times a year</span>
-          </label>
+          {[
+            { value: 'yearly', label: 'Once a Year' },
+            { value: 'halfYearly', label: 'Twice a Year' },
+            { value: 'quarterly', label: 'Four times a year' },
+            { value: 'bimonthly', label: 'Six times a year' }
+          ].map((option) => (
+            <label key={option.value} className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="frequency"
+                value={option.value}
+                checked={details.frequency === option.value}
+                onChange={(e) => handleChange('frequency', e.target.value)}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
         </div>
       )}
+
+      {/* Debug Information */}
+      <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+        <pre className="text-xs overflow-auto">
+          {JSON.stringify(details, null, 2)}
+        </pre>
+      </div>
     </div>
   );
 }

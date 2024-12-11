@@ -76,9 +76,9 @@ export default function ForgotPassword() {
       }
     } catch (err) {
       alert("Something went wrong: " + err.message);
-    } finally {
-      setLoading(false);
-    }
+    } 
+
+    setLoading(false);
   }
 
   async function onOTPSubmit(e) {
