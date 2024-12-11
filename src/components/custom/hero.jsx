@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import hero from "../../../public/hero.png";
 import { Elsie_Swash_Caps } from "next/font/google";
-import { Button } from "../ui/button";
 
 const elsieSwashCaps = Elsie_Swash_Caps({
   subsets: ["latin"],
@@ -46,9 +45,9 @@ export default function Hero() {
             way.
           </p>
           <Link href="/">
-          <Button className="ml-40 rounded-full py-5 text-base bg-[#FFE5C2] hover:bg-[#FFE5C2/90] mt-8">
+          <button className="ml-40 rounded-full py-4 px-7 text-base bg-[#FFE5C2] hover:bg-[#FFE5C2/90] mt-8">
             Explore More
-          </Button>
+          </button>
           </Link>
         </div>
       </div>

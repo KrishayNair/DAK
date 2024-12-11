@@ -185,7 +185,7 @@ export default function Navbar() {
         : "bg-transparent"
     )}>
       <Link href="/">
-      <Image src="/logoNew.png" width={330} height={350}  className="absolute top-[-10px] left-[-50px]"/>
+      <Image src="/logoNew.png" width={100} height={50}  className="absolute top-2 left-7"/>
       </Link>
       <nav className="flex items-center justify-center w-full ml-40">
         <div className="flex space-x-8 text-[#604234] font-primary">
