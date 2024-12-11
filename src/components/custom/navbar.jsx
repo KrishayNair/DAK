@@ -62,21 +62,22 @@ export default function Navbar() {
       url: "/catalog",
       regex: /^\/catalog/,
     },
-    {
-      title: "Blog",
-      url: "/blog",
-      regex: /^\/blog/,
-    },
+    // {
+    //   title: "Blog",
+    //   url: "/blog",
+    //   regex: /^\/blog/,
+    // },
     {
       title: "Forum",
       url: "/forum",
       regex: /^\/forum/,
     },
-    {
-      title: "Auctions",
-      url: "/auction",
-      regex: /^\/auction/,
-    },
+    // {
+    //   title: "Auctions",
+    //   url: "/auction",
+    //   regex: /^\/auction/,
+    // },
+  
   ];
   const [scrolled, setScrolled] = useState(false);
 
@@ -206,40 +207,52 @@ export default function Navbar() {
         </div>
       </nav>
       <div className="ml-auto cursor-pointer flex items-center space-x-3">
-          <Bell className="w-6 h-6 opacity-60 hover:text-secondary hover:opacity-100" />
+        <div className="relative" ref={bellIconRef}>
+          <Bell 
+            className="w-6 h-6 opacity-60 hover:text-secondary hover:opacity-100" 
+            onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+          />
+          <NotificationModal
+            isOpen={isNotificationOpen}
+            onClose={() => setIsNotificationOpen(false)}
+            anchorRef={bellIconRef}
+          />
+        </div>
+        <Link href="/cart">
           <ShoppingCart className="w-6 h-6 opacity-60 hover:text-secondary hover:opacity-100"/>
-          </div>
-                    <div className="relative ml-5">
-                <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center space-x-2 text-[#604234] hover:text-gray-900"
-                >
-                 <div className="flex-col"><span className="font-semibold text-base">Welcome,</span> <span>{userData ? userData.name : 'Loading...'}</span> </div>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
+        </Link>
+      </div>
+      <div className="relative ml-5">
+        <button
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          className="flex items-center space-x-2 text-[#604234] hover:text-gray-900"
+        >
+         <div className="flex-col"><span className="font-semibold text-base">Welcome,</span> <span>{userData ? userData.name : 'Loading...'}</span> </div>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
 
-                {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                    <Link
-                      href="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Profile
-                    </Link>
-                    <button
-                      onClick={() => {
-                        logout();
-                        router.push("/login");
-                      }}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Log out
-                    </button>
-                  </div>
-                )}
-              </div>
+        {isDropdownOpen && (
+          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+            <Link
+              href="/profile"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              Profile
+            </Link>
+            <button
+              onClick={() => {
+                logout();
+                router.push("/login");
+              }}
+              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              Log out
+            </button>
+          </div>
+        )}
+      </div>
     </aside>
   );
 }
