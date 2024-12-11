@@ -10,7 +10,7 @@ import PhilatelyInfo from '@/components/custom/philatelyinfo'
 import Footer from '../components/custom/Footer'
 import { useRouter } from 'next/navigation'
 import MobileNav from '@/components/custom/MobileNav'
-
+import useFCMToken from '@/lib/useFCMToken';
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0)
@@ -18,6 +18,8 @@ export default function Home() {
   const router = useRouter()
   const lenisRef = useRef()
   const heroRef = useRef(null)
+
+  const { token } = useFCMToken();
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -28,6 +30,8 @@ export default function Home() {
 
   useEffect(() => {
     // Check if the screen is mobile
+
+    console.log(token);
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 1024) // Adjusted breakpoint to include iPad dimensions
     }
