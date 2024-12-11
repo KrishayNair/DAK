@@ -425,6 +425,19 @@ export default function PDAPage() {
     }
   };
 
+  const handleOrderDetailsChange = (orderDetails) => {
+    const updatedFormData = {
+      ...formData,
+      orderDetails: {
+        ...formData.orderDetails,
+        ...orderDetails,
+        addedItems: orderDetails.addedItems || [], // Ensure addedItems is always an array
+      }
+    };
+    setFormData(updatedFormData);
+    localStorage.setItem('pdaFormData', JSON.stringify(updatedFormData));
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: theme.background }}>
     {/* Updated Hero Section with optimized height */}

@@ -85,49 +85,34 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
       };
       
       const existingItemIndex = addedItems.findIndex(item => item.id === newItem.id);
+      let updatedItems;
       
       if (existingItemIndex !== -1) {
-        const updatedItems = [...addedItems];
+        updatedItems = [...addedItems];
         updatedItems[existingItemIndex] = newItem;
-        setAddedItems(updatedItems);
-        
-        onChange({
-          ...details,
-          addedItems: updatedItems,
-          productType: productType
-        });
-
-        toast.success(
-          <div className="flex flex-col">
-            <span className="font-medium">Item Updated</span>
-            <span className="text-sm">{itemLabel}: {quantity} units</span>
-          </div>,
-          {
-            duration: 3000,
-            icon: '✏️'
-          }
-        );
       } else {
-        const newItems = [...addedItems, newItem];
-        setAddedItems(newItems);
-        
-        onChange({
-          ...details,
-          addedItems: newItems,
-          productType: productType
-        });
-
-        toast.success(
-          <div className="flex flex-col">
-            <span className="font-medium">Item Added</span>
-            <span className="text-sm">{itemLabel}: {quantity} units</span>
-          </div>,
-          {
-            duration: 3000,
-            icon: '✅'
-          }
-        );
+        updatedItems = [...addedItems, newItem];
       }
+      
+      setAddedItems(updatedItems);
+      
+      onChange({
+        ...details,
+        addedItems: updatedItems,
+        productType: productType,
+        depositAmount: depositAmount
+      });
+
+      toast.success(
+        <div className="flex flex-col">
+          <span className="font-medium">{existingItemIndex !== -1 ? 'Item Updated' : 'Item Added'}</span>
+          <span className="text-sm">{itemLabel}: {quantity} units</span>
+        </div>,
+        {
+          duration: 3000,
+          icon: existingItemIndex !== -1 ? '✏️' : '✅'
+        }
+      );
       
       onAddItem(newItem);
       handleQuantityChange(itemName, '0');

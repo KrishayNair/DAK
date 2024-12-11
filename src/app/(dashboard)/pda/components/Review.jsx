@@ -15,9 +15,12 @@ export function Review({ formData }) {
     orderDetails: {
       productType: '',
       addedItems: [],
+      depositAmount: 0,
     },
     ...formData
   };
+
+  console.log('Review Form Data:', safeFormData); // Add this for debugging
 
   const renderForm = () => {
     return (
@@ -181,6 +184,11 @@ export function Review({ formData }) {
               )}
             </tbody>
           </table>
+
+          {/* Add Deposit Amount Display */}
+          <div className="mt-4">
+            <p className="text-sm font-medium">Deposit Amount: ₹{safeFormData.orderDetails?.depositAmount || 0}</p>
+          </div>
         </div>
 
         {/* Signature Section */}
