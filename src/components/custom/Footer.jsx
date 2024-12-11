@@ -18,7 +18,7 @@ const Footer = () => {
             
             <Link href="/" className="text-primary hover:text-gray-900">
             <img
-              src="/images/dAk.png"
+              src="logoNew.png"
               alt="DAK"
               className="w-20 h-8"
             />
