@@ -12,6 +12,7 @@ import {
 import { Elsie_Swash_Caps } from "next/font/google";
 import { Timeline } from "./components/Timeline";
 import { DocumentUpload } from './components/DocumentUpload';
+import { useRouter } from 'next/navigation';
 
 const elsieSwashCaps = Elsie_Swash_Caps({
   subsets: ["latin"],
@@ -79,6 +80,8 @@ export default function PDAPage() {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isStepValid, setIsStepValid] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     const savedData = localStorage.getItem("pdaFormData");
@@ -225,6 +228,15 @@ export default function PDAPage() {
         }
         
         setError(errorMessage);
+        return;
+      }
+
+      // If we're on the Document Upload step (index 3) and moving to Review
+      if (currentStep === 3) {
+        // Store form data in localStorage before navigation
+        localStorage.setItem('pdaFormData', JSON.stringify(formData));
+        // Navigate to review page
+        router.push('/review');
         return;
       }
 
