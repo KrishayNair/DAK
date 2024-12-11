@@ -1,79 +1,182 @@
 export function PersonalDetails({ details = {}, onChange }) {
   const handleChange = (field, value) => {
-    onChange({
-      ...details,
-      [field]: value
-    });
+    if (field === 'subscriptionType') {
+      // Clear all fields when switching subscription type
+      onChange({
+        ...details,
+        subscriptionType: value,
+        applicantName: '',
+        mailingAddress: '',
+        pinCode: '',
+        recipientName: '',
+        recipientAddress: '',
+        recipientPinCode: '',
+        frequency: details.frequency // Preserve frequency selection
+      });
+    } else {
+      onChange({
+        ...details,
+        [field]: value,
+      });
+    }
   };
 
   return (
     <div className="space-y-6">
-      {/* Applicant Name */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Full Name *
-        </label>
-        <input
-          type="text"
-          value={details.applicantName || ''}
-          onChange={(e) => handleChange('applicantName', e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Enter your full name as per ID proof"
-        />
-      </div>
+      <h2 className="text-xl font-bold text-center mb-6">PERSONAL DETAILS</h2>
 
-      {/* Mailing Address */}
+      {/* Subscription Type Selector */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Mailing Address *
-        </label>
-        <textarea
-          value={details.mailingAddress || ''}
-          onChange={(e) => handleChange('mailingAddress', e.target.value)}
-          rows={3}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Enter your complete mailing address"
-        />
-      </div>
-
-      {/* PIN Code */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          PIN Code *
-        </label>
-        <input
-          type="text"
-          value={details.pinCode || ''}
-          onChange={(e) => handleChange('pinCode', e.target.value.replace(/\D/g, '').slice(0, 6))}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Enter 6-digit PIN code"
-          maxLength={6}
-        />
-      </div>
-
-      {/* Frequency */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Preferred Frequency *
+          Subscription Type
         </label>
         <select
-          value={details.frequency || ''}
-          onChange={(e) => handleChange('frequency', e.target.value)}
+          value={details.subscriptionType || ''}
+          onChange={(e) => handleChange('subscriptionType', e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
         >
-          <option value="">Select frequency</option>
-          <option value="monthly">Monthly</option>
-          <option value="quarterly">Quarterly</option>
-          <option value="halfYearly">Half Yearly</option>
-          <option value="yearly">Yearly</option>
+          <option value="">Select subscription type</option>
+          <option value="self">Self Subscription</option>
+          <option value="gift">Gift Subscription</option>
         </select>
       </div>
 
-      {/* Helper Text */}
-      <div className="text-sm text-gray-500">
-        <p>* Required fields</p>
-        <p>Please ensure your mailing address is complete and accurate for delivery.</p>
-      </div>
+      {/* Self Subscription Fields */}
+      {details.subscriptionType === 'self' && (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Name of applicant
+            </label>
+            <input
+              type="text"
+              value={details.applicantName || ''}
+              onChange={(e) => handleChange('applicantName', e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mailing Address
+            </label>
+            <textarea
+              value={details.mailingAddress || ''}
+              onChange={(e) => handleChange('mailingAddress', e.target.value)}
+              rows={3}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Pin
+            </label>
+            <input
+              type="text"
+              value={details.pinCode || ''}
+              onChange={(e) => handleChange('pinCode', e.target.value.replace(/\D/g, '').slice(0, 6))}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              maxLength={6}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Gift Subscription Fields */}
+      {details.subscriptionType === 'gift' && (
+        <div>
+          <p className="text-sm font-medium mb-4">I wish to take out a gift subscription in the name of:</p>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Name of recipient
+              </label>
+              <input
+                type="text"
+                value={details.recipientName || ''}
+                onChange={(e) => handleChange('recipientName', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Mailing Address
+              </label>
+              <textarea
+                value={details.recipientAddress || ''}
+                onChange={(e) => handleChange('recipientAddress', e.target.value)}
+                rows={3}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Pin
+              </label>
+              <input
+                type="text"
+                value={details.recipientPinCode || ''}
+                onChange={(e) => handleChange('recipientPinCode', e.target.value.replace(/\D/g, '').slice(0, 6))}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                maxLength={6}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Frequency Options - Show when subscription type is selected */}
+      {details.subscriptionType && (
+        <div className="flex justify-between items-center gap-4 mt-4">
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="frequency"
+              value="yearly"
+              checked={details.frequency === 'yearly'}
+              onChange={(e) => handleChange('frequency', e.target.value)}
+            />
+            <span>Once a Year</span>
+          </label>
+          
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="frequency"
+              value="halfYearly"
+              checked={details.frequency === 'halfYearly'}
+              onChange={(e) => handleChange('frequency', e.target.value)}
+            />
+            <span>Twice a Year</span>
+          </label>
+
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="frequency"
+              value="quarterly"
+              checked={details.frequency === 'quarterly'}
+              onChange={(e) => handleChange('frequency', e.target.value)}
+            />
+            <span>Four times a year</span>
+          </label>
+
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="frequency"
+              value="bimonthly"
+              checked={details.frequency === 'bimonthly'}
+              onChange={(e) => handleChange('frequency', e.target.value)}
+            />
+            <span>Six times a year</span>
+          </label>
+        </div>
+      )}
     </div>
   );
 }

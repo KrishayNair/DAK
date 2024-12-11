@@ -1,188 +1,227 @@
 export function Review({ formData }) {
-  const renderOrderSummary = () => {
-    const addedItems = formData.orderDetails.addedItems || [];
+  // Update the safeFormData structure to match the OrderDetails data
+  const safeFormData = {
+    customerType: '',
+    personalDetails: {
+      applicantName: '',
+      mailingAddress: '',
+      pinCode: '',
+      frequency: '',
+      detailType: '',
+      recipientName: '',
+      recipientAddress: '',
+      recipientPinCode: '',
+    },
+    orderDetails: {
+      productType: '',
+      addedItems: [],
+      depositAmount: 0,
+    },
+    ...formData
+  };
 
-    if (addedItems.length === 0) {
-      return (
-        <div className="flex flex-col items-center justify-center py-8">
-          <p className="text-gray-500">No items added to your order</p>
-        </div>
-      );
-    }
+  console.log('Review Form Data:', safeFormData); // Add this for debugging
 
+  const renderForm = () => {
     return (
-      <div className="space-y-3">
-        {addedItems.map((item, index) => (
-          <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+      <div className="max-w-[21cm] mx-auto bg-white p-8 shadow-none">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-xl font-bold uppercase">Philatelic Deposit Account</h1>
+          <h2 className="text-lg uppercase mt-2">Application Form</h2>
+          {/* <p className="text-sm mt-2">Simply complete this form and return it to us to set up your mail order account with us.</p> */}
+        </div>
+
+        {/* Customer Type */}
+        <div className="mb-6">
+          <p className="text-sm mb-2">Type of Customer :</p>
+          <div className="flex gap-12">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={safeFormData.customerType === 'individual'}
+                readOnly
+                className="mr-2"
+              />
+              <span className="text-sm">Private / Individual</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={safeFormData.customerType === 'dealer'}
+                readOnly
+                className="mr-2"
+              />
+              <span className="text-sm">Stamp dealer / shop</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={safeFormData.customerType === 'company'}
+                readOnly
+                className="mr-2"
+              />
+              <span className="text-sm">Company</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Personal Details */}
+        <div className="mb-8">
+          <h3 className="font-bold text-sm border-b border-black mb-4">PERSONAL DETAILS</h3>
+          <div className="space-y-4">
             <div>
-              <p className="font-medium text-gray-800">{item.name}</p>
-              <p className="text-sm text-gray-500">{item.type}</p>
+              <p className="text-sm">Name of applicant:</p>
+              <div className="border-b border-gray-300 py-1">
+                {safeFormData.personalDetails.applicantName}
+              </div>
             </div>
-            <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-              Qty: {item.quantity}
-            </span>
-          </div>
-        ))}
-      </div>
-    );
-  };
+            <div>
+              <p className="text-sm">Mailing Address:</p>
+              <div className="border-b border-gray-300 py-1">
+                {safeFormData.personalDetails.mailingAddress}
+              </div>
+            </div>
+            <div>
+              <p className="text-sm">Pin:</p>
+              <div className="border-b border-gray-300 py-1">
+                {safeFormData.personalDetails.pinCode}
+              </div>
+            </div>
+            
+           
 
-  const renderDocumentPreview = (document, title) => {
-    if (!document?.url && !document?.file) return null;
-
-    const documentUrl = document.url || (document.file ? URL.createObjectURL(document.file) : null);
-    
-    if (!documentUrl) return null;
-
-    return (
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
+            <h3 className="text-center">And/Or</h3>
+            <div>
+              <p className="text-sm">I wish to take out a gift subscription in the name of:</p>
+              <div className="border-b border-gray-300 py-1">
+                {safeFormData.personalDetails.recipientName}
+              </div>
+            </div>
+            <div>
+              <p className="text-sm">Mailing Address:</p>
+              <div className="border-b border-gray-300 py-1">
+                {safeFormData.personalDetails.recipientAddress}
+              </div>
+            </div>
+            <div>
+              <p className="text-sm">Pin:</p>
+              <div className="border-b border-gray-300 py-1">
+                {safeFormData.personalDetails.recipientPinCode}
+              </div>
+            </div>
           </div>
-          <div className="flex-1">
-            <h4 className="text-sm font-medium text-gray-900">{title}</h4>
-            <p className="text-sm text-gray-500">{document.name}</p>
+        </div>
+
+         {/* Frequency Selection */}
+         <div className="mt-4 mb-4">
+              <p className="text-sm mb-2">Frequency:</p>
+              <div className="flex gap-12">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={safeFormData.personalDetails.frequency === 'yearly'}
+                    readOnly
+                    className="mr-2"
+                  />
+                  <span className="text-sm">Once a Year</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={safeFormData.personalDetails.frequency === 'halfYearly'}
+                    readOnly
+                    className="mr-2"
+                  />
+                  <span className="text-sm">Twice a Year</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={safeFormData.personalDetails.frequency === 'quarterly'}
+                    readOnly
+                    className="mr-2"
+                  />
+                  <span className="text-sm">Four times a year</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={safeFormData.personalDetails.frequency === 'bimonthly'}
+                    readOnly
+                    className="mr-2"
+                  />
+                  <span className="text-sm">Six times a year</span>
+                </label>
+              </div>
+            </div>
+
+        {/* Order Form */}
+        <div>
+          <h3 className="font-bold text-sm border-b border-black mb-4">ORDER FORM</h3>
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr>
+                <th className="border border-gray-400 p-2 text-left">ITEM</th>
+                <th className="border border-gray-400 p-2 w-24">QUANTITY</th>
+                <th className="border border-gray-400 p-2 w-24">TYPE</th>
+              </tr>
+            </thead>
+            <tbody>
+              {safeFormData.orderDetails?.addedItems?.map((item, index) => (
+                <tr key={index}>
+                  <td className="border border-gray-400 p-2">{item.name}</td>
+                  <td className="border border-gray-400 p-2 text-center">{item.quantity}</td>
+                  <td className="border border-gray-400 p-2 text-center">{item.type}</td>
+                </tr>
+              ))}
+              {(!safeFormData.orderDetails?.addedItems || safeFormData.orderDetails.addedItems.length === 0) && (
+                <tr>
+                  <td colSpan="3" className="border border-gray-400 p-2 text-center text-gray-500">
+                    No items added
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+
+          {/* Add Deposit Amount Display */}
+          <div className="mt-4">
+            <p className="text-sm font-medium">Deposit Amount: ₹{safeFormData.orderDetails?.depositAmount || 0}</p>
           </div>
-          <a
-            href={documentUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-          >
-            View PDF
-          </a>
+        </div>
+
+        {/* Signature Section */}
+        <div className="mt-8">
+          <div>
+            <p className="text-sm">Date:</p>
+            <div className="border-b border-gray-300 w-48 py-1">
+              {new Date().toLocaleString()}
+            </div>
+          </div>
         </div>
       </div>
     );
-  };
-
-  const handlePayment = () => {
-    console.log('Proceeding to payment...');
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div className="text-center bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Review Your Application</h2>
-        <p className="text-gray-600">Please verify all the information before proceeding to payment</p>
-      </div>
-      
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Personal Information Card */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-          <div className="flex items-center mb-6">
-            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900">Personal Details</h3>
-              <p className="text-sm text-gray-500">Your contact information</p>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm text-gray-500">Name</p>
-              <p className="font-medium">{formData.personalDetails.applicantName}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Address</p>
-              <p className="font-medium">{formData.personalDetails.mailingAddress}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">PIN Code</p>
-              <p className="font-medium">{formData.personalDetails.pinCode}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Frequency</p>
-              <p className="font-medium capitalize">{formData.personalDetails.frequency}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Order Summary Card */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-          <div className="flex items-center mb-6">
-            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900">Order Summary</h3>
-              <p className="text-sm text-gray-500">Items in your order</p>
-            </div>
-          </div>
-          {renderOrderSummary()}
-        </div>
-
-        {/* Documents Card */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow md:col-span-2">
-          <div className="flex items-center mb-6">
-            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-4">
-              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900">Uploaded Documents</h3>
-              <p className="text-sm text-gray-500">Your identification and address proof</p>
-            </div>
-          </div>
-          <div className="space-y-4">
-            {/* Aadhaar Card Preview */}
-            {renderDocumentPreview(formData.documents?.idProof, 'Aadhaar Card')}
-            
-            {/* PAN Card Preview */}
-            {renderDocumentPreview(formData.documents?.panCard, 'PAN Card')}
-          </div>
-        </div>
-
-        {/* Deposit Details Card */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow md:col-span-2">
-          <div className="flex items-center mb-6">
-            <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center mr-4">
-              <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900">Deposit Details</h3>
-              <p className="text-sm text-gray-500">Your deposit amount</p>
-            </div>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-500 mb-1">Amount</p>
-            <div className="flex items-baseline">
-              <span className="text-3xl font-bold text-gray-900">₹{formData.depositAmount}</span>
-              <span className="ml-2 text-sm text-gray-500">(Minimum ₹200)</span>
-            </div>
-          </div>
-        </div>
+    <div>
+      {/* Form View */}
+      <div className="min-h-screen bg-gray-50 py-8">
+        {renderForm()}
       </div>
 
-      <div className="mt-8 flex justify-center">
+      {/* Download Button */}
+      <div className="fixed bottom-8 right-8 print:hidden">
         <button
-          onClick={handlePayment}
-          className="px-8 py-4 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors duration-300 flex items-center space-x-2 shadow-lg"
+          onClick={() => window.print()}
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 shadow-lg"
         >
-          <span>Proceed to Payment</span>
-          <span className="text-2xl">₹{formData.depositAmount}</span>
-          <svg className="w-6 h-6 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          <span>Download Form</span>
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
         </button>
-      </div>
-
-      <div className="text-center text-sm text-gray-500 flex items-center justify-center space-x-2">
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-        </svg>
-        <span>Secure payment powered by India Post Payment Gateway</span>
       </div>
     </div>
   );
