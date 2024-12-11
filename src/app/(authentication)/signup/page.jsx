@@ -44,14 +44,12 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [uid, setUID] = useState(null);
 
-  const [pincode, setPincode] = useState(null);
-
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "asdasd",
-      email: "dhruvlohar08@gmail.com",
-      phone_number: "1234567890",
+      name: "",
+      email: "",
+      phone_number: "",
       postal_code: "",
     },
   });
