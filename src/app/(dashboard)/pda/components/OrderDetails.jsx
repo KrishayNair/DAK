@@ -27,7 +27,6 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
 
   // Save to localStorage whenever items change
   React.useEffect(() => {
-    console.log('Saving items to localStorage:', addedItems);
     localStorage.setItem('pdaOrderItems', JSON.stringify(addedItems));
     localStorage.setItem('pdaFormData', JSON.stringify({
       ...details,
@@ -37,24 +36,15 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
   }, [addedItems, details, depositAmount]);
 
   React.useEffect(() => {
-    const isValid = addedItems.length > 0;
-    console.log('OrderDetails validation update:', {
-      addedItems,
-      isValid
-    });
+    const hasMinimumDeposit = depositAmount >= 200;
+    const hasItems = addedItems.length > 0;
+    const isValid = hasMinimumDeposit && hasItems;
+    
     onValidityChange(isValid);
-  }, [addedItems, onValidityChange]);
-
-  React.useEffect(() => {
-    console.log('Added Items State:', {
-      items: addedItems,
-      count: addedItems.length,
-      productType
-    });
-  }, [addedItems, productType]);
+  }, [addedItems, depositAmount, onValidityChange]);
 
   const validateForm = () => {
-    return addedItems.length > 0;
+    return addedItems.length > 0 && depositAmount >= 200;
   };
 
   const handleInputChange = (e) => {
@@ -68,16 +58,19 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
   const handleQuantityChange = (itemName, value) => {
     if (value === '') {
       onChange({
-        ...details,
-        [itemName]: value
+        productType,
+        [itemName]: ''
       });
       return;
     }
     
     const numericValue = Math.max(0, parseInt(value) || 0);
+    
+    // Only update the specific item's quantity
     onChange({
-      ...details,
-      [itemName]: numericValue
+        ...details,  // Keep existing details
+        productType,
+        [itemName]: numericValue  // Update only this specific item
     });
   };
 
@@ -92,10 +85,8 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
         code: itemName,
       };
       
-      console.log('Adding New Item:', newItem);
-
       const existingItemIndex = addedItems.findIndex(
-        item => item.name === itemLabel && item.type === productType
+        item => item.code === itemName && item.type === productType
       );
       
       let updatedItems;
@@ -109,24 +100,16 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
         updatedItems = [...addedItems, newItem];
       }
       
-      // Save items to localStorage
-      localStorage.setItem('pdaOrderItems', JSON.stringify(updatedItems));
-      
       setAddedItems(updatedItems);
       
-      // Save complete form data to localStorage
-      const formData = {
-        ...details,
-        addedItems: updatedItems,
+      // Only pass the necessary updates
+      onChange({
         productType,
-        depositAmount,
-        [itemName]: quantity
-      };
-      localStorage.setItem('pdaFormData', JSON.stringify(formData));
+        addedItems: updatedItems,
+        [itemName]: 0  // Reset only this item's quantity input
+      });
       
-      onChange(formData);
       onAddItem(newItem);
-      handleQuantityChange(itemName, '0');
       onValidityChange(true);
 
       toast.success(
@@ -154,19 +137,8 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
   };
 
   const handleRemoveItem = (itemId, itemName) => {
-    console.log('Removing Item:', {
-      itemId,
-      itemName,
-      currentItems: addedItems
-    });
-
     const updatedItems = addedItems.filter(i => i.id !== itemId);
     
-    console.log('After Removal:', {
-      updatedItems,
-      removedItem: addedItems.find(i => i.id === itemId)
-    });
-
     setAddedItems(updatedItems);
     
     onChange({
@@ -197,12 +169,13 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
         <input
           type="number"
           min="0"
-          value={details[item.code] || 0}
-          onChange={(e) => handleQuantityChange(item.code, e.target.value)}
+          // Use the specific item's quantity or default to 0
+          value={details[item.name] || 0}
+          onChange={(e) => handleQuantityChange(item.name, e.target.value)}
           className="w-24 p-2.5 border rounded-lg text-center"
         />
         <button
-          onClick={() => handleAddItem(item.code, getItemLabel(item.label, productType))}
+          onClick={() => handleAddItem(item.name, item.label)}
           className="px-4 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors flex items-center space-x-2"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,18 +277,36 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
   };
 
   const renderValidationMessage = () => {
+    const messages = [];
+
     if (!productType) {
-      return <p className="text-red-500 text-sm mt-4">Please select a product type</p>;
+      messages.push("Please select a product type");
     }
     if (addedItems.length === 0) {
-      return <p className="text-red-500 text-sm mt-4">Please add at least one item to continue</p>;
+      messages.push("At least one item must be added to continue");
     }
-    return null;
+    if (!depositAmount || depositAmount < 200) {
+      messages.push("Minimum deposit of ₹200 is required to continue");
+    }
+
+    if (messages.length === 0) return null;
+
+    return (
+      <div className="mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
+        {messages.map((message, index) => (
+          <p key={index} className="text-red-600 text-sm flex items-center gap-2">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {message}
+          </p>
+        ))}
+      </div>
+    );
   };
 
   const handleDepositChange = (value) => {
     const amount = parseInt(value) || 0;
-    // Save deposit amount to localStorage
     localStorage.setItem('pdaDepositAmount', JSON.stringify(amount));
     onDepositChange(amount);
   };
@@ -470,26 +461,51 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
           </div>
         )}
 
-        <div className="bg-gray-50 p-6 rounded-lg">
+        <div className="bg-gray-50 p-6 rounded-lg mt-6">
+          <SectionHeader 
+            title="Deposit Amount" 
+            description="Minimum deposit of ₹200 is required to proceed"
+          />
+          <div className="relative">
+            <div className="flex items-center">
+              <span className="absolute left-3 text-gray-500">₹</span>
+              <input
+                type="number"
+                required
+                value={depositAmount}
+                onChange={(e) => handleDepositChange(e.target.value)}
+                className={`w-full p-3 pl-8 border rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                  (!depositAmount || depositAmount < 200) ? 'border-red-300' : 'border-gray-300'
+                }`}
+                placeholder="Enter deposit amount (minimum ₹200)"
+                min="200"
+              />
+            </div>
+            {(!depositAmount || depositAmount < 200) && (
+              <div className="mt-2 flex items-center text-red-500 text-sm">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Minimum deposit amount of ₹200 is required
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-gray-50 p-6 rounded-lg mt-6">
           <SectionHeader 
             title="Order Summary" 
             description="Review your selected items"
           />
           {renderOrderSummary()}
-        </div>
-
-        <div className="bg-gray-50 p-6 rounded-lg">
-          <SectionHeader 
-            title="Deposit Amount" 
-            description="Minimum deposit required: ₹200"
-          />
-          <input
-            type="number"
-            value={depositAmount}
-            onChange={(e) => handleDepositChange(e.target.value)}
-            className="w-full p-3 border rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-            placeholder="Enter deposit amount"
-          />
+          {addedItems.length === 0 && (
+            <div className="mt-2 flex items-center text-red-500 text-sm">
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              At least one item must be added to continue
+            </div>
+          )}
         </div>
       </div>
 
@@ -508,17 +524,6 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
           },
         }}
       />
-
-      <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-        <p className="font-medium">Debug Info:</p>
-        <pre className="mt-2 text-sm overflow-auto">
-          {JSON.stringify({
-            addedItems,
-            depositAmount,
-            details
-          }, null, 2)}
-        </pre>
-      </div>
     </div>
   );
 }

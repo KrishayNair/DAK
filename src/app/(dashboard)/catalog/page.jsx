@@ -176,6 +176,9 @@ export default function StampCollection() {
   const [selectedStamp, setSelectedStamp] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
+  const [uploadedImageData, setUploadedImageData] = useState(null);
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleImageClick = (index) => {
     setSelectedStamp(stampDetails[index]);
@@ -188,12 +191,24 @@ export default function StampCollection() {
   };
 
   async function exploreStampVision(formData) {
-    const res = await postDataToAPI("philatelist/stampVision/", formData, true);
-    
-    if (res.success) {
-      alert(res.data);
-    } else {
-      alert(res.error);
+    try {
+      setIsLoading(true);
+      const res = await postDataToAPI("philatelist/stampVision/", formData, true);
+      
+      console.log("API Response:", res);
+      console.log("Response data:", res.data);
+      
+      if (res.success) {
+        setUploadedImageData(res.data);
+        setUploadedImage(URL.createObjectURL(formData.get('image')));
+      } else {
+        alert(res.error);
+      }
+    } catch (error) {
+      console.error("Error processing image:", error);
+      alert("Error processing image. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -206,6 +221,11 @@ export default function StampCollection() {
       formData.append('image', file);
       await exploreStampVision(formData);
     }
+  };
+
+  const closeUploadModal = () => {
+    setUploadedImageData(null);
+    setUploadedImage(null);
   };
 
   useEffect(() => {
@@ -499,6 +519,94 @@ export default function StampCollection() {
                     <StampDetailSection title="Backstory">
                       <p className="text-gray-600">{selectedStamp.backstory}</p>
                     </StampDetailSection>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upload Modal */}
+      {uploadedImageData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
+          {console.log("Name:", uploadedImageData.name)}
+          {console.log("Date of Issue:", uploadedImageData.date_of_issue)}
+          {console.log("Price:", uploadedImageData.price)}
+          {console.log("Description:", uploadedImageData.description)}
+          {console.log("Full uploadedImageData:", uploadedImageData)}
+          
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <div className="bg-white rounded-xl w-full max-w-5xl h-[90vh] flex flex-col">
+              {/* Header */}
+              <div className="p-6 border-b border-gray-100">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-bold text-gray-800">Stamp Analysis Results</h2>
+                  <button
+                    onClick={closeUploadModal}
+                    className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 overflow-y-auto">
+                <div className="flex h-full">
+                  {/* Left Column - Image */}
+                  <div className="w-1/2 p-6 border-r border-gray-100">
+                    <div className="relative h-full bg-gray-50 rounded-lg overflow-hidden">
+                      {isLoading ? (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+                        </div>
+                      ) : (
+                        <img
+                          src={uploadedImage}
+                          alt="Uploaded stamp"
+                          className="w-full h-full object-contain"
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Right Column - Analysis Results */}
+                  <div className="w-1/2 p-6">
+                    <div className="space-y-8">
+                      {/* Basic Information Section */}
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Basic Information</h3>
+                        <div className="space-y-4">
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <label className="block text-sm font-medium text-gray-500">Name</label>
+                            <p className="mt-1 text-lg text-gray-900">{uploadedImageData.name}</p>
+                          </div>
+                          
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <label className="block text-sm font-medium text-gray-500">Date of Issue</label>
+                            <p className="mt-1 text-lg text-gray-900">{uploadedImageData.date_of_issue}</p>
+                          </div>
+                          
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <label className="block text-sm font-medium text-gray-500">Price</label>
+                            <p className="mt-1 text-lg text-gray-900">{uploadedImageData.price}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Description Section */}
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Description</h3>
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <p className="text-gray-700 leading-relaxed">
+                            {uploadedImageData.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

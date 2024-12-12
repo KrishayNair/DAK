@@ -39,11 +39,6 @@ export function PersonalDetails({ details = {}, onChange }) {
     }
   }, []);
 
-  // Log changes for debugging
-  useEffect(() => {
-    console.log('Personal Details Updated:', details);
-  }, [details]);
-
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-bold text-center mb-6">PERSONAL DETAILS</h2>
@@ -174,13 +169,6 @@ export function PersonalDetails({ details = {}, onChange }) {
           ))}
         </div>
       )}
-
-      {/* Debug Information */}
-      <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-        <pre className="text-xs overflow-auto">
-          {JSON.stringify(details, null, 2)}
-        </pre>
-      </div>
     </div>
   );
 }
