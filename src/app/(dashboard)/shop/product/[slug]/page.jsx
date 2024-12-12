@@ -162,26 +162,49 @@ export default function ProductDetail({ params }) {
                             <div className="flex items-center gap-2">
                                 <div className="relative">
                                     <div className="absolute -inset-1 bg-amber-100 rounded-full animate-ping opacity-20"></div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg>
+                                    <Image 
+                                        src="/postaloffice.png"
+                                        alt="Postal Office"
+                                        width={24}
+                                        height={24}
+                                        className="relative"
+                                    />
                                 </div>
-                                <div className="flex flex-col">
-                                    <span className="text-xs text-amber-700 font-medium">Added by</span>
-                                    <span className="text-sm text-amber-900 font-semibold group-hover:text-amber-800">
-                                        {postalCircle}
-                                    </span>
-                                </div>
+                                <span className="text-sm text-amber-900 font-semibold group-hover:text-amber-800">
+                                    {postalCircle}
+                                </span>
                             </div>
                             
-                            {/* Tooltip on hover */}
-                            <div className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-300 bottom-full right-0 mb-2 w-64 p-3 bg-white rounded-lg shadow-xl border border-amber-100">
+                            {/* Tooltip below on hover */}
+                            <div className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-300 top-full right-0 mt-2 w-64 p-3 bg-white rounded-lg shadow-xl border border-amber-100 z-10">
                                 <div className="text-xs text-gray-600">
                                     <p className="font-medium text-amber-900 mb-1">About Postal Circles</p>
-                                    <p>Each stamp in our collection is carefully curated and authenticated by official Indian Postal Circles, ensuring genuine philatelic value.</p>
+                                    <p className="mb-2">Each stamp in our collection is carefully curated and authenticated by official Indian Postal Circles, ensuring genuine philatelic value.</p>
+                                    <div className="space-y-1 mt-3 pt-3 border-t border-amber-100">
+                                        <p className="font-medium text-amber-900">Circle Details:</p>
+                                        <div className="flex items-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                            <span>Regional Office: {postalCircle.split(' ')[0]}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                            </svg>
+                                            <span>Verified Authenticity</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>24/7 Support Available</span>
+                                        </div>
+                                    </div>
                                 </div>
                                 {/* Tooltip arrow */}
-                                <div className="absolute bottom-0 right-6 w-3 h-3 -mb-1.5 rotate-45 bg-white border-r border-b border-amber-100"></div>
+                                <div className="absolute -top-2 right-6 w-3 h-3 rotate-45 bg-white border-l border-t border-amber-100"></div>
                             </div>
                         </div>
                     </div>
