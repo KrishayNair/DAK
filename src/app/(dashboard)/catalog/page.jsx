@@ -6,7 +6,7 @@ import { Elsie_Swash_Caps } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { postDataToAPI } from "@/lib/api";
-import Link from 'next/link';
+import Link from "next/link";
 
 const elsieSwashCaps = Elsie_Swash_Caps({
   subsets: ["latin"],
@@ -29,7 +29,8 @@ export const stampImages = [
 export const stampDetails = [
   {
     name: "'75' and Flag",
-    caption: "A commemorative stamp celebrating India's 75th year of independence",
+    caption:
+      "A commemorative stamp celebrating India's 75th year of independence",
     year: 1975,
     postalCircle: "Delhi Postal Circle",
     unitsProduced: "1.5 million",
@@ -40,13 +41,15 @@ export const stampDetails = [
     perforations: "14 x 14.5",
     printingHouse: "India Security Press, Nashik",
     color: "Tricolor (Saffron, White, and Green)",
-    backstory: "This stamp was issued to commemorate India's 75th year of independence. The design incorporates the national flag and the numeral '75', symbolizing the years of freedom. The stamp was part of a special series that celebrated India's progress since independence.",
-    historicalContext: "The mid-1970s were a significant period in Indian postal history, with several commemorative stamps being issued to celebrate national achievements.",
+    backstory:
+      "This stamp was issued to commemorate India's 75th year of independence. The design incorporates the national flag and the numeral '75', symbolizing the years of freedom. The stamp was part of a special series that celebrated India's progress since independence.",
+    historicalContext:
+      "The mid-1970s were a significant period in Indian postal history, with several commemorative stamps being issued to celebrate national achievements.",
     rarity: "Common",
     condition: "Mint",
     dimensions: "3.5 × 2.5 cm",
     marketValue: "₹1,200",
-    certificateOfAuthenticity: "Yes"
+    certificateOfAuthenticity: "Yes",
   },
   {
     name: "'The Three Musicians', 1921",
@@ -61,13 +64,15 @@ export const stampDetails = [
     perforations: "12 x 12",
     printingHouse: "British India Press, Bombay",
     color: "Sepia and Gold",
-    backstory: "This stamp depicts three classical Indian musicians playing the sitar, tabla, and tambura. It was part of a series celebrating India's rich musical heritage and was designed by renowned artist Ram Kumar.",
-    historicalContext: "During the 1920s, the Indian postal service began incorporating more cultural and artistic elements in stamp designs, moving away from purely administrative designs.",
+    backstory:
+      "This stamp depicts three classical Indian musicians playing the sitar, tabla, and tambura. It was part of a series celebrating India's rich musical heritage and was designed by renowned artist Ram Kumar.",
+    historicalContext:
+      "During the 1920s, the Indian postal service began incorporating more cultural and artistic elements in stamp designs, moving away from purely administrative designs.",
     rarity: "Rare",
     condition: "Fine",
     dimensions: "4.0 × 3.0 cm",
     marketValue: "₹45,000",
-    certificateOfAuthenticity: "Yes"
+    certificateOfAuthenticity: "Yes",
   },
   {
     name: "Taj Mahal Architectural Series",
@@ -82,13 +87,15 @@ export const stampDetails = [
     perforations: "13 x 13",
     printingHouse: "India Security Press, Nashik",
     color: "Deep Blue and Silver",
-    backstory: "This stamp showcases the iconic Taj Mahal in its full glory. It was part of the first series of architectural monuments issued after independence, highlighting India's rich architectural heritage.",
-    historicalContext: "Post-independence India sought to showcase its cultural monuments through postal stamps, making this series particularly significant.",
+    backstory:
+      "This stamp showcases the iconic Taj Mahal in its full glory. It was part of the first series of architectural monuments issued after independence, highlighting India's rich architectural heritage.",
+    historicalContext:
+      "Post-independence India sought to showcase its cultural monuments through postal stamps, making this series particularly significant.",
     rarity: "Uncommon",
     condition: "Very Fine",
     dimensions: "3.8 × 2.8 cm",
     marketValue: "₹25,000",
-    certificateOfAuthenticity: "Yes"
+    certificateOfAuthenticity: "Yes",
   },
   {
     name: "First Indian Airmail",
@@ -103,13 +110,15 @@ export const stampDetails = [
     perforations: "14",
     printingHouse: "Survey of India Press",
     color: "Carmine Red",
-    backstory: "This historic stamp marks the world's first official airmail service, which carried mail between Allahabad and Naini. The flight was piloted by Henri Pequet.",
-    historicalContext: "The introduction of airmail service represented a significant advancement in India's postal system and marked the beginning of aviation history in India.",
+    backstory:
+      "This historic stamp marks the world's first official airmail service, which carried mail between Allahabad and Naini. The flight was piloted by Henri Pequet.",
+    historicalContext:
+      "The introduction of airmail service represented a significant advancement in India's postal system and marked the beginning of aviation history in India.",
     rarity: "Very Rare",
     condition: "Good",
     dimensions: "3.2 × 2.4 cm",
     marketValue: "₹150,000",
-    certificateOfAuthenticity: "Yes"
+    certificateOfAuthenticity: "Yes",
   },
   {
     name: "Gandhi Centenary Issue",
@@ -124,13 +133,15 @@ export const stampDetails = [
     perforations: "13.5",
     printingHouse: "India Security Press",
     color: "Brown and Sepia",
-    backstory: "This commemorative stamp was issued as part of Gandhi's centenary celebrations, featuring his iconic portrait and the spinning wheel symbol.",
-    historicalContext: "1969 marked worldwide celebrations of Gandhi's centenary, with this stamp being one of India's contributions to the global commemoration.",
+    backstory:
+      "This commemorative stamp was issued as part of Gandhi's centenary celebrations, featuring his iconic portrait and the spinning wheel symbol.",
+    historicalContext:
+      "1969 marked worldwide celebrations of Gandhi's centenary, with this stamp being one of India's contributions to the global commemoration.",
     rarity: "Common",
     condition: "Mint",
     dimensions: "3.6 × 2.6 cm",
     marketValue: "₹500",
-    certificateOfAuthenticity: "Yes"
+    certificateOfAuthenticity: "Yes",
   },
   // Fill remaining with placeholder data but maintaining structure
   ...Array(5).fill({
@@ -152,8 +163,8 @@ export const stampDetails = [
     condition: "Sample condition",
     dimensions: "Sample dimensions",
     marketValue: "Sample value",
-    certificateOfAuthenticity: "Sample"
-  })
+    certificateOfAuthenticity: "Sample",
+  }),
 ];
 
 const InfoCard = ({ label, value }) => (
@@ -166,9 +177,7 @@ const InfoCard = ({ label, value }) => (
 const StampDetailSection = ({ title, children }) => (
   <div className="mb-6">
     <h4 className="text-lg font-semibold text-gray-800 mb-3">{title}</h4>
-    <div className="space-y-4">
-      {children}
-    </div>
+    <div className="space-y-4">{children}</div>
   </div>
 );
 
@@ -193,14 +202,28 @@ export default function StampCollection() {
   async function exploreStampVision(formData) {
     try {
       setIsLoading(true);
-      const res = await postDataToAPI("philatelist/stampVision/", formData, true);
-      
+      const res = await postDataToAPI(
+        "philatelist/stampVision/",
+        formData,
+        true
+      );
+
       console.log("API Response:", res);
-      console.log("Response data:", res.data);
-      
+
+      // Parse the JSON data if it's a string
+      let parsedData;
+      if (typeof res.data === "string") {
+        // Remove the code block markers and parse
+        parsedData = JSON.parse(res.data.replace(/```json\n|\n```/g, ""));
+      } else {
+        parsedData = res.data;
+      }
+
+      console.log("Parsed Response data:", parsedData);
+
       if (res.success) {
-        setUploadedImageData(res.data);
-        setUploadedImage(URL.createObjectURL(formData.get('image')));
+        setUploadedImageData(parsedData);
+        setUploadedImage(URL.createObjectURL(formData.get("image")));
       } else {
         alert(res.error);
       }
@@ -214,11 +237,11 @@ export default function StampCollection() {
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
-    
+
     if (file) {
-      console.log(file)
+      console.log(file);
       const formData = new FormData();
-      formData.append('image', file);
+      formData.append("image", file);
       await exploreStampVision(formData);
     }
   };
@@ -230,14 +253,14 @@ export default function StampCollection() {
 
   useEffect(() => {
     if (selectedStamp) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
 
     // Cleanup function to reset overflow when component unmounts
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [selectedStamp]);
 
@@ -285,13 +308,16 @@ export default function StampCollection() {
           <div className="flex flex-col md:flex-row h-full items-center justify-between px-4 md:px-8">
             {/* Left Content */}
             <div className="md:w-1/2 space-y-8 relative z-10">
-              <h1 className={`text-5xl md:text-7xl font-bold text-gray-800 leading-tight ${elsieSwashCaps.className}`}>
+              <h1
+                className={`text-5xl md:text-7xl font-bold text-gray-800 leading-tight ${elsieSwashCaps.className}`}
+              >
                 Discover the Art of
                 <span className="block text-[#b39656]">Philately</span>
               </h1>
-              
+
               <p className="text-lg md:text-xl text-gray-600 max-w-xl">
-                Explore our extensive collection of rare and historic stamps, each telling a unique story of cultural heritage.
+                Explore our extensive collection of rare and historic stamps,
+                each telling a unique story of cultural heritage.
               </p>
 
               {/* Stats */}
@@ -302,7 +328,9 @@ export default function StampCollection() {
                   { value: "200+", label: "Years" },
                 ].map((stat, index) => (
                   <div key={index} className="text-center">
-                    <div className="text-2xl font-bold text-[#b39656]">{stat.value}</div>
+                    <div className="text-2xl font-bold text-[#b39656]">
+                      {stat.value}
+                    </div>
                     <div className="text-sm text-gray-600">{stat.label}</div>
                   </div>
                 ))}
@@ -311,12 +339,15 @@ export default function StampCollection() {
               {/* Search and Upload */}
               <div className="flex gap-4">
                 <div className="relative flex-1">
-                  <Input 
-                    type="text" 
-                    placeholder="Search stamps..." 
-                    className="w-full pl-10 pr-4 py-3 rounded-lg border-[#e6d5b0] focus:border-[#b39656] bg-white" 
+                  <Input
+                    type="text"
+                    placeholder="Search stamps..."
+                    className="w-full pl-10 pr-4 py-3 rounded-lg border-[#e6d5b0] focus:border-[#b39656] bg-white"
                   />
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                  <Search
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={20}
+                  />
                 </div>
                 <input
                   type="file"
@@ -325,8 +356,8 @@ export default function StampCollection() {
                   className="hidden"
                   id="file-upload"
                 />
-                <Button 
-                  onClick={() => document.getElementById('file-upload').click()}
+                <Button
+                  onClick={() => document.getElementById("file-upload").click()}
                   className="bg-[#b39656] hover:bg-[#997f48] text-white px-6"
                 >
                   Upload
@@ -362,11 +393,13 @@ export default function StampCollection() {
 
       {/* Updated Stamp Gallery Section with Flex Layout */}
       <div className="container mx-auto px-4 py-12">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-8">Featured Stamps</h2>
+        <h2 className="text-3xl font-semibold text-gray-800 mb-8">
+          Featured Stamps
+        </h2>
         <div className="flex flex-wrap gap-6">
           {stampImages.map((image, index) => (
             <Link key={index} href={`/catalog/${index}`}>
-              <div 
+              <div
                 className="w-[300px] h-[400px] relative group cursor-pointer"
                 onClick={() => handleImageClick(index)}
               >
@@ -381,7 +414,7 @@ export default function StampCollection() {
                     />
                     {/* Overlay Gradient */}
                     <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/60 group-hover:opacity-100 transition-opacity" />
-                    
+
                     {/* Rarity Badge */}
                     {stampDetails[index] && (
                       <div className="absolute top-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
@@ -421,7 +454,7 @@ export default function StampCollection() {
                           <span className="text-lg font-bold text-[#b39656]">
                             {stampDetails[index].marketValue}
                           </span>
-                          <button 
+                          <button
                             className="px-3 py-1 text-sm text-[#b39656] border border-[#b39656] rounded-full 
                                      hover:bg-[#b39656] hover:text-white transition-colors duration-300"
                           >
@@ -450,10 +483,12 @@ export default function StampCollection() {
               <div className="p-6 border-b border-gray-100">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-gray-800 mb-1">{selectedStamp.name}</h3>
+                    <h3 className="text-2xl font-bold text-gray-800 mb-1">
+                      {selectedStamp.name}
+                    </h3>
                     <p className="text-gray-600">{selectedStamp.caption}</p>
                   </div>
-                  
+
                   <div className="flex items-start gap-4">
                     <div className="flex flex-wrap gap-2">
                       <span className="px-3 py-1 bg-amber-50 text-amber-800 rounded-full text-sm font-medium">
@@ -469,13 +504,23 @@ export default function StampCollection() {
                         Value: {selectedStamp.marketValue}
                       </span>
                     </div>
-                    
+
                     <button
                       onClick={closeModal}
                       className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors"
                     >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -505,15 +550,26 @@ export default function StampCollection() {
                   <div className="w-1/2 p-6">
                     <StampDetailSection title="Basic Information">
                       <div className="grid grid-cols-2 gap-4">
-                        <InfoCard label="Denomination" value={selectedStamp.denomination} />
+                        <InfoCard
+                          label="Denomination"
+                          value={selectedStamp.denomination}
+                        />
                         <InfoCard label="Color" value={selectedStamp.color} />
-                        <InfoCard label="Postal Circle" value={selectedStamp.postalCircle} />
-                        <InfoCard label="Units Produced" value={selectedStamp.unitsProduced} />
+                        <InfoCard
+                          label="Postal Circle"
+                          value={selectedStamp.postalCircle}
+                        />
+                        <InfoCard
+                          label="Units Produced"
+                          value={selectedStamp.unitsProduced}
+                        />
                       </div>
                     </StampDetailSection>
 
                     <StampDetailSection title="Historical Context">
-                      <p className="text-gray-600">{selectedStamp.historicalContext}</p>
+                      <p className="text-gray-600">
+                        {selectedStamp.historicalContext}
+                      </p>
                     </StampDetailSection>
 
                     <StampDetailSection title="Backstory">
@@ -530,24 +586,30 @@ export default function StampCollection() {
       {/* Upload Modal */}
       {uploadedImageData && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
-          {console.log("Name:", uploadedImageData.name)}
-          {console.log("Date of Issue:", uploadedImageData.date_of_issue)}
-          {console.log("Price:", uploadedImageData.price)}
-          {console.log("Description:", uploadedImageData.description)}
-          {console.log("Full uploadedImageData:", uploadedImageData)}
-          
           <div className="fixed inset-0 flex items-center justify-center p-4">
             <div className="bg-white rounded-xl w-full max-w-5xl h-[90vh] flex flex-col">
               {/* Header */}
               <div className="p-6 border-b border-gray-100">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-2xl font-bold text-gray-800">Stamp Analysis Results</h2>
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    Stamp Analysis Results
+                  </h2>
                   <button
                     onClick={closeUploadModal}
                     className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -578,31 +640,49 @@ export default function StampCollection() {
                     <div className="space-y-8">
                       {/* Basic Information Section */}
                       <div>
-                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Basic Information</h3>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                          Basic Information
+                        </h3>
                         <div className="space-y-4">
                           <div className="bg-gray-50 p-4 rounded-lg">
-                            <label className="block text-sm font-medium text-gray-500">Name</label>
-                            <p className="mt-1 text-lg text-gray-900">{uploadedImageData.name}</p>
+                            <label className="block text-sm font-medium text-gray-500">
+                              Name
+                            </label>
+                            <p className="mt-1 text-lg text-gray-900">
+                              {uploadedImageData.name || "Not Available"}
+                            </p>
                           </div>
-                          
+
                           <div className="bg-gray-50 p-4 rounded-lg">
-                            <label className="block text-sm font-medium text-gray-500">Date of Issue</label>
-                            <p className="mt-1 text-lg text-gray-900">{uploadedImageData.date_of_issue}</p>
+                            <label className="block text-sm font-medium text-gray-500">
+                              Date of Issue
+                            </label>
+                            <p className="mt-1 text-lg text-gray-900">
+                              {uploadedImageData.date_of_issue ||
+                                "Not Available"}
+                            </p>
                           </div>
-                          
+
                           <div className="bg-gray-50 p-4 rounded-lg">
-                            <label className="block text-sm font-medium text-gray-500">Price</label>
-                            <p className="mt-1 text-lg text-gray-900">{uploadedImageData.price}</p>
+                            <label className="block text-sm font-medium text-gray-500">
+                              Price
+                            </label>
+                            <p className="mt-1 text-lg text-gray-900">
+                              {uploadedImageData.price || "Not Available"}
+                            </p>
                           </div>
                         </div>
                       </div>
 
                       {/* Description Section */}
                       <div>
-                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Description</h3>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                          Description
+                        </h3>
                         <div className="bg-gray-50 p-4 rounded-lg">
                           <p className="text-gray-700 leading-relaxed">
-                            {uploadedImageData.description}
+                            {uploadedImageData.description ||
+                              "No description available"}
                           </p>
                         </div>
                       </div>
