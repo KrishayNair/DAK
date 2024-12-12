@@ -9,22 +9,15 @@ import { useCart } from "@/context/CartContext";
 import { createOrder } from "@/components/custom/razorpay";
 import { postDataToAPI } from "@/lib/api";
 
-const checkoutSchema = z
-  .object({
-    fullName: z.string().min(1, "Full name is required"),
-    email: z.string().email("Invalid email address"),
-    confirmEmail: z.string().email("Invalid email address"),
-    phone: z.string().min(10, "Phone number must be at least 10 digits"),
-    streetAddress: z.string().min(1, "Street address is required"),
-    city: z.string().min(1, "City is required"),
-    region: z.string().min(1, "Region is required"),
-    postalCode: z.string().min(1, "Postal code is required"),
-    shippingMethod: z.enum(["free", "regular", "express"]),
-  })
-  .refine((data) => data.email === data.confirmEmail, {
-    message: "Emails don't match",
-    path: ["confirmEmail"],
-  });
+const checkoutSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  phone: z.string().min(10, "Phone number must be at least 10 digits"),
+  streetAddress: z.string().min(1, "Street address is required"),
+  city: z.string().min(1, "City is required"),
+  region: z.string().min(1, "Region is required"),
+  postalCode: z.string().min(1, "Postal code is required"),
+  shippingMethod: z.enum(["free", "regular", "express"]),
+});
 
 // Server action simulation (in real app, this would be a server component)
 async function processCheckout(orderData) {
@@ -94,12 +87,25 @@ const indianStates = [
   "Puducherry",
 ];
 
+const defaultAddress = {
+  fullName: "suresh mistry",
+  phone: "9876543210",
+  streetAddress: "123, Green Park Colony",
+  city: "Mumbai",
+  region: "Maharashtra",
+  postalCode: "400001",
+  shippingMethod: "regular"
+};
+
 export default function CheckoutPage() {
   const router = useRouter();
   const [total, setTotal] = useState(2200.0);
   const [shipping, setShipping] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [addresses, setAddresses] = useState([]);
+  const [showNewAddressForm, setShowNewAddressForm] = useState(false);
+  const [selectedAddressIndex, setSelectedAddressIndex] = useState(0);
 
   const { cartItems, getCartTotal } = useCart();
 
@@ -131,12 +137,43 @@ export default function CheckoutPage() {
     }
   }, [shippingMethod]);
 
+  useEffect(() => {
+    const savedAddresses = localStorage.getItem('shippingAddresses');
+    if (!savedAddresses) {
+      // Initialize with default address if none exists
+      const initialAddresses = [defaultAddress];
+      localStorage.setItem('shippingAddresses', JSON.stringify(initialAddresses));
+      setAddresses(initialAddresses);
+    } else {
+      setAddresses(JSON.parse(savedAddresses));
+    }
+  }, []);
+
+  // Add separate handler for new addresses
+  const handleAddAddress = async (data) => {
+    try {
+      const newAddresses = [...addresses, data];
+      localStorage.setItem('shippingAddresses', JSON.stringify(newAddresses));
+      setAddresses(newAddresses);
+      setSelectedAddressIndex(newAddresses.length - 1);
+      setShowNewAddressForm(false);
+      reset(data);
+    } catch (error) {
+      console.error('Error adding address:', error);
+      alert("Failed to add address. Please try again.");
+    }
+  };
+
+  // Update onSubmit to use selected address
   const onSubmit = async (data) => {
     try {
       setIsSubmitting(true);
       setError("");
 
+      const shippingAddress = showNewAddressForm ? data : addresses[selectedAddressIndex];
+      
       const orderData = {
+        shipping_address: shippingAddress, // Add shipping address to order data
         shipping_method: shippingMethod,
         transaction_details: {
           order_total: getCartTotal() + shipping,
@@ -160,6 +197,14 @@ export default function CheckoutPage() {
     }
   };
 
+  const handleAddressSelect = (index) => {
+    setSelectedAddressIndex(index);
+    if (index !== -1) {
+      reset(addresses[index]);
+      setShowNewAddressForm(false);
+    }
+  };
+
   return (
     <div className="mx-auto p-6 flex gap-8 mt-20">
       {error && (
@@ -171,166 +216,210 @@ export default function CheckoutPage() {
         </div>
       )}
 
-      <form
-        id="checkout-form"
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex-1"
-      >
-        <div className="bg-[#FDF8F3] rounded-lg p-6 mb-6 box-shadow shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Shipping Address</h2>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block mb-1">Full name *</label>
-              <input
-                {...register("fullName")}
-                className="w-full p-2 rounded border"
-                placeholder="Enter your full name"
-              />
-              {errors.fullName && (
-                <p className="text-red-500 text-sm">
-                  {errors.fullName.message}
-                </p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-1">Email *</label>
-                <input
-                  {...register("email")}
-                  className="w-full p-2 rounded border"
-                  placeholder="Enter your email"
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email.message}</p>
-                )}
-              </div>
-              <div>
-                <label className="block mb-1">Confirm Email *</label>
-                <input
-                  {...register("confirmEmail")}
-                  className="w-full p-2 rounded border"
-                  placeholder="Enter your email"
-                />
-                {errors.confirmEmail && (
-                  <p className="text-red-500 text-sm">
-                    {errors.confirmEmail.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Other form fields following the same pattern */}
-            <div>
-              <label className="block mb-1">Phone no. *</label>
-              <input
-                {...register("phone")}
-                className="w-full p-2 rounded border"
-                placeholder="Enter your Phone number"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1">
-                Street Name and House Number *
-              </label>
-              <input
-                {...register("streetAddress")}
-                className="w-full p-2 rounded border"
-                placeholder="Enter your Street Name and House Number"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-1">City *</label>
-                <input
-                  {...register("city")}
-                  className="w-full p-2 rounded border"
-                  placeholder="Enter your City"
-                />
-                {errors.city && (
-                  <p className="text-red-500 text-sm">{errors.city.message}</p>
-                )}
-              </div>
-              <div>
-                <label className="block mb-1">Region *</label>
-                <select
-                  {...register("region")}
-                  className="w-full p-2 rounded border"
+      <div className="flex-1">
+        <form
+          id="checkout-form"
+          onSubmit={handleSubmit(showNewAddressForm ? handleAddAddress : onSubmit)}
+        >
+          <div className="bg-[#FDF8F3] rounded-lg p-6 mb-6 box-shadow shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">Select Shipping Address</h2>
+            
+            <div className="space-y-4 mb-6">
+              {addresses.map((address, index) => (
+                <div
+                  key={index}
+                  className={`p-4 border rounded cursor-pointer ${
+                    selectedAddressIndex === index && !showNewAddressForm ? 'border-[#8B4513] bg-[#F5E6D8]' : 'border-gray-200'
+                  }`}
+                  onClick={() => handleAddressSelect(index)}
                 >
-                  <option value="">Select State</option>
-                  {indianStates.map((state) => (
-                    <option key={state} value={state}>
-                      {state}
-                    </option>
-                  ))}
-                </select>
-                {errors.region && (
-                  <p className="text-red-500 text-sm">
-                    {errors.region.message}
-                  </p>
-                )}
-              </div>
+                  <p className="font-semibold">{address.fullName}</p>
+                  <p>{address.streetAddress}</p>
+                  <p>{address.city}, {address.region} - {address.postalCode}</p>
+                  <p>Phone: {address.phone}</p>
+                </div>
+              ))}
+              
+              <button
+                type="button"
+                className="w-full py-2 px-4 border border-[#8B4513] text-[#8B4513] rounded hover:bg-[#F5E6D8]"
+                onClick={() => {
+                  setShowNewAddressForm(true);
+                  setSelectedAddressIndex(-1);
+                  reset({});
+                }}
+              >
+                + Add New Address
+              </button>
             </div>
 
-            <div>
-              <label className="block mb-1">Postal Code *</label>
-              <input
-                {...register("postalCode")}
-                className="w-full p-2 rounded border"
-                placeholder="Enter your postal code"
-              />
+            {showNewAddressForm && (
+              <>
+                <h3 className="text-lg font-semibold mb-4">New Shipping Address</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block mb-1">Full name *</label>
+                    <input
+                      {...register("fullName")}
+                      className="w-full p-2 rounded border"
+                      placeholder="Enter your full name"
+                    />
+                    {errors.fullName && (
+                      <p className="text-red-500 text-sm">
+                        {errors.fullName.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block mb-1">Phone no. *</label>
+                    <input
+                      {...register("phone")}
+                      className="w-full p-2 rounded border"
+                      placeholder="Enter your Phone number"
+                    />
+                    {errors.phone && (
+                      <p className="text-red-500 text-sm">
+                        {errors.phone.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block mb-1">
+                      Street Name and House Number *
+                    </label>
+                    <input
+                      {...register("streetAddress")}
+                      className="w-full p-2 rounded border"
+                      placeholder="Enter your Street Name and House Number"
+                    />
+                    {errors.streetAddress && (
+                      <p className="text-red-500 text-sm">
+                        {errors.streetAddress.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block mb-1">City *</label>
+                      <input
+                        {...register("city")}
+                        className="w-full p-2 rounded border"
+                        placeholder="Enter your City"
+                      />
+                      {errors.city && (
+                        <p className="text-red-500 text-sm">{errors.city.message}</p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block mb-1">Region *</label>
+                      <select
+                        {...register("region")}
+                        className="w-full p-2 rounded border"
+                      >
+                        <option value="">Select State</option>
+                        {indianStates.map((state) => (
+                          <option key={state} value={state}>
+                            {state}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.region && (
+                        <p className="text-red-500 text-sm">
+                          {errors.region.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block mb-1">Postal Code *</label>
+                    <input
+                      {...register("postalCode")}
+                      className="w-full p-2 rounded border"
+                      placeholder="Enter your postal code"
+                    />
+                    {errors.postalCode && (
+                      <p className="text-red-500 text-sm">
+                        {errors.postalCode.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Add these buttons */}
+                <div className="mt-6">
+                  <button
+                    type="submit"
+                    className="w-full py-2 px-4 bg-[#8B4513] text-white rounded hover:bg-[#704012]"
+                  >
+                    Add Address
+                  </button>
+                  <button
+                    type="button"
+                    className="w-full mt-2 py-2 px-4 border border-[#8B4513] text-[#8B4513] rounded hover:bg-[#F5E6D8]"
+                    onClick={() => {
+                      setShowNewAddressForm(false);
+                      if (selectedAddressIndex >= 0) {
+                        reset(addresses[selectedAddressIndex]);
+                      }
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className="bg-[#FDF8F3] rounded-lg p-6 box-shadow shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">Shipping Method</h2>
+            <div className="space-y-4">
+              <label
+                className="flex items-center justify-between p-3 border rounded cursor-pointer transition-all duration-200 hover:bg-[#F5E6D8] data-[selected=true]:bg-[#F5E6D8]"
+                data-selected={watch("shippingMethod") === "regular"}
+              >
+                <div className="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    {...register("shippingMethod")}
+                    value="regular"
+                    className="accent-[#8B4513] w-4 h-4"
+                  />
+                  <div>
+                    <p className="font-medium">Regular Shipping</p>
+                    <p className="text-sm text-gray-500">3-15 Business Days</p>
+                  </div>
+                </div>
+                <span>₹50.00</span>
+              </label>
+
+              <label
+                className="flex items-center justify-between p-3 border rounded cursor-pointer transition-all duration-200 hover:bg-[#F5E6D8] data-[selected=true]:bg-[#F5E6D8]"
+                data-selected={watch("shippingMethod") === "express"}
+              >
+                <div className="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    {...register("shippingMethod")}
+                    value="express"
+                    className="accent-[#8B4513] w-4 h-4"
+                  />
+                  <div>
+                    <p className="font-medium">Express Shipping</p>
+                    <p className="text-sm text-gray-500">1-3 Business Days</p>
+                  </div>
+                </div>
+                <span>₹100.00</span>
+              </label>
             </div>
           </div>
-        </div>
+        </form>
+      </div>
 
-        <div className="bg-[#FDF8F3] rounded-lg p-6 box-shadow shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Shipping Method</h2>
-          <div className="space-y-4">
-            <label
-              className="flex items-center justify-between p-3 border rounded cursor-pointer transition-all duration-200 hover:bg-[#F5E6D8] data-[selected=true]:bg-[#F5E6D8]"
-              data-selected={watch("shippingMethod") === "regular"}
-            >
-              <div className="flex items-center gap-3">
-                <input
-                  type="radio"
-                  {...register("shippingMethod")}
-                  value="regular"
-                  className="accent-[#8B4513] w-4 h-4"
-                />
-                <div>
-                  <p className="font-medium">Regular Shipping</p>
-                  <p className="text-sm text-gray-500">3-15 Business Days</p>
-                </div>
-              </div>
-              <span>₹50.00</span>
-            </label>
-
-            <label
-              className="flex items-center justify-between p-3 border rounded cursor-pointer transition-all duration-200 hover:bg-[#F5E6D8] data-[selected=true]:bg-[#F5E6D8]"
-              data-selected={watch("shippingMethod") === "express"}
-            >
-              <div className="flex items-center gap-3">
-                <input
-                  type="radio"
-                  {...register("shippingMethod")}
-                  value="express"
-                  className="accent-[#8B4513] w-4 h-4"
-                />
-                <div>
-                  <p className="font-medium">Express Shipping</p>
-                  <p className="text-sm text-gray-500">1-3 Business Days</p>
-                </div>
-              </div>
-              <span>₹100.00</span>
-            </label>
-          </div>
-        </div>
-      </form>
-
-      <div className="w-80">
+      <div className="w-80 space-y-6">
         <div className="bg-[#FDF8F3] rounded-lg p-6 box-shadow shadow-lg">
           <h2 className="text-xl font-semibold mb-4">Items</h2>
           <div className="space-y-4">
@@ -364,47 +453,19 @@ export default function CheckoutPage() {
               <span>Grand total</span>
               <span>₹{(getCartTotal() + shipping).toFixed(2)}</span>
             </div>
-
-            <button
-              type="submit"
-              form="checkout-form"
-              disabled={isSubmitting}
-              className={`w-full py-3 rounded-xl mt-6 transition-all duration-200
-                ${isSubmitting
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-white text-black border border-gray-200 hover:bg-gray-50"
-                }`}
-            >
-              {isSubmitting ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg
-                    className="animate-spin h-5 w-5 text-gray-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Processing...
-                </span>
-              ) : (
-                "Continue to Payment"
-              )}
-            </button>
           </div>
         </div>
+
+        {!showNewAddressForm && (
+          <button
+            type="submit"
+            form="checkout-form"
+            disabled={isSubmitting}
+            className="w-full py-3 bg-[#8B4513] text-white rounded hover:bg-[#704012] disabled:bg-gray-400"
+          >
+            Continue to Payment
+          </button>
+        )}
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ export async function fetchFromAPI(url) {
   }
 }
 
+
 export async function postDataToAPI(url, data, isFile = false) {
   axios.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("dak_session").value
     }`;
