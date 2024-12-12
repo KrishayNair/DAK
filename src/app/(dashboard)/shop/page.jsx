@@ -94,7 +94,7 @@ const SearchSection = ({ onSearch, searchQuery, setSearchQuery }) => {
         
         try {
           if (searchQuery.trim()) {
-            const response = await fetchFromAPI('product');
+            const response = await fetchFromAPI('/product/');
             
             if (response.success) {
               const filteredProducts = response.data.filter(product => 
@@ -192,14 +192,49 @@ const SideNavigation = ({ onProductsFiltered }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const getCategoryParam = (categoryName) => {
+    // Map category names to their exact URL parameters
+    const categoryMap = {
+      'Sheetlet': 'sheetlet',
+      'Unique Stamp': 'unique-stamp',
+      'Block of 4 stamps': 'block-of-4-stamps',
+      // Add other categories as needed
+    };
+
+    // Return the mapped value if it exists, otherwise format the category name
+    return categoryMap[categoryName] || (categoryName ? categoryName.toLowerCase().replace(/\s+/g, '-') : '');
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         setIsLoading(true);
         const response = await fetchFromAPI('collection/');
         if (response.success) {
-          setCategories(response.data);
-          // Don't fetch products here anymore as ProductGrid will handle it
+          // Add static categories if they don't exist in the API response
+          const staticCategories = [
+            { id: 'single-stamp', name: 'Single Stamp' },
+            { id: 'first-day-cover', name: 'first day cover' },
+            { id: 'unique-stamp', name: 'Unique Stamp' },
+            { id: 'block-of-4-stamps', name: 'Block of 4 stamps' },
+            
+            { id: 'sheetlet', name: 'Sheetlet' },
+            // Add more categories here as needed
+          ];
+          
+          // Combine API categories with static categories
+          const allCategories = [...staticCategories, ...response.data];
+          
+          // Remove duplicates while preserving order
+          const seen = new Set();
+          const uniqueCategories = allCategories.filter(category => {
+            const duplicate = seen.has(category.name);
+            seen.add(category.name);
+            return !duplicate;
+          });
+          
+          setCategories(uniqueCategories);
+          console.log('Fetched categories:', uniqueCategories);
         } else {
           console.error('Unexpected API response format:', response);
           setError('Invalid data format received');
@@ -216,85 +251,107 @@ const SideNavigation = ({ onProductsFiltered }) => {
   }, []);
 
   const toggleCategory = async (categoryId) => {
-    const newSelectedCategories = selectedCategories.includes(categoryId)
-      ? selectedCategories.filter(id => id !== categoryId)
-      : [...selectedCategories, categoryId];
+    console.log('Previous selected categories:', selectedCategories);
+    
+    // Find the category object
+    const category = categories.find(c => c.id === categoryId || c._id === categoryId);
+    
+    if (!category) {
+      console.error('Category not found:', categoryId);
+      return;
+    }
+
+    console.log('Found category:', category);
+
+    // Get the category parameter string
+    const categoryParam = getCategoryParam(category.name || category.title);
+    
+    console.log('Category param generated:', categoryParam);
+    
+    // If category param is already selected, unselect it
+    const newSelectedCategories = selectedCategories.includes(categoryParam)
+      ? []  // Clear selection
+      : [categoryParam];  // Select new category param
+    
+    console.log('Category being toggled:', {
+      categoryId,
+      categoryName: category.name || category.title,
+      categoryParam,
+      newSelection: newSelectedCategories
+    });
     
     setSelectedCategories(newSelectedCategories);
     
-    if (newSelectedCategories.length > 0) {
-      await filterProducts(newSelectedCategories, minPrice, maxPrice);
-    } else {
-      // When no categories are selected, set filtered products to empty array
-      // This will trigger ProductGrid to show all products
-      onProductsFiltered([]);
-    }
+    // Apply filters immediately after category selection
+    await applyFilters();
   };
 
-  const filterProducts = async (selectedCategoryIds, min, max) => {
+  const applyFilters = async (e) => {
+    if (e) e.preventDefault();
+    
     try {
-      const selectedCategoryObjects = selectedCategoryIds.map(id => 
-        categories.find(cat => cat._id === id || cat.id === id)
-      ).filter(Boolean);
-
-      if (selectedCategoryObjects.length === 0) {
-        console.error('No matching categories found');
-        return;
+      // Build the URL string directly to ensure exact format
+      let url = `product/?min_price=${minPrice}&max_price=${maxPrice}`;
+      
+      // Add collection parameter if we have a selected category
+      if (selectedCategories.length > 0 && selectedCategories[0]) {
+        url += `&collection=${selectedCategories[0]}`;
+        console.log('Applied category filter:', {
+          selectedCategory: selectedCategories[0]
+        });
       }
 
-      // Build URL parameters object
-      const params = new URLSearchParams();
-      
-      // Add price range
-      // params.append('minPrice', min);
-      // params.append('maxPrice', max);
-      
-      // Add collections with proper slug formatting
-      selectedCategoryObjects.forEach(cat => {
-        const collectionSlug = (cat.slug || cat.name?.toLowerCase().replace(/\s+/g, '_'))
-          .replace(/-/g, '_'); // Ensure consistent use of underscores
-        if (collectionSlug) {
-          params.append('collection', collectionSlug);
-        }
-      });
-
-      const url = `product?/${params.toString()}/`;
-      console.log('Fetching from URL:', url); // For debugging
+      console.log('Requesting URL:', url);
 
       const response = await fetchFromAPI(url);
-      console.log(response)
-      
       if (response.success) {
         onProductsFiltered(response.data);
       } else {
         console.error('Failed to filter products:', response.message);
+        onProductsFiltered([]);
       }
     } catch (error) {
       console.error('Error filtering products:', error);
+      onProductsFiltered([]);
     }
   };
 
-  const handleMinChange = (e) => {
+  // Update price handlers to use async/await
+  const handleMinChange = async (e) => {
     const value = Math.min(Number(e.target.value), maxPrice - 100);
     setMinPrice(value);
+    await applyFilters(); // Wait for state to update and then apply filters
   };
 
-  const handleMaxChange = (e) => {
+  const handleMaxChange = async (e) => {
     const value = Math.max(Number(e.target.value), minPrice + 100);
     setMaxPrice(value);
+    await applyFilters(); // Wait for state to update and then apply filters
   };
 
-  const applyFilters = async () => {
-    if (selectedCategories.length > 0) {
-      await filterProducts(selectedCategories, minPrice, maxPrice);
-    }
+  useEffect(() => {
+    // Apply filters whenever price range or selected categories change
+    applyFilters();
+  }, [minPrice, maxPrice, selectedCategories]);
+
+  // Add useEffect to log state changes
+  useEffect(() => {
+    console.log('Selected categories updated:', selectedCategories);
+  }, [selectedCategories]);
+
+  const isSelected = (categoryId) => {
+    const category = categories.find(c => c.id === categoryId || c._id === categoryId);
+    if (!category) return false;
+    
+    const categoryParam = getCategoryParam(category.name || category.title);
+    return selectedCategories.includes(categoryParam);
   };
 
   return (
-    <div className="w-full md:w-64 bg-white rounded-lg shadow-md p-4 md:p-6 h-auto md:h-[calc(100vh-120px)] sticky top-24 flex flex-col overflow-hidden">
-      {/* Price Range Filter */}
-      <div className="mb-8 bg-gray-50 p-4 rounded-xl flex-shrink-0">
-        <h4 className="text-lg font-semibold mb-4 text-[#8B6E5B] flex items-center">
+    <div className="w-full md:w-[380px] bg-white rounded-lg shadow-md p-4 md:p-6 flex flex-col h-[calc(100vh-120px)] sticky top-24">
+      {/* Price Range Filter - Fixed at top */}
+      <div className="flex-shrink-0 mb-6 bg-gray-50 p-4 rounded-xl">
+        <h4 className="text-lg font-semibold mb-4 text-[#8B6E5B] flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM5.94 5.94a7 7 0 119.9 9.9 7 7 0 01-9.9-9.9zM10 4a6 6 0 100 12 6 6 0 000-12zm0 2a1 1 0 011 1v2.586l1.707 1.707a1 1 0 01-1.414 1.414l-2-2A1 1 0 019 10V7a1 1 0 011-1z" clipRule="evenodd" />
           </svg>
@@ -378,19 +435,13 @@ const SideNavigation = ({ onProductsFiltered }) => {
         </div>
       </div>
 
-      <h3 className="text-xl md:text-2xl font-semibold mb-4 text-[#8B6E5B] border-b pb-4 flex-shrink-0">
+      {/* Categories Header - Fixed */}
+      <h3 className="flex-shrink-0 text-xl md:text-2xl font-semibold mb-4 text-[#8B6E5B] border-b pb-4 text-center">
         Categories {isLoading && <span className="text-sm text-gray-500">(Loading...)</span>}
       </h3>
       
-      <div className="flex-1 overflow-y-auto overscroll-contain pr-2 -mr-2 
-        [&::-webkit-scrollbar]:w-2
-        [&::-webkit-scrollbar-track]:bg-gray-100 
-        [&::-webkit-scrollbar-track]:rounded-full
-        [&::-webkit-scrollbar-thumb]:bg-[#8B6E5B]
-        [&::-webkit-scrollbar-thumb]:rounded-full
-        [&::-webkit-scrollbar-thumb]:border
-        [&::-webkit-scrollbar-thumb]:border-white">
-        
+      {/* Two-column Categories Grid */}
+      <div className="flex-1 overflow-y-auto min-h-0 pr-2 -mr-2">
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#8B6E5B]"></div>
@@ -400,40 +451,41 @@ const SideNavigation = ({ onProductsFiltered }) => {
         ) : categories.length === 0 ? (
           <div className="text-gray-500 text-center py-4">No categories found</div>
         ) : (
-          <div className="grid grid-cols-1 gap-1 pb-4">
+          <div className="grid grid-cols-2 gap-2 pb-4 px-2">
             {categories.map((category) => (
               <button
                 key={category.id || category._id}
                 onClick={() => toggleCategory(category.id || category._id)}
-                className={`flex items-center w-full text-left py-2.5 px-4 rounded-lg transition-all duration-200 font-medium text-sm
-                  ${selectedCategories.includes(category.id || category._id)
+                className={`flex items-center justify-center text-center p-2 rounded-lg transition-all duration-200 font-medium text-sm
+                  ${isSelected(category.id || category._id)
                     ? 'bg-[#8B6E5B] text-white'
                     : 'text-gray-600 hover:text-[#8B6E5B] hover:bg-[#fff7e5]'
                   }`}
               >
-                <div className={`w-4 h-4 border-2 rounded mr-3 flex items-center justify-center
-                  ${selectedCategories.includes(category.id || category._id)
+                <div className={`flex-shrink-0 w-4 h-4 border-2 rounded mr-2 flex items-center justify-center
+                  ${isSelected(category.id || category._id)
                     ? 'border-white bg-white'
                     : 'border-[#8B6E5B]'
                   }`}
                 >
-                  {selectedCategories.includes(category.id || category._id) && (
+                  {isSelected(category.id || category._id) && (
                     <svg className="w-3 h-3 text-[#8B6E5B]" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
                     </svg>
                   )}
                 </div>
-                {category.name || category.title}
+                <span className="truncate text-xs">{category.name || category.title}</span>
               </button>
             ))}
           </div>
         )}
       </div>
 
+      {/* Apply Filters Button - Fixed at bottom */}
       <button
         onClick={applyFilters}
         disabled={isLoading}
-        className={`mt-4 w-full py-2 rounded-lg transition-colors duration-200 flex-shrink-0
+        className={`flex-shrink-0 mt-4 w-full py-2 rounded-lg transition-colors duration-200 text-center
           ${isLoading 
             ? 'bg-gray-300 cursor-not-allowed' 
             : 'bg-[#8B6E5B] hover:bg-[#7D6352] text-white'
@@ -445,70 +497,36 @@ const SideNavigation = ({ onProductsFiltered }) => {
   );
 };
 
-// Update the Page component to use FilteredProductsGrid
+// Update the Page component to control when ProductsGrid should render
 export default function Page() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFiltered, setIsFiltered] = useState(false);
 
+  // Update handleProductsFiltered to store filtered data
   const handleProductsFiltered = (products) => {
-    setFilteredProducts(products);
+    setFilteredProducts(products); // Store the filtered products
     setSearchResults([]);
+    setIsFiltered(true);
+    setSearchQuery("");
   };
 
   const handleSearch = (results) => {
-    setSearchResults(results);
-    setFilteredProducts([]);
+    if (!isFiltered) { // Only allow search if not in filtered state
+      setSearchResults(results);
+      setFilteredProducts([]);
+    }
   };
 
   const displayProducts = () => {
-    if (searchResults.length > 0) {
-      return (
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-10">
-            <CardTitle className="text-3xl mb-2">Search Results</CardTitle>
-            <CardDescription className="text-lg">
-              Found {searchResults.length} products
-            </CardDescription>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {searchResults.map((product) => (
-              <ProductCard key={product._id || product.id} product={product} />
-            ))}
-          </div>
-        </div>
-      );
-    } else if (searchResults.length === 0 && searchQuery) {
-      // Show "Product not available" message
-      return (
-        <div className="max-w-7xl mx-auto text-center py-12">
-          <div className="rounded-lg bg-gray-50 p-8">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-2">
-              Product Not Available
-            </h3>
-            <p className="text-gray-600">
-              We couldn't find any products matching "{searchQuery}". 
-              Please try a different search term.
-            </p>
-            <Button 
-              onClick={() => {
-                setSearchQuery("");
-                setSearchResults([]);
-              }}
-              className="mt-4 bg-[#8B6E5B] hover:bg-[#7D6352]"
-            >
-              Clear Search
-            </Button>
-          </div>
-        </div>
-      );
-    } else if (filteredProducts.length > 0) {
+    if (isFiltered) {
       return (
         <div className="max-w-7xl mx-auto">
           <div className="mb-10">
             <CardTitle className="text-3xl mb-2">Filtered Products</CardTitle>
             <CardDescription className="text-lg">
-              Showing filtered results
+              Showing {filteredProducts.length} filtered results
             </CardDescription>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -518,7 +536,7 @@ export default function Page() {
           </div>
         </div>
       );
-    } else {
+    } else if (!isFiltered) {
       return <ProductsGrid />;
     }
   };
@@ -533,17 +551,15 @@ export default function Page() {
           setSearchQuery={setSearchQuery}
         />
         
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-[1920px] mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row gap-8 relative">
-            <aside className="md:w-64 flex-shrink-0 relative">
-              <div className="sticky top-24 overflow-auto max-h-[calc(100vh-8rem)]">
-                <SideNavigation onProductsFiltered={handleProductsFiltered} />
-              </div>
+            <aside className="md:w-[380px] flex-shrink-0 relative">
+              <SideNavigation onProductsFiltered={handleProductsFiltered} />
             </aside>
             
-            <div className="flex-1">
+            <div className="flex-1 max-w-[1540px]">
               {displayProducts()}
-              <CollectionGrid />
+              {!isFiltered && !searchResults.length && <CollectionGrid />}
             </div>
           </div>
         </div>

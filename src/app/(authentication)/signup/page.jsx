@@ -30,12 +30,11 @@ const formSchema = z.object({
     .min(10, "Phone number must be at least 10 digits")
     .regex(/^\d+$/, "Must contain only digits"),
   postal_code: z
-    .string()
-    .length(6, "Postal code must be 6 digits")
-    .regex(/^\d+$/, "Must contain only digits"),
+    .string().optional()
+  // .length(6, "Postal code must be 6 digits")
+  // .regex(/^\d+$/, "Must contain only digits"),
 });
 
-// Carousel Component
 
 // Main Signup Component
 export default function Signup() {
@@ -65,6 +64,13 @@ export default function Signup() {
       postal_code: values.postal_code,
     };
 
+    await getPincode();
+
+    if (form.getValues('postal_code') == null) {
+      alert("Please allow location access to get your pincode, and try again");
+      return;
+    }
+
     try {
       const res = await login(userData);
 
@@ -85,9 +91,36 @@ export default function Signup() {
     } catch (error) {
       console.error("Login Error:", error);
       alert(error.message || "Something went wrong");
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
+  }
+
+  async function getPincode() {
+    
+    form.setValue('postal_code', 'Fetching your location...');
+    
+    navigator.geolocation.getCurrentPosition(({ coords }) => {
+      const { latitude, longitude } = coords;
+      
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.address && data.address.postcode) {
+            form.setValue('postal_code', data.address.postcode);
+            form.setError('postal_code', {
+              message: data.display_name
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching address:', error);
+          form.setValue('postal_code', '');
+          form.setError('postal_code', {
+            message: 'Error fetching location'
+          });
+        });
+    })
   }
 
   async function onOTPSubmit(e) {

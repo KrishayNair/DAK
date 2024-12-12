@@ -1,53 +1,50 @@
-import React from 'react';
+"use client";
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 
 export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDepositChange, onValidityChange }) {
   const router = useRouter();
   const productType = details.productType;
-  const [addedItems, setAddedItems] = React.useState(details.addedItems || []);
+  const [addedItems, setAddedItems] = React.useState(() => {
+    // Initialize from localStorage if available
+    const savedItems = localStorage.getItem('pdaOrderItems');
+    return savedItems ? JSON.parse(savedItems) : [];
+  });
 
-  React.useEffect(() => {
-    const initializedDetails = {
-      ...details,
-      mintCommemorative: details.mintCommemorative || 0,
-      mintCommWithoutPersonalities: details.mintCommWithoutPersonalities || 0,
-      mintDefinitive: details.mintDefinitive || 0,
-      topMarginal: details.topMarginal || 0,
-      bottomMarginal: details.bottomMarginal || 0,
-      fullSheet: details.fullSheet || 0,
-      fdcWithStamp: details.fdcWithStamp || 0,
-      fdcWithoutPersonality: details.fdcWithoutPersonality || 0,
-      fdcBlank: details.fdcBlank || 0,
-      brochureWithStamp: details.brochureWithStamp || 0,
-      brochureBlank: details.brochureBlank || 0,
-      annualStampPack: details.annualStampPack || 0,
-      specialAnnualPack: details.specialAnnualPack || 0,
-      childrensPack: details.childrensPack || 0,
-      specialCollectorPack: details.specialCollectorPack || 0,
-      fdcAnnualPack: details.fdcAnnualPack || 0,
-      postalStationaryItem: details.postalStationaryItem || 0,
-      miniSheet: details.miniSheet || 0,
-      otherItemQuantity: details.otherItemQuantity || 0
-    };
-    onChange(initializedDetails);
+  useEffect(() => {
+    // Load deposit amount from localStorage on mount
+    const savedDepositAmount = localStorage.getItem('pdaDepositAmount');
+    if (savedDepositAmount && !depositAmount) {
+      onDepositChange(JSON.parse(savedDepositAmount));
+    }
   }, []);
 
+  useEffect(() => {
+    // Save deposit amount whenever it changes
+    localStorage.setItem('pdaDepositAmount', JSON.stringify(depositAmount));
+  }, [depositAmount]);
+
+  // Save to localStorage whenever items change
   React.useEffect(() => {
-    const isValid = validateForm();
+    localStorage.setItem('pdaOrderItems', JSON.stringify(addedItems));
+    localStorage.setItem('pdaFormData', JSON.stringify({
+      ...details,
+      addedItems,
+      depositAmount
+    }));
+  }, [addedItems, details, depositAmount]);
+
+  React.useEffect(() => {
+    const hasMinimumDeposit = depositAmount >= 200;
+    const hasItems = addedItems.length > 0;
+    const isValid = hasMinimumDeposit && hasItems;
+    
     onValidityChange(isValid);
-  }, [details, addedItems]);
+  }, [addedItems, depositAmount, onValidityChange]);
 
   const validateForm = () => {
-    if (!productType) return false;
-    
-    const hasAddedItems = addedItems && addedItems.length > 0;
-    if (!hasAddedItems) return false;
-
-    const totalDeposit = parseFloat(depositAmount) || 0;
-    if (totalDeposit < 200) return false;
-
-    return true;
+    return addedItems.length > 0 && depositAmount >= 200;
   };
 
   const handleInputChange = (e) => {
@@ -61,16 +58,19 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
   const handleQuantityChange = (itemName, value) => {
     if (value === '') {
       onChange({
-        ...details,
-        [itemName]: value
+        productType,
+        [itemName]: ''
       });
       return;
     }
     
     const numericValue = Math.max(0, parseInt(value) || 0);
+    
+    // Only update the specific item's quantity
     onChange({
-      ...details,
-      [itemName]: numericValue
+        ...details,  // Keep existing details
+        productType,
+        [itemName]: numericValue  // Update only this specific item
     });
   };
 
@@ -80,47 +80,47 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
       const newItem = {
         type: productType,
         name: itemLabel,
-        quantity: quantity,
-        id: `${productType}-${itemName}`
+        quantity: parseInt(quantity),
+        id: `${productType}-${itemName}-${Date.now()}`,
+        code: itemName,
       };
       
-      const existingItemIndex = addedItems.findIndex(item => item.id === newItem.id);
-      let updatedItems;
+      const existingItemIndex = addedItems.findIndex(
+        item => item.code === itemName && item.type === productType
+      );
       
+      let updatedItems;
       if (existingItemIndex !== -1) {
         updatedItems = [...addedItems];
-        updatedItems[existingItemIndex] = newItem;
+        updatedItems[existingItemIndex] = {
+          ...updatedItems[existingItemIndex],
+          quantity: parseInt(quantity)
+        };
       } else {
         updatedItems = [...addedItems, newItem];
       }
       
       setAddedItems(updatedItems);
       
+      // Only pass the necessary updates
       onChange({
-        ...details,
+        productType,
         addedItems: updatedItems,
-        productType: productType,
-        depositAmount: depositAmount
+        [itemName]: 0  // Reset only this item's quantity input
       });
+      
+      onAddItem(newItem);
+      onValidityChange(true);
 
       toast.success(
         <div className="flex flex-col">
-          <span className="font-medium">{existingItemIndex !== -1 ? 'Item Updated' : 'Item Added'}</span>
+          <span className="font-medium">
+            {existingItemIndex !== -1 ? 'Item Updated' : 'Item Added'}
+          </span>
           <span className="text-sm">{itemLabel}: {quantity} units</span>
         </div>,
-        {
-          duration: 3000,
-          icon: existingItemIndex !== -1 ? '✏️' : '✅'
-        }
+        { duration: 3000 }
       );
-      
-      onAddItem(newItem);
-      handleQuantityChange(itemName, '0');
-    } else {
-      toast.error('Please enter a quantity greater than 0', {
-        icon: '⚠️',
-        duration: 3000
-      });
     }
   };
 
@@ -138,41 +138,54 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
 
   const handleRemoveItem = (itemId, itemName) => {
     const updatedItems = addedItems.filter(i => i.id !== itemId);
+    
     setAddedItems(updatedItems);
+    
     onChange({
       ...details,
       addedItems: updatedItems
     });
     
+    onValidityChange(updatedItems.length > 0);
+    
     toast.success(`Removed: ${itemName}`);
   };
 
-  const renderQuantityInput = (item) => (
-    <div className="flex items-center space-x-3">
-      <input
-        type="number"
-        min="0"
-        value={details[item.name] === '' ? '' : (details[item.name] || 0)}
-        onChange={(e) => handleQuantityChange(item.name, e.target.value)}
-        onClick={(e) => e.target.select()}
-        className="w-24 p-2.5 border rounded-lg text-center cursor-text hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-        onBlur={() => {
-          if (details[item.name] === '' || isNaN(details[item.name])) {
-            handleQuantityChange(item.name, '0');
-          }
-        }}
-      />
-      <button
-        onClick={() => handleAddItem(item.name, item.label)}
-        className="px-4 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors flex items-center space-x-2"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-        </svg>
-        <span>Add</span>
-      </button>
-    </div>
-  );
+  const getItemLabel = (itemName, productType) => {
+    switch (productType) {
+      case 'postalStationary':
+        return 'Postal Stationary (From limited seven bureau only)- Delhi, Calcutta, Mumbai, Chennai, Bangalore, Hyderabad, Ahmedabad';
+      case 'firstDayCovers':
+        return 'First Day Covers affixed with stamp and cancelled';
+      // Add other cases as needed
+      default:
+        return itemName;
+    }
+  };
+
+  const renderQuantityInput = (item) => {
+    return (
+      <div className="flex items-center space-x-3">
+        <input
+          type="number"
+          min="0"
+          // Use the specific item's quantity or default to 0
+          value={details[item.name] || 0}
+          onChange={(e) => handleQuantityChange(item.name, e.target.value)}
+          className="w-24 p-2.5 border rounded-lg text-center"
+        />
+        <button
+          onClick={() => handleAddItem(item.name, item.label)}
+          className="px-4 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors flex items-center space-x-2"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          <span>Add</span>
+        </button>
+      </div>
+    );
+  };
 
   const pack1Items = [
     { id: 1, name: "mintCommemorative", label: "Mint Commemorative Stamps" },
@@ -228,34 +241,29 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
   );
 
   const renderOrderSummary = () => {
-    if (addedItems.length === 0) {
+    if (!addedItems.length) {
       return (
-        <div className="text-center py-8 bg-gray-50 rounded-lg">
-          <svg className="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-          </svg>
-          <p className="text-gray-500 mt-2">No items added to your order yet</p>
-          <p className="text-sm text-gray-400 mt-1">Use the "Add" button to include items in your order</p>
+        <div className="text-center py-4 text-gray-500">
+          No items added yet
         </div>
       );
     }
 
     return (
-      <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+      <div className="space-y-2">
         {addedItems.map((item, index) => (
-          <div key={index} className="flex justify-between items-center p-2 bg-white rounded-md shadow-sm">
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-700">{item.name}</span>
-              <span className="text-xs text-gray-500">({item.type})</span>
+          <div key={item.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+            <div className="flex-1">
+              <p className="font-medium">{item.name}</p>
+              <p className="text-sm text-gray-600">Type: {item.type}</p>
             </div>
-            <div className="flex items-center space-x-2">
-              <span className="font-medium bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+            <div className="flex items-center space-x-4">
+              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
                 Qty: {item.quantity}
               </span>
               <button
                 onClick={() => handleRemoveItem(item.id, item.name)}
-                className="text-red-500 hover:text-red-600 p-1 rounded-full hover:bg-red-50 transition-colors"
-                title="Remove item"
+                className="text-red-500 hover:text-red-700"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -269,16 +277,38 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
   };
 
   const renderValidationMessage = () => {
+    const messages = [];
+
     if (!productType) {
-      return <p className="text-red-500 text-sm mt-4">Please select a product type</p>;
+      messages.push("Please select a product type");
     }
     if (addedItems.length === 0) {
-      return <p className="text-red-500 text-sm mt-4">Please add at least one item to continue</p>;
+      messages.push("At least one item must be added to continue");
     }
-    if (parseFloat(depositAmount) < 200) {
-      return <p className="text-red-500 text-sm mt-4">Minimum deposit amount of ₹200 is required</p>;
+    if (!depositAmount || depositAmount < 200) {
+      messages.push("Minimum deposit of ₹200 is required to continue");
     }
-    return null;
+
+    if (messages.length === 0) return null;
+
+    return (
+      <div className="mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
+        {messages.map((message, index) => (
+          <p key={index} className="text-red-600 text-sm flex items-center gap-2">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {message}
+          </p>
+        ))}
+      </div>
+    );
+  };
+
+  const handleDepositChange = (value) => {
+    const amount = parseInt(value) || 0;
+    localStorage.setItem('pdaDepositAmount', JSON.stringify(amount));
+    onDepositChange(amount);
   };
 
   return (
@@ -431,26 +461,51 @@ export function OrderDetails({ details, onChange, onAddItem, depositAmount, onDe
           </div>
         )}
 
-        <div className="bg-gray-50 p-6 rounded-lg">
+        <div className="bg-gray-50 p-6 rounded-lg mt-6">
+          <SectionHeader 
+            title="Deposit Amount" 
+            description="Minimum deposit of ₹200 is required to proceed"
+          />
+          <div className="relative">
+            <div className="flex items-center">
+              <span className="absolute left-3 text-gray-500">₹</span>
+              <input
+                type="number"
+                required
+                value={depositAmount}
+                onChange={(e) => handleDepositChange(e.target.value)}
+                className={`w-full p-3 pl-8 border rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                  (!depositAmount || depositAmount < 200) ? 'border-red-300' : 'border-gray-300'
+                }`}
+                placeholder="Enter deposit amount (minimum ₹200)"
+                min="200"
+              />
+            </div>
+            {(!depositAmount || depositAmount < 200) && (
+              <div className="mt-2 flex items-center text-red-500 text-sm">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Minimum deposit amount of ₹200 is required
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-gray-50 p-6 rounded-lg mt-6">
           <SectionHeader 
             title="Order Summary" 
             description="Review your selected items"
           />
           {renderOrderSummary()}
-        </div>
-
-        <div className="bg-gray-50 p-6 rounded-lg">
-          <SectionHeader 
-            title="Deposit Amount" 
-            description="Minimum deposit required: ₹200"
-          />
-          <input
-            type="number"
-            value={depositAmount}
-            onChange={(e) => onDepositChange(e.target.value)}
-            className="w-full p-3 border rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-            placeholder="Enter deposit amount"
-          />
+          {addedItems.length === 0 && (
+            <div className="mt-2 flex items-center text-red-500 text-sm">
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              At least one item must be added to continue
+            </div>
+          )}
         </div>
       </div>
 
