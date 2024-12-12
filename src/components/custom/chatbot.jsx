@@ -49,21 +49,39 @@ const Chatbot = () => {
 
     // Add user message
     setMessages(prev => [...prev, { text: inputMessage, isBot: false }]);
+    const userMessage = inputMessage; // Store message before clearing input
     setInputMessage("");
     setIsLoading(true);
 
-    const res = await fetchFromAPI(`philatelist/chatBotResponse/?query="${inputMessage}" `)
-    
-    if (res.success) {
-      if (res.data.model == "genai") {
-        setMessages(prev => [...prev, { text: res.data.response, isBot: true }]);
-      } else {
-        // TODO: here if res.data.model is "intent" i'll get a route i just want to push to this route keeping chatbot open
-        router.push(res.data.route)
-      }
+    try {
+        const res = await fetchFromAPI(`philatelist/chatBotResponse/?query=${encodeURIComponent(userMessage)}`);
+        alert(res)
+        if (res.success) {
+            if (res.data.model === "genai") {
+                setMessages(prev => [...prev, { text: res.data.response, isBot: true }]);
+            } else if (res.data.model === "intent") {
+                // Handle intent-based navigation while keeping chatbot open
+                router.push(res.data.route);
+                setMessages(prev => [...prev, { 
+                    text: "I'll redirect you to the relevant page.", 
+                    isBot: true 
+                }]);
+            }
+        } else {
+            setMessages(prev => [...prev, { 
+                text: "I'm sorry, I encountered an error. Please try again.", 
+                isBot: true 
+            }]);
+        }
+    } catch (error) {
+        console.error("Chatbot error:", error);
+        setMessages(prev => [...prev, { 
+            text: "I'm sorry, something went wrong. Please try again.", 
+            isBot: true 
+        }]);
+    } finally {
+        setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
@@ -132,7 +150,7 @@ const Chatbot = () => {
                 <Input
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                  // onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                   placeholder="Type your message..."
                   className="flex-1 border-0 focus:ring-0 bg-transparent text-lg"
                   disabled={isLoading}

@@ -11,6 +11,7 @@ import ProductTour from "../components/custom/ProductTour";
 import { useState, useEffect } from "react";
 import Cookies from 'js-cookie';
 import { Providers } from "./providers"
+import BertChatbot from "../components/custom/BertChatbot";
 
 import Script from "next/script";
 const fontSans = FontSans({
@@ -133,8 +134,11 @@ export default function RootLayout({ children }) {
                 <div className="main-content home-section">
                   {children}
                 </div>
-                <div className="chatbot-widget fixed bottom-56 right-32 z-[9998]">
+                {/* <div className="chatbot-widget fixed bottom-56 right-32 z-[9998]">
                   <Chatbot />
+                </div> */}
+                <div className="chatbot-widget fixed bottom-56 right-32 z-[9998]">
+                  <BertChatbot />
                 </div>
               </NotificationProvider>
             </CartProvider>
