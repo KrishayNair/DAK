@@ -58,7 +58,7 @@ export default function Sidebar() {
       <div className="flex h-full flex-col">
         <div className="flex items-center justify-between px-4 pb-2">
           <Image
-            src="/logo.png"
+            src="/logoNew.png"
             width={expanded ? 260 : 0}
             height={100}
             className={`transition-all ${expanded ? "block" : "hidden"}`}

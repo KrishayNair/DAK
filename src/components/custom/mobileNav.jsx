@@ -84,7 +84,7 @@ export default function MobileNav() {
     >
       <div className="h-14 flex items-center justify-between py-3 px-3">
         <Image
-          src="/logo.png"
+          src="/logoNew.png"
           width={260}
           height={100}
         />
@@ -127,7 +127,7 @@ export default function MobileNav() {
                     : "text-slate-400"
                 )}
               >
-                <route.icon className="h-6 w-6" />
+                {/* <route.icon className="h-6 w-6" /> */}
                 {route.title}
               </Link>
             ))}

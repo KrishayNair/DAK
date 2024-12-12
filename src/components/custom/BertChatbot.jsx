@@ -11,6 +11,7 @@ export default function BertChatbot() {
         { text: "Hi there! How can I help you today?", isBot: true }
     ])
     const [inputMessage, setInputMessage] = useState("")
+    const [pendingNavigation, setPendingNavigation] = useState(null)
 
     // Add ref for scroll management
     const messagesEndRef = useRef(null)
@@ -27,6 +28,11 @@ export default function BertChatbot() {
 
     const router = useRouter()
 
+    const handleNavigation = (path) => {
+        router.push(path)
+        setPendingNavigation(null)
+        setIsOpen(false)
+    }
 
     const handleSendMessage = async () => {
         if (!inputMessage.trim()) return
@@ -42,12 +48,14 @@ export default function BertChatbot() {
                 if (res.data.model === "genai") {
                     setMessages(prev => [...prev, { text: res.data.response, isBot: true }]);
                 } else if (res.data.model === "intent") {
-                    setMessages(prev => [...prev, {
-                        text: "I'll redirect you to the relevant page.",
-                        isBot: true
-                    }]);
                     if (["/shop", "/cart", "/pda"].includes(res.data.response)) {
-                        router.push(res.data.response);
+                        setPendingNavigation(res.data.response)
+                        setMessages(prev => [...prev, {
+                            text: `I can redirect you to the ${res.data.response.replace('/', '')} page. Would you like to continue?`,
+                            isBot: true,
+                            showButton: true,
+                            buttonAction: () => handleNavigation(res.data.response)
+                        }]);
                     } else {
                         setMessages(prev => [...prev, {
                             text: "I'm sorry, I don't know how to help with that.",
@@ -103,7 +111,9 @@ export default function BertChatbot() {
                                     <span className="sr-only">Close</span>
                                 </Button>
                             </div>
-                            <div className="flex-1 p-4 overflow-y-auto scroll-smooth">
+                            <div className="flex-1 p-4 overflow-y-auto overflow-x-hidden 
+                                scrollbar-w-2 scrollbar scrollbar-track-gray-100 
+                                scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500">
                                 {messages.map((message, index) => (
                                     <div key={index} className={`flex ${message.isBot ? 'justify-start' : 'justify-end'} mb-4`}>
                                         <div className={`max-w-[75%]`}>
@@ -113,11 +123,19 @@ export default function BertChatbot() {
                                                 : 'bg-blue-500 text-white'
                                             }`}>
                                                 {message.text}
+                                                {message.showButton && (
+                                                    <Button
+                                                        className="mt-2 w-full"
+                                                        onClick={message.buttonAction}
+                                                    >
+                                                        Continue
+                                                    </Button>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
                                 ))}
-                                <div ref={messagesEndRef} /> {/* Add scroll anchor */}
+                                <div ref={messagesEndRef} />
                             </div>
                             <div className="border-t p-4">
                                 <div className="grid grid-cols-12 gap-4">
