@@ -262,7 +262,7 @@ export default function PhilatelyIntro() {
         <div className="flex flex-col xl:flex-row xl:m-20 space-x-0 xl:space-x-20">
           <div className="relative w-full xl:w-2/5 lg:min-h-[400px] min-h-[300px]">
             <Image
-              src={workshop}
+              src={philately}
               alt="Philatelic world"
               fill
               className="object-cover rounded-lg"
@@ -350,7 +350,7 @@ export default function PhilatelyIntro() {
           <div className="flex flex-col xl:flex-row xl:m-20 space-x-0 xl:space-x-20">
             <div className="relative w-full xl:w-2/5 lg:min-h-[400px] min-h-[300px]">
               <Image
-                src={workshop}
+                src="/shophead.jpg"
                 alt="Philatelic world"
                 fill
                 className="object-cover rounded-lg"
@@ -387,7 +387,7 @@ export default function PhilatelyIntro() {
           <div className="flex flex-col xl:flex-row xl:m-20 xl:mt-0 mt-8">
             <div className="block xl:hidden relative w-full xl:w-2/5 xl:min-h-[400px] min-h-[300px]">
               <Image
-                src={workshop}
+                src="/forum.jpeg"
                 alt="Philatelic world"
                 fill
                 className="object-cover rounded-lg"
@@ -431,7 +431,7 @@ export default function PhilatelyIntro() {
           <div className="flex flex-col xl:flex-row xl:m-20 space-x-0 xl:space-x-20">
             <div className="relative w-full xl:w-2/5 lg:min-h-[400px] min-h-[300px]">
               <Image
-                src={workshop}
+                src="/Identifying_stamps.jpg"
                 alt="Philatelic world"
                 fill
                 className="object-cover rounded-lg"
@@ -492,7 +492,7 @@ export default function PhilatelyIntro() {
             </div>
             <div className="hidden xl:block relative w-full md:w-2/5 md:min-h-[400px] min-h-[300px]">
               <Image
-                src={workshop}
+                src="/collage.png"
                 alt="Philatelic world"
                 fill
                 className="object-cover rounded-lg"

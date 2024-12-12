@@ -227,7 +227,7 @@ export default function ForgotPassword() {
       <div className="w-full md:w-3/5 flex flex-col px-4 sm:px-6 md:px-0">
         <div className="flex-grow flex flex-col md:mr-40 md:ml-28 mt-10 sm:mt-16 md:mt-28">
           <img
-            src="logoNew.png"
+            src="/logoNew.png"
             alt="DAK"
             className="w-16 sm:w-20 md:w-28 h-auto mb-6 sm:mb-8 md:mb-10"
           />
