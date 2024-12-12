@@ -79,15 +79,7 @@ const HeroSection = () => (
     </div>
 
     {/* Decorative elements */}
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 0.1 }}
-      transition={{ delay: 1 }}
-      className="absolute inset-0 overflow-hidden pointer-events-none"
-    >
-      <div className="absolute top-1/4 left-4 w-24 h-24 border border-[#8B6E5B] rounded-lg rotate-12" />
-      <div className="absolute bottom-1/4 right-4 w-32 h-32 border border-[#8B6E5B] rounded-lg -rotate-12" />
-    </motion.div>
+    
   </section>
 );
 
