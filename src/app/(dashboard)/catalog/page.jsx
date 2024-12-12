@@ -360,7 +360,7 @@ export default function StampCollection() {
                   onClick={() => document.getElementById("file-upload").click()}
                   className="bg-[#b39656] hover:bg-[#997f48] text-white px-6"
                 >
-                  Upload
+                  Stamp Vision
                 </Button>
               </div>
             </div>

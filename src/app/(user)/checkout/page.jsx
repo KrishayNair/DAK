@@ -161,7 +161,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="mx-auto p-6 flex gap-8">
+    <div className="mx-auto p-6 flex gap-8 mt-20">
       {error && (
         <div
           className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"

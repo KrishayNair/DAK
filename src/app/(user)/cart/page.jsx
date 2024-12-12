@@ -27,7 +27,7 @@ export default function Cart() {
 
   if (!cartItems || cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-primary p-8 flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-primary p-8 flex flex-col items-center justify-center ">
         <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
         <button 
           onClick={() => router.push('/shop')}
@@ -40,7 +40,7 @@ export default function Cart() {
   }
 
   return (
-    <div className="min-h-screen bg-primary p-8">
+    <div className="min-h-screen bg-primary p-8 mt-20">
       <div className="flex gap-8">
         {/* Main Content Column */}
         <div className="flex-1">
@@ -66,7 +66,7 @@ export default function Cart() {
               >
                 <div className="flex items-center gap-4">
                   <img
-                    src={buildImageUrl(item.images[0])}
+                    src={item.images?.[0] ? buildImageUrl(item.images[0]) : '/placeholder-image.jpg'}
                     alt={item.title}
                     className="w-20 h-20 object-cover rounded-lg"
                   />
