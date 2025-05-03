@@ -3,14 +3,14 @@
 import { useEffect, useState, useRef } from 'react'
 import Lenis from '@studio-freight/lenis'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import Navbar from '@/components/custom/navbar'
-import Hero from '@/components/custom/hero'
-import MobileHome from '@/components/custom/mobileHome'
-import PhilatelyInfo from '@/components/custom/philatelyinfo'
+import Navbar from '../components/custom/navbar'
+import Hero from '../components/custom/hero'
+import MobileHome from '../components/custom/mobileHome'
+import PhilatelyInfo from '../components/custom/philatelyinfo'
 import Footer from '../components/custom/Footer'
 import { useRouter } from 'next/navigation'
-import MobileNav from '@/components/custom/MobileNav'
-import useFCMToken from '@/lib/useFCMToken';
+import MobileNav from '../components/custom/MobileNav'
+import useFCMToken from '../lib/useFCMToken';
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0)

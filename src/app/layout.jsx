@@ -3,8 +3,8 @@
 import { Inter as FontSans } from "next/font/google";
 import SmoothScroll from "../components/custom/smoothscroll";
 import "./globals.css";
-import { cn } from "@/lib/utils";
-import { NotificationProvider } from "@/context/NotificationContext";
+import { cn } from "../lib/utils";
+import { NotificationProvider } from "../context/NotificationContext";
 import { CartProvider } from "../context/CartContext";
 import Chatbot from "../components/custom/Chatbot";
 import ProductTour from "../components/custom/ProductTour";
