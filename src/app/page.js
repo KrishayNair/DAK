@@ -9,8 +9,8 @@ import MobileHome from '@/components/custom/mobileHome'
 import PhilatelyInfo from '@/components/custom/philatelyinfo'
 import Footer from '../components/custom/Footer'
 import { useRouter } from 'next/navigation'
-import MobileNav from '@/components/custom/mobileNav'
-import useFCMToken from '@/lib/useFcmToken';
+import MobileNav from '@/components/custom/MobileNav'
+import useFCMToken from '@/lib/useFCMToken';
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0)

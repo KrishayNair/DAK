@@ -6,7 +6,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { CartProvider } from "../context/CartContext";
-import Chatbot from "../components/custom/chatbot";
+import Chatbot from "../components/custom/Chatbot";
 import ProductTour from "../components/custom/ProductTour";
 import { useState, useEffect } from "react";
 import Cookies from 'js-cookie';
