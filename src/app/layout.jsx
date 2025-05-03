@@ -6,12 +6,12 @@ import "./globals.css";
 import { cn } from "../lib/utils";
 import { NotificationProvider } from "../context/NotificationContext";
 import { CartProvider } from "../context/CartContext";
-import Chatbot from "../components/custom/Chatbot";
+import Chatbot from "../components/custom/Chatbot.jsx";
 import ProductTour from "../components/custom/ProductTour";
 import { useState, useEffect } from "react";
 import Cookies from 'js-cookie';
 import { Providers } from "./providers"
-import BertChatbot from "../components/custom/BertChatbot";
+import BertChatbot from "../components/custom/BertChatbot.jsx";
 
 import Script from "next/script";
 const fontSans = FontSans({
