@@ -1,14 +1,13 @@
-import { verifySession } from "@/lib/auth";
+import { NextResponse } from "next/server";
 
 export async function middleware(request) {
-
-  return await verifySession(request);
-  // console.log("yoyoyo");
-
+  // For demo purposes, allow access to all pages
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|.*\\.png$|login|signup|forgot-password).*)",
+    // Match all paths except Next.js internal routes
+    "/((?!_next/static|_next/image|.*\\.png$).*)",
   ],
 };
