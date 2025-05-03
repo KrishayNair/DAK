@@ -2,10 +2,10 @@
 import { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
 import Navbar from "../../components/custom/navbar";
-import Footer from "../../components/custom/Footer";
+import Footer from "../../components/custom/footer";
 import { cn } from "../../lib/utils";
-import Header from "../../components/custom/Header";
-import MobileNav from '../../components/custom/MobileNav.jsx';
+import Header from "../../components/custom/header";
+import MobileNav from '../../components/custom/mobilenav';
 
 export default function DashboardLayout({ children }) {
   useEffect(() => {

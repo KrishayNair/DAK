@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useCart } from "@/context/CartContext"; // Import the useCart hook
+import { useCart } from "@/context/cartcontext"; // Import the useCart hook
 import { buildImageUrl } from "@/lib/utils";
 
 export default function Cart() {

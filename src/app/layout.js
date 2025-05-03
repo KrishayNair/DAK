@@ -3,8 +3,8 @@ import SmoothScroll from '../components/custom/smoothscroll'
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/context/theme-provider";
-import { NotificationProvider } from '@/context/NotificationContext';
-import { CartProvider } from '@/context/CartContext';
+import { NotificationProvider } from '@/context/notificationcontext';
+import { CartProvider } from '@/context/cartcontext';
 
 const fontSans = FontSans({
   subsets: ["latin"],

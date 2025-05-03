@@ -4,14 +4,14 @@ import { Inter as FontSans } from "next/font/google";
 import SmoothScroll from "../components/custom/smoothscroll";
 import "./globals.css";
 import { cn } from "../lib/utils";
-import { NotificationProvider } from "../context/NotificationContext";
-import { CartProvider } from "../context/CartContext";
-import Chatbot from "../components/custom/Chatbot.jsx";
-import ProductTour from "../components/custom/ProductTour";
+import { NotificationProvider } from "../context/notificationcontext";
+import { CartProvider } from "../context/cartcontext";
+import Chatbot from "../components/custom/chatbot";
+import ProductTour from "../components/custom/producttour";
 import { useState, useEffect } from "react";
 import Cookies from 'js-cookie';
 import { Providers } from "./providers"
-import BertChatbot from "../components/custom/BertChatbot.jsx";
+import BertChatbot from "../components/custom/bertchatbot";
 
 import Script from "next/script";
 const fontSans = FontSans({

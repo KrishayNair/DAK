@@ -5,12 +5,12 @@ import Lenis from '@studio-freight/lenis'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Navbar from '../components/custom/navbar'
 import Hero from '../components/custom/hero'
-import MobileHome from '../components/custom/mobileHome'
+import MobileHome from '../components/custom/mobilehome'
 import PhilatelyInfo from '../components/custom/philatelyinfo'
-import Footer from '../components/custom/Footer'
+import Footer from '../components/custom/footer'
 import { useRouter } from 'next/navigation'
-import MobileNav from '../components/custom/MobileNav.jsx'
-import useFCMToken from '../lib/useFCMToken.js';
+import MobileNav from '../components/custom/mobilenav'
+import useFCMToken from '../lib/usefcmtoken'
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0)

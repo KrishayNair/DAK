@@ -6,7 +6,7 @@ import { Elsie_Swash_Caps } from "next/font/google";
 import { categories, products } from "../data";
 import { Button } from "@/components/ui/button";
 import { Star, Minus, Plus, ShoppingCart } from "lucide-react";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/context/cartcontext";
 import { useRouter } from "next/navigation";
 const elsieSwashCaps = Elsie_Swash_Caps({
   subsets: ["latin"],

@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { useCart } from '@/context/CartContext'
+import { useCart } from '@/context/cartcontext'
 import { fetchFromAPI } from '@/lib/api'
 import { buildImageUrl } from '@/lib/utils'
 import { useRouter } from 'next/navigation'

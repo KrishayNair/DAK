@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/context/cartcontext";
 import { createOrder } from "@/components/custom/razorpay";
 import { postDataToAPI } from "@/lib/api";
 

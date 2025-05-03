@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useState } from 'react'
-import { useCart } from '@/context/CartContext'
+import { useCart } from '@/context/cartcontext'
 
 export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1)

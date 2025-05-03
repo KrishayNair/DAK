@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { BsBell, BsCart3 } from "react-icons/bs";
 import NotificationModal from "@/components/custom/NotificationModal";
-import { useNotifications } from "@/context/NotificationContext";
+import { useNotifications } from "@/context/notificationcontext";
 import Cookies from "js-cookie";
 import { fetchFromAPI } from "@/lib/api";
 import { logout } from "@/lib/auth";
