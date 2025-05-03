@@ -1,11 +1,11 @@
 "use client";
 import { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
-import Navbar from "../../components/custom/navbar";
-import Footer from "../../components/custom/footer";
-import { cn } from "../../lib/utils";
-import Header from "../../components/custom/header";
-import MobileNav from '../../components/custom/mobilenav';
+import Navbar from "@/components/custom/navbar";
+import Footer from "@/components/custom/footer";
+import { cn } from "@/lib/utils";
+import Header from "@/components/custom/header";
+import MobileNav from '@/components/custom/mobilenav';
 
 export default function DashboardLayout({ children }) {
   useEffect(() => {
