@@ -30,7 +30,7 @@ export const stampDetails = [
   {
     name: "'75' and Flag",
     caption:
-      "A commemorative stamp celebrating India's 75th year of independence",
+      "A commemorative stamp celebrating India&apos;s 75th year of independence",
     year: 1975,
     postalCircle: "Delhi Postal Circle",
     unitsProduced: "1.5 million",
@@ -42,7 +42,7 @@ export const stampDetails = [
     printingHouse: "India Security Press, Nashik",
     color: "Tricolor (Saffron, White, and Green)",
     backstory:
-      "This stamp was issued to commemorate India's 75th year of independence. The design incorporates the national flag and the numeral '75', symbolizing the years of freedom. The stamp was part of a special series that celebrated India's progress since independence.",
+      "This stamp was issued to commemorate India&apos;s 75th year of independence. The design incorporates the national flag and the numeral '75', symbolizing the years of freedom. The stamp was part of a special series that celebrated India&apos;s progress since independence.",
     historicalContext:
       "The mid-1970s were a significant period in Indian postal history, with several commemorative stamps being issued to celebrate national achievements.",
     rarity: "Common",
@@ -65,7 +65,7 @@ export const stampDetails = [
     printingHouse: "British India Press, Bombay",
     color: "Sepia and Gold",
     backstory:
-      "This stamp depicts three classical Indian musicians playing the sitar, tabla, and tambura. It was part of a series celebrating India's rich musical heritage and was designed by renowned artist Ram Kumar.",
+      "This stamp depicts three classical Indian musicians playing the sitar, tabla, and tambura. It was part of a series celebrating India&apos;s rich musical heritage and was designed by renowned artist Ram Kumar.",
     historicalContext:
       "During the 1920s, the Indian postal service began incorporating more cultural and artistic elements in stamp designs, moving away from purely administrative designs.",
     rarity: "Rare",
@@ -88,7 +88,7 @@ export const stampDetails = [
     printingHouse: "India Security Press, Nashik",
     color: "Deep Blue and Silver",
     backstory:
-      "This stamp showcases the iconic Taj Mahal in its full glory. It was part of the first series of architectural monuments issued after independence, highlighting India's rich architectural heritage.",
+      "This stamp showcases the iconic Taj Mahal in its full glory. It was part of the first series of architectural monuments issued after independence, highlighting India&apos;s rich architectural heritage.",
     historicalContext:
       "Post-independence India sought to showcase its cultural monuments through postal stamps, making this series particularly significant.",
     rarity: "Uncommon",
@@ -99,7 +99,7 @@ export const stampDetails = [
   },
   {
     name: "First Indian Airmail",
-    caption: "Commemorating India's first airmail service",
+    caption: "Commemorating India&apos;s first airmail service",
     year: 1911,
     postalCircle: "Allahabad Postal Circle",
     unitsProduced: "100,000",
@@ -111,9 +111,9 @@ export const stampDetails = [
     printingHouse: "Survey of India Press",
     color: "Carmine Red",
     backstory:
-      "This historic stamp marks the world's first official airmail service, which carried mail between Allahabad and Naini. The flight was piloted by Henri Pequet.",
+      "This historic stamp marks the world&apos;s first official airmail service, which carried mail between Allahabad and Naini. The flight was piloted by Henri Pequet.",
     historicalContext:
-      "The introduction of airmail service represented a significant advancement in India's postal system and marked the beginning of aviation history in India.",
+      "The introduction of airmail service represented a significant advancement in India&apos;s postal system and marked the beginning of aviation history in India.",
     rarity: "Very Rare",
     condition: "Good",
     dimensions: "3.2 × 2.4 cm",
@@ -122,7 +122,7 @@ export const stampDetails = [
   },
   {
     name: "Gandhi Centenary Issue",
-    caption: "Commemorating Mahatma Gandhi's 100th birth anniversary",
+    caption: "Commemorating Mahatma Gandhi&apos;s 100th birth anniversary",
     year: 1969,
     postalCircle: "National Issue",
     unitsProduced: "2 million",
@@ -134,9 +134,9 @@ export const stampDetails = [
     printingHouse: "India Security Press",
     color: "Brown and Sepia",
     backstory:
-      "This commemorative stamp was issued as part of Gandhi's centenary celebrations, featuring his iconic portrait and the spinning wheel symbol.",
+      "This commemorative stamp was issued as part of Gandhi&apos;s centenary celebrations, featuring his iconic portrait and the spinning wheel symbol.",
     historicalContext:
-      "1969 marked worldwide celebrations of Gandhi's centenary, with this stamp being one of India's contributions to the global commemoration.",
+      "1969 marked worldwide celebrations of Gandhi&apos;s centenary, with this stamp being one of India&apos;s contributions to the global commemoration.",
     rarity: "Common",
     condition: "Mint",
     dimensions: "3.6 × 2.6 cm",

@@ -31,7 +31,7 @@ const CommentSection = () => {
         </div>
         <p className="text-gray-700">
           If you want to become a better writer, you have to hit the publish
-          button. Notes and drafts don't count. Practice in public helps writers
+          button. Notes and drafts don&apos;t count. Practice in public helps writers
           get off the sidelines and turn pro.
         </p>
       </div>

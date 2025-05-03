@@ -19,8 +19,15 @@ import { toFormData } from "axios";
 const forumSchema = z.object({
   content: z.string().min(1, "Content is required"),
   uploaded_images: z
-    .instanceof(FileList)
-    .transform((list) => Array.from(list))
+    .any()
+    .refine((val) => {
+      if (typeof window === 'undefined') return true;
+      return val instanceof FileList;
+    }, "Invalid file list")
+    .transform((list) => {
+      if (typeof window === 'undefined') return [];
+      return Array.from(list);
+    })
     .refine(
       (files) => files.every((file) => file.size <= 5000000),
       "Each file must be less than 5MB"
@@ -101,7 +108,7 @@ export default function CreateForum({ onSuccess }) {
           name="content"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>What's on your mind?</FormLabel>
+              <FormLabel>What&apos;s on your mind?</FormLabel>
               <FormControl>
                 <textarea
                   className="w-full p-4 border rounded-lg min-h-[150px] focus:outline-none focus:ring-2 focus:ring-blue-500"

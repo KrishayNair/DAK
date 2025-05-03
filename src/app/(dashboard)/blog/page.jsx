@@ -24,16 +24,25 @@ const blogSchema = z.object({
   content: z.string().min(1, "Content is required"),
   read_time: z.number().min(0, "Read time cannot be negative"),
   image: z
-    .instanceof(File)
+    .any()
+    .refine((val) => {
+      if (typeof window === 'undefined') return true;
+      return val instanceof File;
+    }, "Invalid file")
     .refine(
-      (file) => file?.size <= 5000000,
+      (file) => {
+        if (typeof window === 'undefined') return true;
+        return file?.size <= 5000000;
+      },
       "File size should be less than 5MB"
     )
     .refine(
-      (file) =>
-        ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
+      (file) => {
+        if (typeof window === 'undefined') return true;
+        return ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
           file?.type
-        ),
+        );
+      },
       "Only .jpg, .jpeg, .png and .webp formats are supported"
     )
     .optional()
@@ -55,16 +64,18 @@ const CreateBlogModal = ({ isOpen, onClose, onBlogCreated }) => {
   const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    if (typeof window !== 'undefined') {
+      if (isOpen) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "unset";
+      }
 
-    // Cleanup function
-    return () => {
-      document.body.style.overflow = "unset";
-    };
+      // Cleanup function
+      return () => {
+        document.body.style.overflow = "unset";
+      };
+    }
   }, [isOpen]);
 
   const validateForm = () => {

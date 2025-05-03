@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import dynamic from "next/dynamic";
 
 import {
     Form,
@@ -14,10 +15,19 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import { postDataToAPI } from "@/lib/api";
 import { toFormData } from "axios";
+
+// Dynamically import ReactQuill with no SSR
+const ReactQuill = dynamic(() => import("react-quill"), {
+    ssr: false,
+    loading: () => <p>Loading editor...</p>,
+});
+
+// Import styles only on client side
+if (typeof window !== 'undefined') {
+    require("react-quill/dist/quill.snow.css");
+}
 
 const blogSchema = z.object({
     title: z
@@ -28,16 +38,25 @@ const blogSchema = z.object({
     content: z.string().min(1, "Content is required"),
     read_time: z.number().min(0, "Read time cannot be negative"),
     image: z
-        .instanceof(File)
+        .any()
+        .refine((val) => {
+            if (typeof window === 'undefined') return true;
+            return val instanceof File;
+        }, "Invalid file")
         .refine(
-            (file) => file?.size <= 5000000,
+            (file) => {
+                if (typeof window === 'undefined') return true;
+                return file?.size <= 5000000;
+            },
             "File size should be less than 5MB"
         )
         .refine(
-            (file) =>
-                ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
+            (file) => {
+                if (typeof window === 'undefined') return true;
+                return ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
                     file?.type
-                ),
+                );
+            },
             "Only .jpg, .jpeg, .png and .webp formats are supported"
         )
         .optional()

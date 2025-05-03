@@ -105,7 +105,7 @@ export default function SignupForm({ form, onSubmit, getPincode, loading, isPinc
         <div className="flex items-start gap-2">
           <input type="checkbox" className="mt-1" required />
           <p className="text-xs text-gray-600">
-            I agree with Dak's{" "}
+            I agree with Dak&apos;s{" "}
             <Link href="/terms" className="underline">
               Terms of Service
             </Link>

@@ -41,7 +41,7 @@ export const Timeline = ({ children }) => {
   );
 };
 
-Timeline.Item = ({ children, active }) => {
+const TimelineItem = ({ children, active }) => {
   return (
     <motion.div
       className="relative flex flex-col gap-4 md:gap-10"
@@ -54,8 +54,10 @@ Timeline.Item = ({ children, active }) => {
     </motion.div>
   );
 };
+TimelineItem.displayName = 'Timeline.Item';
+Timeline.Item = TimelineItem;
 
-Timeline.Point = ({ children }) => {
+const TimelinePoint = ({ children }) => {
   return (
     <motion.div
       className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-white border-3 border-[#B45309] shadow-xl"
@@ -67,8 +69,10 @@ Timeline.Point = ({ children }) => {
     </motion.div>
   );
 };
+TimelinePoint.displayName = 'Timeline.Point';
+Timeline.Point = TimelinePoint;
 
-Timeline.Content = ({ children }) => {
+const TimelineContent = ({ children }) => {
   return (
     <motion.div
       className="flex-1 pt-4 md:pt-6"
@@ -81,3 +85,5 @@ Timeline.Content = ({ children }) => {
     </motion.div>
   );
 };
+TimelineContent.displayName = 'Timeline.Content';
+Timeline.Content = TimelineContent;

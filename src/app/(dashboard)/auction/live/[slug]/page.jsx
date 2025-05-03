@@ -156,7 +156,7 @@ export default function LiveAuctionDetails() {
         {/* Search Section */}
         <div className="mt-24">
           <h2 className="text-3xl font-bold text-center mb-12">
-            Let's help you find your favorite material
+            Let&apos;s help you find your favorite material
           </h2>
 
           <div className="flex gap-4 items-center mb-12">

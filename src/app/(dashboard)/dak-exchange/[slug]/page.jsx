@@ -147,7 +147,7 @@ export default function ProductDetail({ params }) {
         <div className="text-center">
           <div className="text-5xl mb-4">🔍</div>
           <h1 className="text-2xl font-bold text-[#8B4513] mb-2">Product Not Found</h1>
-          <p className="text-[#8B4513]/70 mb-4">The product you're looking for doesn't exist.</p>
+          <p className="text-[#8B4513]/70 mb-4">The product you&apos;re looking for doesn&apos;t exist.</p>
           <Link 
             href="/dak-exchange" 
             className="text-[#8B4513] hover:underline"

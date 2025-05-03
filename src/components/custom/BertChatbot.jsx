@@ -58,21 +58,21 @@ export default function BertChatbot() {
                         }]);
                     } else {
                         setMessages(prev => [...prev, {
-                            text: "I'm sorry, I don't know how to help with that.",
+                            text: "I&apos;m sorry, I don&apos;t know how to help with that.",
                             isBot: true
                         }]);    
                     }
                 }
             } else {
                 setMessages(prev => [...prev, {
-                    text: "I'm sorry, I encountered an error. Please try again.",
+                    text: "I&apos;m sorry, I encountered an error. Please try again.",
                     isBot: true
                 }]);
             }
         } catch (error) {
             console.error("Chatbot error:", error);
             setMessages(prev => [...prev, {
-                text: "I'm sorry, something went wrong. Please try again.",
+                text: "I&apos;m sorry, something went wrong. Please try again.",
                 isBot: true
             }]);
         }

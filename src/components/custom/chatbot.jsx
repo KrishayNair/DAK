@@ -28,7 +28,7 @@ const ChatMessage = ({ message, isBot }) => (
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { text: "Hello! I'm your Philatelic Assistant. How can I help you today?", isBot: true },
+    { text: "Hello! I&apos;m your Philatelic Assistant. How can I help you today?", isBot: true },
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -63,20 +63,20 @@ const Chatbot = () => {
                 // Handle intent-based navigation while keeping chatbot open
                 router.push(res.data.route);
                 setMessages(prev => [...prev, { 
-                    text: "I'll redirect you to the relevant page.", 
+                    text: "I&apos;ll redirect you to the relevant page.", 
                     isBot: true 
                 }]);
             }
         } else {
             setMessages(prev => [...prev, { 
-                text: "I'm sorry, I encountered an error. Please try again.", 
+                text: "I&apos;m sorry, I encountered an error. Please try again.", 
                 isBot: true 
             }]);
         }
     } catch (error) {
         console.error("Chatbot error:", error);
         setMessages(prev => [...prev, { 
-            text: "I'm sorry, something went wrong. Please try again.", 
+            text: "I&apos;m sorry, something went wrong. Please try again.", 
             isBot: true 
         }]);
     } finally {

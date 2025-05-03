@@ -214,7 +214,7 @@ export default function PDAPage() {
             errorMessage = "Please upload both ID proof and PAN card documents";
             break;
           case 4:
-            errorMessage = "Please review all information and ensure it's correct";
+            errorMessage = "Please review all information and ensure it&apos;s correct";
             break;
         }
         
@@ -222,7 +222,7 @@ export default function PDAPage() {
         return;
       }
 
-      // If we're on the Document Upload step (index 3) and moving to Review
+      // If we&apos;re on the Document Upload step (index 3) and moving to Review
       if (currentStep === 3) {
         // Fix the navigation
         router.push(`/review?data=${encodeURIComponent(JSON.stringify(formData))}`);
@@ -372,11 +372,11 @@ export default function PDAPage() {
   const getStepGuidance = (step) => {
     switch (step) {
       case 0:
-        return "Select your customer type. This helps us customize your PDA experience based on whether you're an individual collector or representing an organization.";
+        return "Select your customer type. This helps us customize your PDA experience based on whether you&apos;re an individual collector or representing an organization.";
       case 1:
         return "Fill in your personal details carefully. Make sure your mailing address is complete and accurate as this will be used for delivering your philatelic items.";
       case 2:
-        return "Choose the items you'd like to receive. Remember, you need a minimum deposit of ₹200 to proceed. You can always add more items later.";
+        return "Choose the items you&apos;d like to receive. Remember, you need a minimum deposit of ₹200 to proceed. You can always add more items later.";
       case 3:
         return "Upload clear, legible copies of your ID and address proof. Accepted formats are JPG, PNG, or PDF (max 5MB each).";
       case 4:
@@ -479,7 +479,7 @@ export default function PDAPage() {
             </p>
             <p className="text-gray-600 text-sm md:text-base max-w-xl">
               A PDA with India Post ensures you automatically receive new commemorative stamps, 
-              first day covers, and other philatelic items as soon as they're released.
+              first day covers, and other philatelic items as soon as they&apos;re released.
             </p>
           </div>
 

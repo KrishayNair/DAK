@@ -34,7 +34,7 @@ const NotificationModal = ({ isOpen, onClose, anchorRef }) => {
           id: 1,
           type: "postal",
           title: "Postal circle",
-          message: 'Hi John!, do you still remember the "India 1953 Telegraph Centenary MNH Miniature Sheet" you want, Now it\'s in stock !!',
+          message: 'Hi John!, do you still remember the &quot;India 1953 Telegraph Centenary MNH Miniature Sheet&quot; you want, Now it&apos;s in stock !!',
           time: "3m",
           read: false,
           product: {
@@ -59,7 +59,7 @@ const NotificationModal = ({ isOpen, onClose, anchorRef }) => {
           id: 3,
           type: "personal",
           title: "Adish Gotekar",
-          message: 'replied to your review of product "India 1953 Telegraph Centenary MNH Miniature Sheet"',
+          message: 'replied to your review of product &quot;India 1953 Telegraph Centenary MNH Miniature Sheet&quot;',
           time: "11 : 05",
           read: true,
           comment: "Can you tell me more about this product?",

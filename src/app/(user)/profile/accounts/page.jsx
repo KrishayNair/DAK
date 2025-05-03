@@ -160,7 +160,7 @@ const AccountSettings = ({ userData }) => {
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-2">Remove your account</h2>
         <p className="text-sm text-gray-600 mb-2">
-          You can do "Disable Account" to take a break from Dak
+          You can do &quot;Disable Account&quot; to take a break from Dak
         </p>
         <button className="mr-2 bg-red-400 text-white py-2 px-4 rounded-md hover:bg-red-800">
           Disable Account

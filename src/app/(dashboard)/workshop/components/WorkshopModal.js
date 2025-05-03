@@ -1,5 +1,6 @@
 "use client";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 export default function WorkshopModal({ isOpen, onClose, workshop, modalRef }) {
   if (!workshop) return null;
@@ -34,9 +35,11 @@ export default function WorkshopModal({ isOpen, onClose, workshop, modalRef }) {
             <div className="md:col-span-2 space-y-6">
               <div className="bg-gray-100 rounded-lg overflow-hidden">
                 {workshop.image && (
-                  <img
+                  <Image
                     src={workshop.image}
                     alt={workshop.title}
+                    width={800}
+                    height={400}
                     className="w-full h-48 md:h-64 object-cover"
                   />
                 )}
@@ -113,7 +116,7 @@ export default function WorkshopModal({ isOpen, onClose, workshop, modalRef }) {
             <div className="bg-gray-100 rounded-lg p-4">
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-medium mb-2">What you'll learn</h4>
+                  <h4 className="font-medium mb-2">What you&apos;ll learn</h4>
                   <ul className="list-disc pl-5 space-y-1">
                     <li>Introduction to philately and stamp collecting</li>
                     <li>Understanding stamp values and rarity</li>

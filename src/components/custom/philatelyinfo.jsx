@@ -247,7 +247,7 @@ export default function PhilatelyIntro() {
             New to Philately?
           </h2>
           <p className="text-lg md:text-xl text-secondary mb-8 lg:ml-20 xl:ml-0 font-secondary z-100">
-            Dak's got you covered with secure transactions, expert guidance, and
+            Dak&apos;s got you covered with secure transactions, expert guidance, and
             a vibrant community to help <br /> you start your collection
             journey!
           </p>
@@ -281,10 +281,10 @@ export default function PhilatelyIntro() {
               The Scinde Dawk: Issued in 1852.
             </p>
             <p className="font-thin md:text-base text-sm mt-2 opacity-90">
-              The Scinde Dawk is considered India's first postage stamp. It was
+              The Scinde Dawk is considered India&apos;s first postage stamp. It was
               introduced by the British East India Company for use in the Sindh
               region, which was then part of British India. The stamp features
-              the word 'Scinde' (the Persian name for .....
+              the word &apos;Scinde&apos; (the Persian name for .....
             </p>
             <Link href="/catalog" >
             <button className="flex md:mt-8 space-x-3 mt-5 font-medium text-gray-600">
@@ -317,7 +317,7 @@ export default function PhilatelyIntro() {
               </h1>
               <p className="font-thin md:text-base text-sm mt-2 opacity-90">
                 Our intelligent chatbot is designed to guide you effortlessly
-                through any route. Whether it's navigating locations or
+                through any route. Whether it&apos;s navigating locations or
                 answering queries, it ensures a smooth experience. With its
                 intuitive capabilities, you can rely on it for seamless
                 assistance every step of the way.
@@ -364,7 +364,7 @@ export default function PhilatelyIntro() {
                 Perfect additions to your collection, these new
                 government-issued stamps offer a unique way to enhance your
                 philatelic journey. Each one tells a story, waiting to be
-                discovered. Don’t miss the opportunity to expand your collection
+                discovered. Don&apos;t miss the opportunity to expand your collection
                 with these rare finds!
               </p>
               <Link href="/shop" >
@@ -395,7 +395,7 @@ export default function PhilatelyIntro() {
             </div>
             <div className="flex flex-col justify-center w-full xl:w-3/5 mr-20">
               <h1 className="font-bold md:text-2xl text-lg mt-5 xl:mt-0">
-                Engage in India's biggest community!
+                Engage in India&apos;s biggest community!
               </h1>
               <p className="font-thin md:text-base text-sm mt-2 opacity-90">
                 Step into a vibrant community buzzing with energy and
@@ -444,7 +444,7 @@ export default function PhilatelyIntro() {
               <p className="font-thin md:text-base text-sm mt-2 opacity-90">
                 Participate in exclusive auctions to get your hands on the
                 rarest and most coveted stamps. Bid for timeless treasures that
-                embody history, culture, and artistry. Don’t miss your chance to
+                embody history, culture, and artistry. Don&apos;t miss your chance to
                 elevate your collection with these extraordinary finds!
               </p>
               <Link href="/auction" >

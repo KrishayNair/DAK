@@ -59,7 +59,7 @@ export default function ProductDetail({ params }) {
 
     useEffect(() => {
         fetchProduct()
-    }, [params.slug])
+    }, [params.slug, fetchProduct])
 
     if (loading) {
         return <div className="max-w-7xl mx-auto p-6">Loading...</div>
@@ -145,7 +145,7 @@ export default function ProductDetail({ params }) {
             <div className="flex gap-8">
                 {/* Product Image Section */}
                 <div className="w-1/2">
-                    <img
+                    <Image
                         src={buildImageUrl(product?.images[0])}
                         alt={product?.title}
                         width={500}
@@ -433,7 +433,7 @@ export default function ProductDetail({ params }) {
 
                         <h3 className="text-xl font-semibold mb-4">Join Waitlist</h3>
                         <p className="text-gray-600 mb-6">
-                            Enter your email to be notified when "{product?.title}" is back in stock.
+                            Enter your email to be notified when &quot;{product?.title}&quot; is back in stock.
                         </p>
 
                         <form onSubmit={handleWaitlistSubmit} className="space-y-4">

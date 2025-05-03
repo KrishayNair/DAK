@@ -22,7 +22,7 @@ export default function PhilatelistQuestion({ handlePhilatelistResponse }) {
           <div className="text-left">
             <h4 className="text-xl font-semibold mb-2">Yes!! I am a philatelist</h4>
             <p className="text-gray-600">
-              I'm well versed in philately 
+              I&apos;m well versed in philately 
             </p>
           </div>
         </button>
@@ -39,7 +39,7 @@ export default function PhilatelistQuestion({ handlePhilatelistResponse }) {
           <div className="text-left">
             <h4 className="text-xl font-semibold mb-2">No, I am not a philatelist</h4>
             <p className="text-gray-600">
-              I'm new to philately and want to learn more about it
+              I&apos;m new to philately and want to learn more about it
             </p>
           </div>
         </button>

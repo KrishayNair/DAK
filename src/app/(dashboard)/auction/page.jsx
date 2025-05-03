@@ -56,7 +56,7 @@ export const auctionItems = [
     endTime: "2024-06-15T15:00:00",
     status: "upcoming",
     bidHistory: [],
-    backstory: "Celebrating India's independence from British rule.",
+    backstory: "Celebrating India&apos;s independence from British rule.",
   },
   {
     id: 5,
@@ -80,7 +80,7 @@ export const auctionItems = [
     endTime: "2024-08-15T15:00:00",
     status: "ended",
     bidHistory: [],
-    backstory: "A rare stamp featuring India's diverse wildlife.",
+    backstory: "A rare stamp featuring India&apos;s diverse wildlife.",
   },
   {
     id: 7,
@@ -92,7 +92,7 @@ export const auctionItems = [
     endTime: "2024-09-01T15:00:00",
     status: "upcoming",
     bidHistory: [],
-    backstory: "Showcasing India's UNESCO World Heritage Sites.",
+    backstory: "Showcasing India&apos;s UNESCO World Heritage Sites.",
   },
   {
     id: 8,
@@ -289,7 +289,7 @@ export default function AuctionPage() {
               
               <p className="text-lg text-[#FFE4B5] max-w-xl animate-fade-in" style={{ animationDelay: '0.3s' }}>
                 Explore our curated collection of rare and valuable stamps. 
-                Join thousands of collectors in the world's premier philatelic marketplace.
+                Join thousands of collectors in the world&apos;s premier philatelic marketplace.
               </p>
               
               {/* Search Bar with Animation */}

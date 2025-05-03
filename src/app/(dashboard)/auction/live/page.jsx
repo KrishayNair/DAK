@@ -159,7 +159,7 @@ export default function LiveAuctionsPage() {
                 </h1>
                 <p className="text-lg text-[#FFE4B5]/90 max-w-xl leading-relaxed">
                   Join the excitement of real-time bidding on rare and valuable stamps.
-                  Don't miss your chance to own a piece of history.
+                  Don&apos;t miss your chance to own a piece of history.
                 </p>
               </div>
 
